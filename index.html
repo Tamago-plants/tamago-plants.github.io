@@ -165,6 +165,7 @@ a{color:inherit;text-decoration:none}
 .dc{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);
   border-radius:14px;padding:10px 12px;margin-bottom:8px}
 .dc-add{border-radius:10px;padding:8px 11px;font-size:12px;font-weight:800;flex:none}
+.wtag{font-size:10px;font-weight:700;border:1px solid var(--ng);color:var(--ng);border-radius:999px;padding:2px 8px;background:rgba(240,86,111,.08)}
 .vline{display:flex;gap:8px;font-size:13px;line-height:1.75;padding:3px 0;color:#D6DEF0}
 .vline span:first-child{flex:none;font-weight:800}
 .vdot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
@@ -221,6 +222,8 @@ a{color:inherit;text-decoration:none}
 const BAKED = {"asof":"2026-07-04","stocks":{"9432":{"mkt":"JP","ccy":"JPY","ysym":"9432.T","n":"NTT","s":"情報・通信","d":"国内通信最大手。ドコモ・NTT東西を傘下に持つ。","l":["ドコモ","フレッツ光"],"px":146.1,"sh":81423624610,"eps_f":14.55,"bps":119.42,"dps":5.4,"payout":42.0,"ncps":-304.32,"eq":20.8,"hist":[14.9,15.71,12.28,12.74],"cut10":false},"9433":{"mkt":"JP","ccy":"JPY","ysym":"9433.T","n":"KDDI","s":"情報・通信","d":"au・UQを展開する総合通信。金融・エネルギーにも拡大。","l":["au","povo"],"px":2702.5,"sh":3807078394,"eps_f":2.33,"bps":1333.5,"dps":84.0,"payout":43.6,"ncps":-1941.58,"eq":26.6,"hist":[171.1,157.67,172.16,185.74],"cut10":false},"9434":{"mkt":"JP","ccy":"JPY","ysym":"9434.T","n":"ソフトバンク","s":"情報・通信","d":"携帯3位。PayPay経済圏と法人DXが成長軸。","l":["SoftBank回線","PayPay"],"px":209.1,"sh":47828940883,"eps_f":11.59,"bps":61.88,"dps":8.8,"payout":76.3,"ncps":-173.2,"eq":16.0,"hist":[11.11,10.23,11.0,11.52],"cut10":null},"2914":{"mkt":"JP","ccy":"JPY","ysym":"2914.T","n":"JT","s":"食料品・たばこ","d":"たばこ世界大手。海外比率が高く円安メリット。","l":["メビウス","テーブルマーク"],"px":6057.0,"sh":1775357592,"eps_f":301.11,"bps":2301.32,"dps":242.0,"payout":83.2,"ncps":-301.47,"eq":48.5,"hist":[249.37,271.66,100.96,287.36],"cut10":true},"2503":{"mkt":"JP","ccy":"JPY","ysym":"2503.T","n":"キリンHD","s":"食料品・飲料","d":"ビール大手。医薬・ヘルスサイエンスを育成中。","l":["一番搾り","午後の紅茶"],"px":2813.5,"sh":799126252,"eps_f":172.0,"bps":1633.02,"dps":76.0,"payout":40.6,"ncps":-835.7,"eq":36.8,"hist":[138.91,141.03,72.85,184.63],"cut10":false},"2502":{"mkt":"JP","ccy":"JPY","ysym":"2502.T","n":"アサヒGHD","s":"食料品・飲料","d":"スーパードライの雄。欧州・豪州ビールも展開。","l":["スーパードライ","カルピス"],"px":1553.0,"sh":1462866952,"eps_f":143.07,"bps":1870.34,"dps":52.0,"payout":45.9,"ncps":-1273.87,"eq":49.4,"hist":[104.93,103.6,112.16,131.3],"cut10":false},"4502":{"mkt":"JP","ccy":"JPY","ysym":"4502.T","n":"武田薬品","s":"医薬品","d":"国内製薬最大手。グローバル新薬と高配当が看板。","l":["アリナミン(旧)","ワクチン"],"px":5359.0,"sh":1579874330,"eps_f":140.39,"bps":4702.66,"dps":204.0,"payout":167.2,"ncps":-2959.88,"eq":47.9,"hist":[200.66,91.19,68.31,-96.46],"cut10":false},"4503":{"mkt":"JP","ccy":"JPY","ysym":"4503.T","n":"アステラス製薬","s":"医薬品","d":"がん・泌尿器に強い製薬大手。特許切れ対応が焦点。","l":["処方薬","眼科治療薬"],"px":2152.0,"sh":1791492258,"eps_f":75.77,"bps":1020.96,"dps":80.0,"payout":48.1,"ncps":-167.47,"eq":51.3,"hist":[55.1,9.51,28.33,162.73],"cut10":false},"8058":{"mkt":"JP","ccy":"JPY","ysym":"8058.T","n":"三菱商事","s":"卸売・商社","d":"総合商社首位級。資源と非資源のバランス経営。","l":["ローソン","三菱自動車関連"],"px":4457.0,"sh":3661498671,"eps_f":212.04,"bps":2578.33,"dps":125.0,"payout":52.4,"ncps":-21.94,"eq":39.1,"hist":[322.46,263.29,259.65,218.62],"cut10":false},"8031":{"mkt":"JP","ccy":"JPY","ysym":"8031.T","n":"三井物産","s":"卸売・商社","d":"資源に強い総合商社。LNG・鉄鉱石が収益柱。","l":["エネルギー","病院事業"],"px":4600.0,"sh":2834188227,"eps_f":293.85,"bps":3093.56,"dps":140.0,"payout":39.5,"ncps":-301.74,"eq":42.1,"hist":[398.93,375.3,317.67,294.25],"cut10":false},"8001":{"mkt":"JP","ccy":"JPY","ysym":"8001.T","n":"伊藤忠商事","s":"卸売・商社","d":"非資源No.1商社。繊維・食料・情報に強み。","l":["ファミマ","ドール"],"px":1888.5,"sh":6989912686,"eps_f":647.27,"bps":942.78,"dps":44.0,"payout":32.8,"ncps":-57.39,"eq":39.4,"hist":[114.52,114.7,125.93,128.8],"cut10":false},"8053":{"mkt":"JP","ccy":"JPY","ysym":"8053.T","n":"住友商事","s":"卸売・商社","d":"メディア・不動産に強い総合商社。","l":["ジュピターテレコム","スミフル"],"px":1575.0,"sh":4760010168,"eps_f":443.29,"bps":970.22,"dps":40.0,"payout":30.1,"ncps":6.98,"eq":33.9,"hist":[118.77,81.17,118.04,126.12],"cut10":false},"8002":{"mkt":"JP","ccy":"JPY","ysym":"8002.T","n":"丸紅","s":"卸売・商社","d":"穀物・電力に強い総合商社。","l":["穀物取引","発電事業"],"px":4963.0,"sh":1635003303,"eps_f":310.83,"bps":2663.27,"dps":115.0,"payout":32.6,"ncps":575.59,"eq":41.4,"hist":[332.11,288.32,307.62,332.63],"cut10":false},"1605":{"mkt":"JP","ccy":"JPY","ysym":"1605.T","n":"INPEX","s":"鉱業・エネルギー","d":"国内最大の石油・ガス開発。イクシスLNGが柱。","l":["ガソリン上流","都市ガス原料"],"px":3242.0,"sh":1162189867,"eps_f":268.4,"bps":4207.52,"dps":108.0,"payout":30.2,"ncps":-762.14,"eq":61.4,"hist":[396.72,276.81,367.71,338.87],"cut10":false},"5020":{"mkt":"JP","ccy":"JPY","ysym":"5020.T","n":"ENEOS HD","s":"石油・エネルギー","d":"石油元売り最大手。製油所再編と還元強化。","l":["ENEOSスタンド","エネオス電気"],"px":1221.0,"sh":2687659798,"eps_f":99.47,"bps":1252.75,"dps":34.0,"payout":35.4,"ncps":-206.65,"eq":37.1,"hist":[53.49,107.2,84.11,96.26],"cut10":null},"9513":{"mkt":"JP","ccy":"JPY","ysym":"9513.T","n":"J-POWER","s":"電力","d":"卸電力大手。石炭火力と水力、海外IPPを持つ。","l":["電力卸","風力発電"],"px":3659.0,"sh":176008295,"eps_f":361.22,"bps":7985.22,"dps":110.0,"payout":30.7,"ncps":-6956.03,"eq":37.6,"hist":[645.93,441.88,525.37,332.58],"cut10":false},"8766":{"mkt":"JP","ccy":"JPY","ysym":"8766.T","n":"東京海上HD","s":"保険","d":"損保首位。海外保険買収で成長を続ける。","l":["自動車保険","火災保険"],"px":7584.0,"sh":1911692844,"eps_f":493.02,"bps":2885.45,"dps":245.0,"payout":78.1,"ncps":null,"eq":16.3,"hist":[219.95,195.95,363.97,552.01],"cut10":false},"8725":{"mkt":"JP","ccy":"JPY","ysym":"8725.T","n":"MS&AD","s":"保険","d":"三井住友海上・あいおいの持株。政策株売却が進む。","l":["自動車保険","企業保険"],"px":4454.0,"sh":1450051909,"eps_f":411.23,"bps":3286.98,"dps":140.0,"payout":23.0,"ncps":null,"eq":16.7,"hist":[145.52,254.66,476.99,542.97],"cut10":false},"8630":{"mkt":"JP","ccy":"JPY","ysym":"8630.T","n":"SOMPO HD","s":"保険","d":"損保ジャパンの持株。介護事業も展開。","l":["損保ジャパン","SOMPOケア"],"px":6635.0,"sh":890644889,"eps_f":272.97,"bps":5791.95,"dps":200.0,"payout":59.8,"ncps":null,"eq":27.8,"hist":[29.66,594.69,718.68,272.98],"cut10":false},"9020":{"mkt":"JP","ccy":"JPY","ysym":"9020.T","n":"JR東日本","s":"陸運・鉄道","d":"首都圏鉄道の雄。駅ビル・Suica経済圏も。","l":["山手線","Suica"],"px":3459.0,"sh":1129068483,"eps_f":206.2,"bps":2698.78,"dps":84.0,"payout":33.7,"ncps":-5616.05,"eq":28.2,"hist":[87.89,173.99,198.65,219.51],"cut10":true},"9022":{"mkt":"JP","ccy":"JPY","ysym":"9022.T","n":"JR東海","s":"陸運・鉄道","d":"東海道新幹線が収益の柱。リニア建設中。","l":["のぞみ","EXアプリ"],"px":3514.0,"sh":953262109,"eps_f":424.52,"bps":5306.02,"dps":32.0,"payout":5.6,"ncps":-4263.99,"eq":46.6,"hist":[230.17,403.26,480.9,579.98],"cut10":false},"2802":{"mkt":"JP","ccy":"JPY","ysym":"2802.T","n":"味の素","s":"食料品","d":"調味料世界大手。半導体材料ABFも高収益。","l":["味の素","冷凍餃子"],"px":6167.0,"sh":955864855,"eps_f":232.13,"bps":804.24,"dps":50.0,"payout":34.7,"ncps":-174.61,"eq":42.5,"hist":[98.41,91.14,73.52,140.89],"cut10":false},"8591":{"mkt":"JP","ccy":"JPY","ysym":"8591.T","n":"オリックス","s":"その他金融","d":"リースから多角化した金融サービス大手。","l":["レンタカー","バファローズ"],"px":6331.0,"sh":1092232679,"eps_f":371.64,"bps":4080.24,"dps":156.1,"payout":39.1,"ncps":null,"eq":24.9,"hist":[265.82,316.9,321.94,409.5],"cut10":false},"8593":{"mkt":"JP","ccy":"JPY","ysym":"8593.T","n":"三菱HCキャピタル","s":"その他金融","d":"三菱系リース大手。連続増配で知られる。","l":["法人リース","航空機リース"],"px":1351.0,"sh":1435921854,"eps_f":109.75,"bps":1386.09,"dps":52.0,"payout":40.8,"ncps":-3108.79,"eq":15.2,"hist":[80.95,86.25,94.13,112.96],"cut10":false},"1793":{"mkt":"JP","ccy":"JPY","ysym":"1793.T","n":"大本組","s":"建設","d":"岡山地盤のゼネコン。現金と有価証券が分厚い。","l":["土木工事"],"px":1982.0,"sh":25434086,"eps_f":71.35,"bps":1404.96,"dps":74.0,"payout":70.1,"ncps":2011.43,"eq":66.3,"hist":[20.29,40.14,70.3,71.28],"cut10":null},"8935":{"mkt":"JP","ccy":"JPY","ysym":"8935.T","n":"FJネクストHD","s":"不動産","d":"都心ワンルーム『ガーラ』開発。財務は現金厚め。","l":["ガーラマンション"],"px":1788.0,"sh":32752185,"eps_f":305.75,"bps":2476.99,"dps":80.0,"payout":18.3,"ncps":2018.37,"eq":71.2,"hist":[171.62,197.03,197.94,305.63],"cut10":null},"5408":{"mkt":"JP","ccy":"JPY","ysym":"5408.T","n":"中山製鋼所","s":"鉄鋼","d":"電炉系鉄鋼。再建後は無借金級の財務。","l":["建材用鋼材"],"px":621.0,"sh":54215336,"eps_f":45.46,"bps":2013.23,"dps":14.0,"payout":30.8,"ncps":951.59,"eq":71.6,"hist":[188.64,164.23,105.04,45.41],"cut10":null},"8141":{"mkt":"JP","ccy":"JPY","ysym":"8141.T","n":"新光商事","s":"卸売","d":"半導体商社。現金・有価証券が時価総額級。","l":["半導体流通"],"px":1587.0,"sh":28549899,"eps_f":38.72,"bps":1844.04,"dps":24.5,"payout":47.8,"ncps":1642.32,"eq":65.2,"hist":[164.83,111.87,17.69,39.47],"cut10":null},"8084":{"mkt":"JP","ccy":"JPY","ysym":"8084.T","n":"RYODEN","s":"卸売","d":"三菱電機系の技術商社。FA・冷熱を扱う。","l":["FA機器","空調設備"],"px":4010.0,"sh":21556924,"eps_f":244.21,"bps":4384.57,"dps":150.0,"payout":56.5,"ncps":3577.79,"eq":61.3,"hist":[248.92,266.09,218.03,244.7],"cut10":null},"6794":{"mkt":"JP","ccy":"JPY","ysym":"6794.T","n":"フォスター電機","s":"電気機器","d":"スピーカー・車載音響。ネットキャッシュ厚い。","l":["車のスピーカー","イヤホンOEM"],"px":2954.0,"sh":22467807,"eps_f":114.83,"bps":3013.47,"dps":120.0,"payout":36.2,"ncps":2206.71,"eq":60.3,"hist":[37.74,102.55,173.67,220.36],"cut10":null},"2221":{"mkt":"JP","ccy":"JPY","ysym":"2221.T","n":"岩塚製菓","s":"食料品","d":"米菓メーカー。中国旺旺株の含み益が巨大。","l":["きなこ餅","味しらべ"],"px":3075.0,"sh":10258687,"eps_f":198.03,"bps":6809.06,"dps":32.0,"payout":16.1,"ncps":3343.13,"eq":75.1,"hist":[387.05,190.82,283.57,198.11],"cut10":null},"VZ":{"mkt":"US","ccy":"USD","ysym":"VZ","n":"ベライゾン","s":"通信","d":"米通信大手。高配当の代名詞的存在。","l":["米国の携帯回線"],"px":42.56,"sh":4175558910,"eps_f":5.27,"bps":24.74,"dps":2.83,"payout":67.4,"ncps":-57.73,"eq":25.8,"hist":[5.09,2.78,4.19,4.11],"cut10":false},"T":{"mkt":"US","ccy":"USD","ysym":"T","n":"AT&T","s":"通信","d":"米通信大手。減配歴ありの再建組。","l":["米国の通信網"],"px":20.58,"sh":6948338835,"eps_f":2.55,"bps":15.74,"dps":1.11,"payout":37.4,"ncps":-34.86,"eq":26.3,"hist":[-1.23,2.07,1.58,3.16],"cut10":true},"MO":{"mkt":"US","ccy":"USD","ysym":"MO","n":"アルトリア","s":"たばこ・生活必需品","d":"マールボロ米国販売元。超高配当。","l":["マールボロ(米国)"],"px":72.71,"sh":1669891235,"eps_f":5.88,"bps":-1.92,"dps":4.24,"payout":87.7,"ncps":-15.87,"eq":-10.0,"hist":[3.45,4.87,6.75,4.16],"cut10":false},"PM":{"mkt":"US","ccy":"USD","ysym":"PM","n":"フィリップモリス","s":"たばこ・生活必需品","d":"IQOSを世界展開。無煙化シフトの本命。","l":["IQOS"],"px":182.27,"sh":1558558846,"eps_f":9.12,"bps":-5.95,"dps":5.88,"payout":81.1,"ncps":-32.61,"eq":-14.4,"hist":[5.81,5.01,4.53,7.28],"cut10":false},"KO":{"mkt":"US","ccy":"USD","ysym":"KO","n":"コカ・コーラ","s":"飲料・生活必需品","d":"60年超の連続増配王。バフェット銘柄。","l":["コカ・コーラ","綾鷹(提携)"],"px":84.14,"sh":4302482418,"eps_f":3.48,"bps":7.82,"dps":2.12,"payout":64.8,"ncps":-5.89,"eq":30.7,"hist":[2.22,2.49,2.47,3.05],"cut10":false},"PEP":{"mkt":"US","ccy":"USD","ysym":"PEP","n":"ペプシコ","s":"飲料・食品","d":"飲料とスナックの二本柱。連続増配50年超。","l":["ペプシ","ドリトス"],"px":144.22,"sh":1366768315,"eps_f":9.08,"bps":15.63,"dps":5.92,"payout":89.3,"ncps":-40.76,"eq":19.0,"hist":[6.52,6.64,7.01,6.03],"cut10":false},"PG":{"mkt":"US","ccy":"USD","ysym":"PG","n":"P&G","s":"生活必需品","d":"日用品世界最大手。連続増配60年超。","l":["アリエール","パンパース"],"px":151.41,"sh":2328598978,"eps_f":7.07,"bps":23.08,"dps":4.26,"payout":61.8,"ncps":-20.42,"eq":41.5,"hist":[6.33,6.29,6.39,6.86],"cut10":false},"JNJ":{"mkt":"US","ccy":"USD","ysym":"JNJ","n":"J&J","s":"ヘルスケア・医薬","d":"医薬・医療機器の巨人。連続増配60年超。","l":["バンドエイド","絆創膏"],"px":263.04,"sh":2407216971,"eps_f":12.72,"bps":33.73,"dps":5.36,"payout":60.2,"ncps":-25.77,"eq":40.9,"hist":[7.45,14.6,5.84,11.13],"cut10":false},"PFE":{"mkt":"US","ccy":"USD","ysym":"PFE","n":"ファイザー","s":"医薬品","d":"製薬大手。コロナ後の株価低迷で利回り上昇。","l":["コロナワクチン"],"px":24.32,"sh":5699444169,"eps_f":2.83,"bps":15.81,"dps":1.72,"payout":131.3,"ncps":-13.57,"eq":41.5,"hist":[5.5,0.37,1.41,1.36],"cut10":false},"ABBV":{"mkt":"US","ccy":"USD","ysym":"ABBV","n":"アッヴィ","s":"医薬品","d":"ヒュミラ後継薬が成長。配当貴族。","l":["免疫疾患治療薬"],"px":261.07,"sh":1766792821,"eps_f":16.26,"bps":-3.77,"dps":6.92,"payout":326.0,"ncps":-61.09,"eq":-2.4,"hist":[6.7,2.75,2.42,2.39],"cut10":false},"MRK":{"mkt":"US","ccy":"USD","ysym":"MRK","n":"メルク","s":"医薬品","d":"がん免疫薬キイトルーダが世界一の薬。","l":["キイトルーダ"],"px":129.56,"sh":2469824415,"eps_f":9.59,"bps":18.58,"dps":3.4,"payout":93.5,"ncps":-16.2,"eq":38.4,"hist":[5.88,0.15,6.93,7.39],"cut10":false},"XOM":{"mkt":"US","ccy":"USD","ysym":"XOM","n":"エクソンモービル","s":"エネルギー","d":"石油メジャー最大手。40年超増配。","l":["ガソリン(米)","モービル1"],"px":137.09,"sh":4144947162,"eps_f":10.79,"bps":62.07,"dps":4.12,"payout":68.0,"ncps":-18.32,"eq":57.8,"hist":[13.45,8.69,8.13,6.96],"cut10":false},"CVX":{"mkt":"US","ccy":"USD","ysym":"CVX","n":"シェブロン","s":"エネルギー","d":"石油メジャー。バフェット保有で有名。","l":["ガソリン(米)"],"px":169.2,"sh":1991597732,"eps_f":12.64,"bps":92.91,"dps":7.12,"payout":120.4,"ncps":-31.42,"eq":57.5,"hist":[17.81,10.73,8.87,6.18],"cut10":false},"O":{"mkt":"US","ccy":"USD","ysym":"O","n":"リアルティインカム","s":"不動産・REIT","d":"毎月配当REITの代表格。","l":["米国の商業施設"],"px":63.84,"sh":932492530,"eps_f":1.7,"bps":41.98,"dps":3.25,"payout":265.0,"ncps":-28.01,"eq":54.2,"hist":[0.93,0.94,0.92,1.14],"cut10":false},"DUK":{"mkt":"US","ccy":"USD","ysym":"DUK","n":"デューク・エナジー","s":"電力・公益","d":"米南東部の電力・ガス公益大手。","l":["米国の電力"],"px":129.6,"sh":779596217,"eps_f":7.17,"bps":68.75,"dps":4.26,"payout":65.2,"ncps":-156.3,"eq":26.5,"hist":[3.27,3.64,5.8,6.37],"cut10":false},"SO":{"mkt":"US","ccy":"USD","ysym":"SO","n":"サザン","s":"電力・公益","d":"米南部の電力公益。原発ボーグル稼働。","l":["米国の電力"],"px":97.98,"sh":1127301098,"eps_f":4.92,"bps":32.93,"dps":3.04,"payout":75.7,"ncps":-91.32,"eq":23.1,"hist":[3.14,3.53,3.9,3.85],"cut10":false},"8306":{"mkt":"JP","ccy":"JPY","ysym":"8306.T","n":"三菱UFJ FG","s":"銀行","d":"国内最大の金融グループ。金利上昇の受益者。","l":["三菱UFJ銀行","au(出資)"],"px":3326.0,"sh":11276872492,"eps_f":151.68,"bps":1973.32,"dps":96.0,"payout":40.5,"ncps":null,"eq":5.2,"hist":[99.01,132.2,165.2,215.24],"cut10":false},"8316":{"mkt":"JP","ccy":"JPY","ysym":"8316.T","n":"三井住友FG","s":"銀行","d":"メガバンク2番手。効率経営に定評。","l":["三井住友銀行","Olive"],"px":6672.0,"sh":3812000785,"eps_f":317.81,"bps":4135.87,"dps":90.0,"payout":38.1,"ncps":null,"eq":4.8,"hist":[211.4,252.61,309.02,415.26],"cut10":false},"8411":{"mkt":"JP","ccy":"JPY","ysym":"8411.T","n":"みずほFG","s":"銀行","d":"メガバンク3番手。再編で立て直し進む。","l":["みずほ銀行"],"px":8078.0,"sh":2436438575,"eps_f":336.63,"bps":4640.73,"dps":150.0,"payout":28.8,"ncps":null,"eq":3.7,"hist":[228.01,278.68,363.41,512.48],"cut10":false},"7182":{"mkt":"JP","ccy":"JPY","ysym":"7182.T","n":"ゆうちょ銀行","s":"銀行","d":"郵便局網の巨大銀行。運用収益が柱。","l":["郵便局ATM"],"px":3230.0,"sh":3561946621,"eps_f":117.23,"bps":2585.1,"dps":186.0,"payout":50.3,"ncps":null,"eq":3.9,"hist":[99.68,91.26,99.98,116.32],"cut10":false},"8308":{"mkt":"JP","ccy":"JPY","ysym":"8308.T","n":"りそなHD","s":"銀行","d":"リテール特化の大手行。","l":["りそな銀行"],"px":2245.5,"sh":2242839988,"eps_f":88.06,"bps":1289.59,"dps":37.0,"payout":25.5,"ncps":null,"eq":3.8,"hist":[71.52,70.86,95.11,115.35],"cut10":false},"9502":{"mkt":"JP","ccy":"JPY","ysym":"9502.T","n":"中部電力","s":"電力","d":"中部地盤の電力大手。JERAでLNG調達。","l":["中部の電気"],"px":3174.0,"sh":755393538,"eps_f":234.76,"bps":4154.47,"dps":70.0,"payout":23.2,"ncps":-2077.36,"eq":41.0,"hist":[50.61,533.68,267.53,301.56],"cut10":null},"9503":{"mkt":"JP","ccy":"JPY","ysym":"9503.T","n":"関西電力","s":"電力","d":"原発比率が高い電力大手。","l":["関西の電気"],"px":2275.5,"sh":1114056720,"eps_f":328.53,"bps":3101.43,"dps":80.0,"payout":22.0,"ncps":-3613.83,"eq":35.1,"hist":[15.87,396.63,377.33,341.14],"cut10":null},"9508":{"mkt":"JP","ccy":"JPY","ysym":"9508.T","n":"九州電力","s":"電力","d":"原発再稼働で収益改善した九州の電力。","l":["九州の電気"],"px":1703.5,"sh":472778133,"eps_f":163.81,"bps":2522.94,"dps":50.0,"payout":15.9,"ncps":-7660.72,"eq":19.9,"hist":[-119.36,352.06,272.36,326.87],"cut10":null},"9531":{"mkt":"JP","ccy":"JPY","ysym":"9531.T","n":"東京ガス","s":"電気・ガス","d":"都市ガス最大手。海外ガス田も持つ。","l":["都市ガス"],"px":6037.0,"sh":331984607,"eps_f":271.19,"bps":5155.73,"dps":120.0,"payout":16.8,"ncps":-3195.67,"eq":44.1,"hist":[846.17,498.46,223.49,683.34],"cut10":false},"9532":{"mkt":"JP","ccy":"JPY","ysym":"9532.T","n":"大阪ガス","s":"電気・ガス","d":"関西の都市ガス。米国事業を拡大。","l":["都市ガス"],"px":5363.0,"sh":381304821,"eps_f":292.5,"bps":4704.99,"dps":130.0,"payout":30.7,"ncps":-1674.5,"eq":54.4,"hist":[149.78,347.96,352.51,400.6],"cut10":false},"5401":{"mkt":"JP","ccy":"JPY","ysym":"5401.T","n":"日本製鉄","s":"鉄鋼","d":"粗鋼世界大手。USスチール買収で拡大。","l":["建物の鋼材","車の鋼板"],"px":548.2,"sh":5226293989,"eps_f":557.98,"bps":1058.2,"dps":24.0,"payout":22.0,"ncps":-444.02,"eq":37.7,"hist":[132.79,105.12,67.01,3.28],"cut10":true},"5411":{"mkt":"JP","ccy":"JPY","ysym":"5411.T","n":"JFE HD","s":"鉄鋼","d":"鉄鋼国内2位。高炉再編を推進。","l":["建材・造船用鋼"],"px":1600.0,"sh":636136318,"eps_f":317.82,"bps":4117.88,"dps":80.0,"payout":75.8,"ncps":-532.91,"eq":44.4,"hist":[255.64,310.34,144.42,110.3],"cut10":true},"9101":{"mkt":"JP","ccy":"JPY","ysym":"9101.T","n":"日本郵船","s":"海運","d":"海運最大手。コンテナ市況で利益が振れる。","l":["輸入品の物流"],"px":5211.0,"sh":403556142,"eps_f":512.34,"bps":7575.97,"dps":200.0,"payout":40.6,"ncps":-2955.66,"eq":59.1,"hist":[2509.0,566.47,1183.74,524.71],"cut10":true},"9104":{"mkt":"JP","ccy":"JPY","ysym":"9104.T","n":"商船三井","s":"海運","d":"LNG船に強い海運大手。","l":["エネルギー輸送"],"px":5193.0,"sh":343615996,"eps_f":562.67,"bps":8365.22,"dps":205.0,"payout":32.3,"ncps":-6877.53,"eq":48.2,"hist":[2316.71,761.46,1238.28,620.63],"cut10":true},"9107":{"mkt":"JP","ccy":"JPY","ysym":"9107.T","n":"川崎汽船","s":"海運","d":"海運3位。自動車船が強み。","l":["輸出車の船"],"px":2543.5,"sh":632247949,"eps_f":349.43,"bps":2851.95,"dps":120.0,"payout":57.0,"ncps":70.28,"eq":76.9,"hist":[1099.1,161.31,483.01,210.34],"cut10":true},"5019":{"mkt":"JP","ccy":"JPY","ysym":"5019.T","n":"出光興産","s":"石油・エネルギー","d":"石油元売り2位。","l":["apollostation"],"px":1214.5,"sh":1203176290,"eps_f":131.59,"bps":1574.46,"dps":36.0,"payout":25.6,"ncps":-342.44,"eq":36.0,"hist":[210.81,189.93,86.48,142.88],"cut10":null},"5108":{"mkt":"JP","ccy":"JPY","ysym":"5108.T","n":"ブリヂストン","s":"ゴム製品","d":"タイヤ世界最大級。","l":["車のタイヤ"],"px":3515.0,"sh":1249994577,"eps_f":558.88,"bps":2914.43,"dps":130.0,"payout":96.6,"ncps":696.27,"eq":63.7,"hist":[240.25,265.05,227.99,261.81],"cut10":true},"4507":{"mkt":"JP","ccy":"JPY","ysym":"4507.T","n":"塩野義製薬","s":"医薬品","d":"感染症に強い創薬企業。","l":["コロナ治療薬"],"px":2869.0,"sh":850975437,"eps_f":191.2,"bps":1980.33,"dps":76.0,"payout":29.5,"ncps":1077.82,"eq":65.4,"hist":[217.36,190.41,200.28,241.09],"cut10":false},"4528":{"mkt":"JP","ccy":"JPY","ysym":"4528.T","n":"小野薬品","s":"医薬品","d":"オプジーボの製薬会社。","l":["がん免疫薬"],"px":2419.0,"sh":469907311,"eps_f":169.15,"bps":1810.41,"dps":80.0,"payout":53.9,"ncps":464.85,"eq":76.9,"hist":[239.88,272.35,106.5,148.47],"cut10":false},"6412":{"mkt":"JP","ccy":"JPY","ysym":"6412.T","n":"平和","s":"機械・その他","d":"パチンコ機とゴルフ場(PGM)運営。","l":["ゴルフ場PGM"],"px":1995.0,"sh":98627010,"eps_f":226.8,"bps":2521.42,"dps":80.0,"payout":67.6,"ncps":-7289.66,"eq":23.1,"hist":[209.73,168.42,132.46,118.61],"cut10":null},"8425":{"mkt":"JP","ccy":"JPY","ysym":"8425.T","n":"みずほリース","s":"その他金融","d":"みずほ系リース。連続増配で有名。","l":["法人リース"],"px":1262.0,"sh":280186810,"eps_f":572.6,"bps":1527.83,"dps":52.0,"payout":30.0,"ncps":-3991.4,"eq":10.3,"hist":[101.35,125.7,150.04,169.92],"cut10":false},"8566":{"mkt":"JP","ccy":"JPY","ysym":"8566.T","n":"リコーリース","s":"その他金融","d":"リコー系リース。連続増配銘柄。","l":["OA機器リース"],"px":6240.0,"sh":30824441,"eps_f":450.9,"bps":7840.5,"dps":186.0,"payout":44.5,"ncps":-951.26,"eq":16.5,"hist":[482.47,365.88,507.97,415.94],"cut10":false},"6986":{"mkt":"JP","ccy":"JPY","ysym":"6986.T","n":"双葉電子工業","s":"電気機器","d":"蛍光表示管の老舗。現金の塊と言われる財務。","l":[],"px":582.0,"sh":42415125,"eps_f":26.4,"bps":1975.52,"dps":36.0,"payout":30.3,"ncps":1426.85,"eq":77.0,"hist":[-82.49,-43.71,-6.62,59.46],"cut10":null},"3421":{"mkt":"JP","ccy":"JPY","ysym":"3421.T","n":"稲葉製作所","s":"金属製品","d":"『100人乗っても大丈夫』のイナバ物置。","l":["イナバ物置"],"px":1766.0,"sh":15739616,"eps_f":107.73,"bps":2808.43,"dps":44.0,"payout":39.9,"ncps":1021.94,"eq":72.0,"hist":[150.28,96.63,125.21,155.13],"cut10":null},"5988":{"mkt":"JP","ccy":"JPY","ysym":"5988.T","n":"パイオラックス","s":"金属製品","d":"自動車用ばね・締結部品。無借金経営。","l":[],"px":1612.0,"sh":24112792,"eps_f":133.8,"bps":2672.59,"dps":92.0,"payout":277.4,"ncps":1083.91,"eq":63.9,"hist":[139.97,166.43,74.32,-0.87],"cut10":null},"6247":{"mkt":"JP","ccy":"JPY","ysym":"6247.T","n":"日阪製作所","s":"機械","d":"熱交換器・滅菌装置。現金厚い。","l":[],"px":1803.0,"sh":26293913,"eps_f":51.05,"bps":2397.51,"dps":56.0,"payout":42.2,"ncps":1015.3,"eq":75.9,"hist":[77.58,92.04,143.84,131.17],"cut10":null},"5464":{"mkt":"JP","ccy":"JPY","ysym":"5464.T","n":"モリ工業","s":"鉄鋼","d":"ステンレス管の専業。高還元に転換。","l":[],"px":950.0,"sh":37976235,"eps_f":88.35,"bps":1540.23,"dps":34.0,"payout":40.7,"ncps":887.49,"eq":80.5,"hist":[139.3,119.0,108.7,88.42],"cut10":null},"4628":{"mkt":"JP","ccy":"JPY","ysym":"4628.T","n":"エスケー化研","s":"化学","d":"建築仕上塗材の最大手。超保守財務。","l":[],"px":9130.0,"sh":13490106,"eps_f":908.44,"bps":12954.6,"dps":180.0,"payout":19.8,"ncps":8902.76,"eq":85.1,"hist":[669.68,876.57,795.32,908.22],"cut10":null},"8125":{"mkt":"JP","ccy":"JPY","ysym":"8125.T","n":"ワキタ","s":"卸売","d":"建機レンタルと不動産。資産厚い。","l":[],"px":1768.0,"sh":49728793,"eps_f":103.7,"bps":2041.59,"dps":100.0,"payout":143.3,"ncps":142.24,"eq":69.1,"hist":[78.45,63.5,78.67,69.4],"cut10":null},"9367":{"mkt":"JP","ccy":"JPY","ysym":"9367.T","n":"大東港運","s":"倉庫・運輸","d":"港湾物流。小粒だが現金リッチ。","l":[],"px":1908.0,"sh":8643450,"eps_f":100.74,"bps":1224.39,"dps":32.0,"payout":30.8,"ncps":506.3,"eq":67.0,"hist":[90.67,61.84,71.41,100.64],"cut10":null},"6118":{"mkt":"JP","ccy":"JPY","ysym":"6118.T","n":"アイダエンジニアリング","s":"機械","d":"プレス機械大手。ネットキャッシュ系常連。","l":[],"px":1176.0,"sh":54341230,"eps_f":77.0,"bps":1594.68,"dps":39.0,"payout":49.8,"ncps":1050.47,"eq":69.1,"hist":[23.83,51.67,93.87,78.39],"cut10":null},"5943":{"mkt":"JP","ccy":"JPY","ysym":"5943.T","n":"ノーリツ","s":"金属製品","d":"給湯器大手。含み資産・現金厚い。","l":["給湯器"],"px":2310.0,"sh":45689097,"eps_f":69.37,"bps":3121.8,"dps":94.0,"payout":100.8,"ncps":1351.3,"eq":59.0,"hist":[105.06,19.0,95.93,73.5],"cut10":null},"6592":{"mkt":"JP","ccy":"JPY","ysym":"6592.T","n":"マブチモーター","s":"電気機器","d":"小型モーター世界大手。実質無借金。","l":["車のミラー用モーター"],"px":1624.0,"sh":243345742,"eps_f":131.39,"bps":1376.07,"dps":56.0,"payout":50.1,"ncps":917.4,"eq":90.3,"hist":[58.74,79.79,52.73,107.96],"cut10":null},"7433":{"mkt":"JP","ccy":"JPY","ysym":"7433.T","n":"伯東","s":"卸売","d":"半導体・電子部品商社。高配当方針。","l":[],"px":4635.0,"sh":18826390,"eps_f":266.05,"bps":3632.45,"dps":220.0,"payout":75.1,"ncps":2033.98,"eq":41.4,"hist":[474.28,274.88,272.54,266.06],"cut10":null},"8095":{"mkt":"JP","ccy":"JPY","ysym":"8095.T","n":"アステナHD","s":"卸売","d":"医薬・化学品の専門商社グループ。","l":[],"px":500.0,"sh":40339677,"eps_f":54.25,"bps":683.02,"dps":18.0,"payout":33.2,"ncps":56.96,"eq":35.9,"hist":[14.37,28.82,-62.59,54.21],"cut10":null},"1904":{"mkt":"JP","ccy":"JPY","ysym":"1904.T","n":"大成温調","s":"建設","d":"空調衛生工事。現金比率が高い。","l":[],"px":5080.0,"sh":6216664,"eps_f":573.53,"bps":4943.33,"dps":198.0,"payout":31.2,"ncps":2860.16,"eq":59.2,"hist":[236.31,315.75,400.12,570.89],"cut10":null},"6156":{"mkt":"JP","ccy":"JPY","ysym":"6156.T","n":"エーワン精密","s":"機械","d":"コレットチャックで高シェア。無借金高利益率。","l":[],"px":1730.0,"sh":5038226,"eps_f":-34.77,"bps":1431.31,"dps":100.0,"payout":8.5,"ncps":1274.68,"eq":91.5,"hist":[61.62,38.1,23.92],"cut10":null},"7883":{"mkt":"JP","ccy":"JPY","ysym":"7883.T","n":"サンメッセ","s":"その他製品","d":"印刷業。典型的ネットネット圏。","l":[],"px":383.0,"sh":15532708,"eps_f":29.76,"bps":906.8,"dps":10.0,"payout":30.3,"ncps":171.05,"eq":60.0,"hist":[17.04,21.11,16.56,21.39],"cut10":null},"9885":{"mkt":"JP","ccy":"JPY","ysym":"9885.T","n":"シャルレ","s":"小売・繊維","d":"下着訪問販売。現金>時価総額の常連。","l":[],"px":335.0,"sh":14914822,"eps_f":-231.22,"bps":862.44,"dps":8.0,"payout":70.2,"ncps":615.35,"eq":76.5,"hist":[-49.62,39.22,-67.85,-237.62],"cut10":null},"5985":{"mkt":"JP","ccy":"JPY","ysym":"5985.T","n":"サンコール","s":"金属製品","d":"精密ばね。低PBR圏。","l":[],"px":1655.0,"sh":30291286,"eps_f":205.05,"bps":1129.47,"dps":30.0,"payout":9.8,"ncps":410.42,"eq":59.6,"hist":[18.39,-390.08,-25.39,204.98],"cut10":null},"IBM":{"mkt":"US","ccy":"USD","ysym":"IBM","n":"IBM","s":"情報サービス","d":"AI・ハイブリッドクラウドの老舗巨人。","l":["watsonx"],"px":289.52,"sh":939885280,"eps_f":13.46,"bps":35.08,"dps":6.76,"payout":59.5,"ncps":-86.25,"eq":21.5,"hist":[1.74,7.98,6.41,11.27],"cut10":false},"MMM":{"mkt":"US","ccy":"USD","ysym":"MMM","n":"3M","s":"資本財・素材","d":"ポストイットの化学・素材複合企業。24年減配。","l":["ポストイット"],"px":160.44,"sh":521567261,"eps_f":9.48,"bps":6.26,"dps":3.12,"payout":57.2,"ncps":-28.46,"eq":12.5,"hist":[11.08,-13.41,8.0,6.23],"cut10":true},"CSCO":{"mkt":"US","ccy":"USD","ysym":"CSCO","n":"シスコシステムズ","s":"通信機器","d":"ネットワーク機器最大手。","l":["Wi-Fiの裏側"],"px":112.69,"sh":3941434665,"eps_f":4.78,"bps":12.4,"dps":1.68,"payout":55.0,"ncps":-10.27,"eq":38.3,"hist":[3.0,3.2,2.62,2.58],"cut10":false},"GILD":{"mkt":"US","ccy":"USD","ysym":"GILD","n":"ギリアド","s":"医薬品","d":"HIV・肝炎治療薬の大手。","l":["抗ウイルス薬"],"px":131.27,"sh":1241569874,"eps_f":9.66,"bps":18.93,"dps":3.28,"payout":43.4,"ncps":-12.87,"eq":38.5,"hist":[3.7,4.56,0.39,6.85],"cut10":false},"BMY":{"mkt":"US","ccy":"USD","ysym":"BMY","n":"ブリストル・マイヤーズ","s":"医薬品","d":"がん・免疫の製薬大手。低PER高配当。","l":["オプジーボ(提携)"],"px":58.13,"sh":2042071247,"eps_f":6.19,"bps":9.83,"dps":2.52,"payout":70.0,"ncps":-19.78,"eq":20.5,"hist":[3.1,3.93,-4.38,3.45],"cut10":false},"KHC":{"mkt":"US","ccy":"USD","ysym":"KHC","n":"クラフト・ハインツ","s":"食品・生活必需品","d":"ケチャップのハインツ。19年減配歴。","l":["ハインツケチャップ"],"px":25.37,"sh":1185777638,"eps_f":2.09,"bps":35.35,"dps":1.6,"payout":73.1,"ncps":-25.19,"eq":50.9,"hist":[1.99,2.41,2.31,-4.93],"cut10":true},"UPS":{"mkt":"US","ccy":"USD","ysym":"UPS","n":"UPS","s":"陸運・輸送","d":"物流世界大手。配当性向高め。","l":["海外通販の配送"],"px":110.66,"sh":746581816,"eps_f":8.0,"bps":19.11,"dps":6.56,"payout":106.2,"ncps":-50.6,"eq":22.2,"hist":[15.47,8.98,7.74,7.46],"cut10":null},"D":{"mkt":"US","ccy":"USD","ysym":"D","n":"ドミニオン・エナジー","s":"電力・公益","d":"米東海岸の公益。20年減配歴。","l":["米国の電気"],"px":69.75,"sh":879512484,"eps_f":3.81,"bps":32.03,"dps":2.67,"payout":78.8,"ncps":-76.86,"eq":25.1,"hist":[1.35,2.23,2.31,3.41],"cut10":true},"ED":{"mkt":"US","ccy":"USD","ysym":"ED","n":"コンエジソン","s":"電力・公益","d":"NYの電力ガス。50年連続増配。","l":["NYの電気"],"px":113.99,"sh":368529705,"eps_f":6.49,"bps":69.55,"dps":3.48,"payout":58.0,"ncps":-116.17,"eq":32.4,"hist":[4.5,6.84,4.94,5.49],"cut10":false},"KMB":{"mkt":"US","ccy":"USD","ysym":"KMB","n":"キンバリークラーク","s":"生活必需品","d":"クリネックスの日用品大手。","l":["クリネックス"],"px":114.72,"sh":331940357,"eps_f":7.57,"bps":5.41,"dps":5.12,"payout":97.9,"ncps":-29.91,"eq":8.8,"hist":[5.83,5.31,7.67,6.09],"cut10":false},"PRU":{"mkt":"US","ccy":"USD","ysym":"PRU","n":"プルデンシャル","s":"保険","d":"米生保大手。高利回り。","l":["生命保険"],"px":112.95,"sh":347325107,"eps_f":14.61,"bps":92.06,"dps":5.6,"payout":56.1,"ncps":null,"eq":4.2,"hist":[-4.74,7.16,7.85,10.3],"cut10":false},"MET":{"mkt":"US","ccy":"USD","ysym":"MET","n":"メットライフ","s":"保険","d":"米生保大手。","l":["生命保険"],"px":90.06,"sh":643436779,"eps_f":11.01,"bps":42.3,"dps":2.37,"payout":43.9,"ncps":null,"eq":3.8,"hist":[8.21,2.45,6.88,5.25],"cut10":false},"USB":{"mkt":"US","ccy":"USD","ysym":"USB","n":"USバンコープ","s":"銀行","d":"米地銀最大級。","l":[],"px":61.73,"sh":1557731728,"eps_f":5.66,"bps":37.54,"dps":2.08,"payout":43.2,"ncps":null,"eq":9.4,"hist":[3.74,3.49,4.04,4.86],"cut10":false}}};
 
 /* ============ 状態 ============ */
+let NAMESJP={};
+const dn=m=>(m&&m.mkt==="JP"&&NAMESJP[m.code])||m.name;
 const state = {
   view:"home", cur:null, simple:true,
   set:{ jp:{rate:1.0,spread:3.0}, us:{rate:3.75,spread:1.0} },
@@ -228,7 +231,7 @@ const state = {
   rankMode:"A", rankFilter:"JP",
   rankSrc:"MKT", mktCache:{}, mktBusy:false,
   q:"", err:null, busyPx:false, busyOne:false,
-  sheet:null, resetArm:false,
+  sheet:null, resetArm:false, buyChk:[false,false,false,false],
   calc:{assets:"300", market:"JP", fx:"", ctype:"ignite", entry:"", stop:""},
 };
 const thrFor = m => { const c = m==="US"?state.set.us:state.set.jp; return (c.rate||0)+(c.spread||0); };
@@ -265,6 +268,7 @@ const IC={
  dash:'<path d="M6.5 12h11"/>',
  alert:'<path d="M12 5.2v8.6"/><path d="M12 18.4v.01"/>',
  plus:'<path d="M12 5.2v13.6M5.2 12h13.6"/>',
+ cart:'<path d="M2.5 4h2l2.2 11.5a1.5 1.5 0 0 0 1.5 1.2h8.9a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>',
  chevL:'<path d="M14.5 5.5 8 12l6.5 6.5"/>',
  chevR:'<path d="M9.5 5.5 16 12l-6.5 6.5"/>',
  bolt:'<path d="M13 2.5 5 13.4h5.4L10 21.5l8-10.9h-5.4z"/>',
@@ -350,7 +354,7 @@ function mFromRow(o){
     yoy:o.yoy!=null?Math.round(o.yoy*10)/10:null,
     mcap:o.mcap!=null?o.mcap/1e6:null,
     nc:(ncps!=null&&sh)?ncps*sh/1e6:null,ncr:(ncps!=null&&o.p)?ncps/o.p:null,ncps:ncps!=null?Math.round(ncps*100)/100:null,
-    hist:[],cut:(o.cdg!=null&&o.cdg>=10)?false:null};
+    ncSimple:true,hist:[],cut:(o.cdg!=null&&o.cdg>=10)?false:null};
 }
 function mktRegions(){return state.rankFilter==="ALL"?["JP","US"]:[state.rankFilter];}
 async function ensureMkt(force){
@@ -382,7 +386,7 @@ function tapMkt(code){
     d:"全市場スクリーニングから取り込み。数値は市場データ由来の推定（NCは簡易式: 流動資産−負債）。✎で精緻化できる。",l:[],
     sh:o.shs||null,eps_f:(o.per&&o.per>0&&o.p)?Math.round(o.p/o.per*100)/100:null,
     bps:(o.pb&&o.pb>0&&o.p)?Math.round(o.p/o.pb*100)/100:null,
-    dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,hist:[],cut10:m.cut};
+    dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,ncSimple:true,hist:[],cut10:m.cut};
   state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,ts:Date.now()};
   saveAll();openStock(code);
 }
@@ -418,7 +422,7 @@ function metrics(code){
     yld:(price&&dps!=null)?dps/price*100:null, dps, payout, eq,
     mcap:(price&&sh)?price*sh/1e6:null,
     nc:(ncps!=null&&sh)?ncps*sh/1e6:null, ncr:(ncps!=null&&price)?ncps/price:null, ncps,
-    hist:r.hist||[], cut, yoy:num(val(code,"yoy")),
+    hist:r.hist||[], cut, yoy:num(val(code,"yoy")), ncSimple:!!r.ncSimple,
   };
 }
 
@@ -448,16 +452,16 @@ function scoreA(m){
     {k:"ネットキャッシュ プラス",pk:"借金差引後の手元資金",
      p:m.ncps==null?null:m.ncps>0,v:em(m.code,"ncps",fmtCap(m.nc,m.ccy)),pv:em(m.code,"ncps",fmtCap(m.nc,m.ccy))},
     {k:"NC比率 0.8以上",pk:"手元資金 ÷ 会社の値段",
-     p:m.ncr==null?null:m.ncr>=0.8,
-     v:m.ncr==null?"—":em(m.code,"ncps",m.ncr.toFixed(2)),
-     pv:m.ncr==null?"—":em(m.code,"ncps",m.ncr.toFixed(2)+(m.ncr>=1?"（お釣りが来る）":""))},
+     p:m.ncr==null?null:(m.ncr>=0.8?true:(m.ncSimple&&m.ncr>=0.6?null:false)),
+     v:m.ncr==null?"—":em(m.code,"ncps",m.ncr.toFixed(2)+((m.ncSimple&&m.ncr>=0.6&&m.ncr<0.8)?"(簡易・保留)":"")),
+     pv:m.ncr==null?"—":em(m.code,"ncps",m.ncr.toFixed(2)+(m.ncr>=1?"（お釣りが来る）":((m.ncSimple&&m.ncr>=0.6&&m.ncr<0.8)?"（簡易値・保留）":"")))},
   ];
   const t2=t, catal=m.payout!=null&&m.payout<=20&&t2.ok===true;
   const fails=rows.filter(r=>r.p===false).length,nulls=rows.filter(r=>r.p===null).length;
   let g,gl;
   if(fails>=2){g="×";gl="対象外";}
   else if(fails===1){g="△";gl="あと1条件";}
-  else if(nulls>0){g="?";gl="データ不足";}
+  else if(nulls>0){g="?";gl=(m.ncSimple&&m.ncr!=null&&m.ncr>=0.6&&m.ncr<0.8)?"NC保留・簡易"+m.ncr.toFixed(2):"データ不足";}
   else if(m.ncr>=1){g="◎";gl="超割安・要監視";}
   else{g="○";gl="割安・準監視";}
   const cnt=rows.length-nulls,fit=cnt?(cnt-fails)/cnt:0;
@@ -496,14 +500,22 @@ function scoreB(m){
   const hf=rows.filter(r=>r.hard&&r.p===false),nulls=rows.filter(r=>r.p===null).length;
   let g,gl;
   if(hf.length===0&&nulls===0){g="◎";gl="買い値ゾーン";}
-  else if(hf.length===0){g="?";gl="合格圏・残り"+nulls+"項目不明";}
+  else if(hf.length===0){g="?";
+    const nr=rows.filter(r=>r.p===null);
+    if(nr.length===1&&nr[0].k.indexOf("減配")>=0){gl="合格圏・減配歴のみ未確認";var tier=0.2;}
+    else gl="合格圏・残り"+nulls+"項目不明";}
   else if(hf.length===1&&hf[0].k.indexOf("利回り")===0&&gap!=null&&gap>-12){g="○";gl="もう少し安ければ";}
   else if(hf.length<=2){g="△";gl="条件不足";}
   else{g="×";gl="対象外";}
   const cnt=rows.length-nulls,fails=rows.filter(r=>r.p===false).length,fit=cnt?(cnt-fails)/cnt:0;
-  return{rows,thr:T,target,gap,trend:t,g,gl,fit};
+  return{rows,thr:T,target,gap,trend:t,g,gl,fit,tier:(typeof tier!=="undefined"?tier:0)};
 }
 const gCol=g=>g==="◎"?"var(--ok)":g==="○"?"var(--warn)":g==="△"?"var(--mut)":g==="×"?"var(--ng)":"var(--na)";
+function trapFlags(m){const f=[];
+  if(m.dps>0&&m.payout!=null&&m.payout>(m.mkt==="US"?80:70))f.push("配当維持力に疑問（性向"+Math.round(m.payout)+"%）");
+  if(m.dps>0&&m.payout==null&&m.per==null)f.push("赤字/利益不明のまま配当の疑い");
+  if(m.per!=null&&m.per<3.5)f.push("PER"+m.per.toFixed(1)+"倍＝一時的利益の疑い");
+  return f;}
 function verdict(m,sA,sB){
   const GRv={"◎":4,"○":3,"△":2,"?":1,"×":0};
   const useB=GRv[sB.g]>GRv[sA.g]||(GRv[sB.g]===GRv[sA.g]&&sB.fit>=sA.fit);
@@ -514,9 +526,9 @@ function verdict(m,sA,sB){
     if(m.cut===false)pros.push("過去10年、配当を減らしていない");
     if(m.cut===true)cons.push("過去10年内に減配の歴史あり");
     if(m.payout!=null&&m.payout>0&&m.payout<=70)pros.push("利益の"+Math.round(m.payout)+"%だけを配当に回す無理のない体質");
-    if(m.payout!=null&&m.payout>70)cons.push("利益のほとんどを配当に回していて余力が薄い");
     if(sB.trend.ok===true)pros.push("利益は"+sB.trend.label);
     if(sB.trend.ok===false)cons.push("利益が"+sB.trend.label+"ぎみで安定感に欠ける");
+    trapFlags(m).forEach(x=>cons.push("⚠ "+x));
     title=sB.g==="◎"?"今が買い値ゾーン。永久保有向きの高配当":
       sB.g==="○"?"良い会社。あと少し安くなれば買い":
       sB.g==="?"?"判定にはデータがもう少し必要":"高配当株としては条件不足";
@@ -529,6 +541,7 @@ function verdict(m,sA,sB){
     if(m.pbr!=null&&m.pbr<=1&&!m.bpsNeg)pros.push("純資産の"+m.pbr.toFixed(2)+"倍＝解散価値以下の値段");
     if(sA.catal)pros.push("配当余力たっぷり×利益成長中。増配・自社株買い発表で化けやすい");
     sA.rows.forEach(r=>{if(r.p===false&&cons.length<2)cons.push((r.pk||r.k)+"が条件外");});
+    trapFlags(m).forEach(x=>{if(x.indexOf("PER")===0)cons.push("⚠ "+x);});
     title=sA.g==="◎"?"超割安。監視リスト筆頭クラス":
       sA.g==="○"?"割安。準監視リスト入り":
       sA.g==="△"?"惜しい。あと1条件で監視入り":
@@ -536,7 +549,7 @@ function verdict(m,sA,sB){
     if(sA.g==="◎"||sA.g==="○")act="今すぐ買う銘柄ではなく「待ち伏せ」。増配・自社株買いのニュースが出た瞬間が動く合図";
   }
   if((useB&&sB.g==="?")||(!useB&&sA.g==="?"))act="「数値を直す」で足りない数字を入れると判定が完成する";
-  return{title,pros:pros.slice(0,3),cons:cons.slice(0,2),act,mode:useB?"B":"A",col:useB?"var(--B)":"var(--A)"};
+  return{title,pros:pros.slice(0,3),cons:cons.slice(0,3),act,mode:useB?"B":"A",col:useB?"var(--B)":"var(--A)"};
 }
 
 /* ============ SVG部品 ============ */
@@ -613,7 +626,7 @@ async function addCustom(q){
   const raw=cc(q); if(!raw)return;
   state.busyOne=true;state.err=null;render();
   try{
-    const isJP=/^\d{4}[A-Z]?$/.test(raw);
+    const isJP=/^[0-9]{3}[0-9A-Z]$/.test(raw);
     const tick=isJP?["TSE:"+raw]:["NYSE:"+raw,"NASDAQ:"+raw];
     const res=await tvScan(isJP?"japan":"america",tick);
     const key=Object.keys(res).find(s=>res[s]&&res[s].p!=null);
@@ -643,6 +656,9 @@ function openStock(code){state.cur=code;state.view="detail";state.err=null;rende
 function setRank(m){state.rankMode=m;render();ensureMkt(false);}
 function setFilter(f){state.rankFilter=f;render();ensureMkt(false);}
 function onQ(v){state.q=v;renderSearchList();}
+function setRatePreset(mk,v){state.set[mk].rate=v;saveAll();render();}
+function openBuy(){state.buyChk=[false,false,false,false];openSheet("buy");}
+function toggleBuy(i){state.buyChk[i]=!state.buyChk[i];render();}
 function openSheet(k){state.sheet=k;state.resetArm=false;render();}
 function closeSheet(){state.sheet=null;render();}
 function onSet(mkt,f,v){const r=num(v);state.set[mkt][f]=r==null?0:r;saveAll();
@@ -707,17 +723,17 @@ function renderHome(){
       :'<div class="mt" style="color:'+col+'">'+metric+'</div><div class="dl">'+dl(x.m)+'</div>';
     return '<button class="rk" onclick="'+(x.tap==="mkt"?'tapMkt(\''+esc(x.code)+'\')':'openStock(\''+esc(x.code)+'\')')+'">'
       +'<span class="no">'+(i+1)+'</span>'+ring(state.simple?passRatio(s):s.fit,s.g,col,32)
-      +'<div class="mid"><div class="nm">'+esc(x.m.name)+'</div>'
+      +'<div class="mid"><div class="nm">'+esc(dn(x.m))+'</div>'
       +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+esc(x.m.sector||"—")+'</div></div>'
       +miniRange(x.m.lo,x.m.hi,x.m.price,58,26)
       +'<div class="right">'+priceCell+'</div></button>';};
-  const GR={"◎":4,"○":3,"?":2.5,"△":2,"×":0};
+  const gr=s=>({"◎":4,"○":3,"?":2.5,"△":2,"×":0}[s.g]+(s.tier||0));
 
   if(state.rankSrc==="SAVED"){
     const list=allCodes().map(code=>{const m=metrics(code);return m?{code,m,sA:scoreA(m),sB:scoreB(m),tap:"saved"}:null;})
       .filter(x=>x&&(state.rankFilter==="ALL"||x.m.mkt===state.rankFilter))
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
-        return (GR[sb.g]-GR[sa.g])||(sb.fit-sa.fit)||(state.rankMode==="A"
+        return (gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));});
     h+=list.map(rowHtml).join("");
     h+='<p class="note">保存＝焼き込み'+Object.keys(DATA).length+'銘柄＋取り込み分。減配履歴・利益傾向まで含む完全判定。</p>';
@@ -732,7 +748,7 @@ function renderHome(){
         const m=mFromRow(o);return{code:o.code,m,sA:scoreA(m),sB:scoreB(m),tap:"mkt"};})
       .filter(Boolean)
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
-        return (GR[sb.g]-GR[sa.g])||(sb.fit-sa.fit)||(state.rankMode==="A"
+        return (gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));})
       .slice(0,40);
     state._mktRows=list;
@@ -767,10 +783,22 @@ function renderSearchList(){
     inner+=hits.map(c=>{const r=recOf(c);
       return '<button class="sres" onclick="openStock(\''+esc(c)+'\')">'
         +'<span class="mk">'+r.mkt+'</span><div style="flex:1;min-width:0">'
-        +'<div style="font-size:14px;font-weight:700">'+esc(r.n)+'</div>'
+        +'<div style="font-size:14px;font-weight:700">'+esc((r.mkt==="JP"&&NAMESJP[c])||r.n)+'</div>'
         +'<div class="mono" style="font-size:10px;color:var(--dim)">'+esc(c)+'・'+esc(r.s||"—")+'</div></div>'
         +'<span style="color:var(--dim)">'+I("chevR",14)+'</span></button>';}).join("");
-    if(/^[A-Z0-9.\-]{1,7}$/i.test(state.q.trim())&&!hits.some(c=>c===cc(state.q))){
+    const kq=state.q.trim(), kk=kq.replace(/[\u3041-\u3096]/g,ch=>String.fromCharCode(ch.charCodeAt(0)+0x60));
+    let extra=[];
+    for(const c in NAMESJP){
+      if(recOf(c))continue;
+      const nm=NAMESJP[c];
+      if(c.indexOf(kq.toUpperCase())===0||nm.indexOf(kq)>=0||(kk!==kq&&nm.indexOf(kk)>=0)){extra.push(c);if(extra.length>=8)break;}
+    }
+    inner+=extra.map(c=>'<button class="sres" style="border-style:dashed" onclick="addCustom(\''+c+'\')">'
+      +'<span style="color:var(--B)">'+I("plus",15)+'</span><div style="flex:1;min-width:0">'
+      +'<div style="font-size:14px;font-weight:700">'+esc(NAMESJP[c])+'</div>'
+      +'<div class="mono" style="font-size:10px;color:var(--dim)">'+esc(c)+'・未収録 タップで鑑定</div></div>'
+      +(state.busyOne?'<span class="spin"></span>':"")+'</button>').join("");
+    if(/^[A-Z0-9.\-]{1,7}$/i.test(state.q.trim())&&!hits.some(c=>c===cc(state.q))&&!extra.length){
       inner+='<button class="sres" style="border-style:dashed" onclick="addCustom(\''+esc(cc(state.q))+'\')">'
         +'<span style="font-size:16px">＋</span><div style="flex:1">'
         +'<div style="font-size:14px;font-weight:700">「'+esc(cc(state.q))+'」を未収録銘柄として鑑定</div>'
@@ -806,7 +834,7 @@ function renderDetail(){
   /* ヒーロー */
   h+='<div class="card hero"><div class="top"><div style="min-width:0">'
     +'<div class="code"><span class="mk">'+m.mkt+'</span>'+esc(code)+'・'+esc(m.sector||"業種未設定")+'</div>'
-    +'<div class="nm">'+esc(m.name)+'</div></div>'
+    +'<div class="nm">'+esc(dn(m))+'</div>'+(trapFlags(m).length?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+trapFlags(m).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+'</div>':"")+'</div>'
     +'<div style="flex:none">'
     +(m.price==null?'<div class="sk" style="width:110px;height:30px"></div>'
       :'<div class="px"'+(m.stale?' style="color:var(--mut)"':"")+'>'+money(m.price,m.ccy)+'</div><div class="dl">'+(m.stale?'<span style="color:var(--warn)">焼込 '+esc(ASOF.slice(5))+'</span>':dl(m))+'</div>')
@@ -832,6 +860,7 @@ function renderDetail(){
   /* 操作 */
   h+='<div class="act">'
     +'<button class="abtn" onclick="refreshOne(\''+esc(code)+'\')">'+(state.busyOne?'<span class="spin"></span>':I("refresh",14))+' 価格更新</button>'
+    +'<button class="abtn" onclick="openBuy()">'+I("cart",13)+' 買付チェック</button>'
     +'<button class="abtn" onclick="openSheet(\'edit\')">'+I("pencil",14)+' 数値を直す</button>'
     +(m.custom?'<button class="abtn" style="flex:0 0 52px;color:var(--ng)" onclick="removeCustom(\''+esc(code)+'\')">'+I("trash",17)+'</button>':"")
     +'</div>';
@@ -860,7 +889,7 @@ function renderDetail(){
   h+='<div class="card"><div class="card-h"><span class="ey" style="color:var(--mut)">企業を知る</span></div>'
     +(m.desc?'<div class="desc">'+esc(m.desc)+'</div>':"")
     +(m.life&&m.life.length?'<div class="sub-lb">生活との接点</div><div class="tags">'+m.life.map(l=>'<span class="tag">'+esc(l)+'</span>').join("")+'</div>':"")
-    +'<a class="abtn" style="margin-top:14px" href="https://news.google.com/search?q='+encodeURIComponent(m.name+" 株")+'&hl=ja&gl=JP&ceid=JP:ja" target="_blank" rel="noopener">'+I("ext",13)+' '+esc(m.name)+' の最新ニュースを見る</a>'
+    +'<a class="abtn" style="margin-top:14px" href="https://news.google.com/search?q='+encodeURIComponent(dn(m)+" 株")+'&hl=ja&gl=JP&ceid=JP:ja" target="_blank" rel="noopener">'+I("ext",13)+' '+esc(dn(m))+' の最新ニュースを見る</a>'
     +'</div>';
   h+='<p class="note">※ 株価・52週レンジはTradingView（遅延あり）、ファンダは'+(rc.custom?'取り込み時点（'+esc(fA)+'）の推定/入力値':esc(fA)+'収穫のスナップショット')+'＋手修正。売買前は必ず一次情報（適時開示・決算資料）で確認。投資助言ではない。</p>';
   document.getElementById("app").innerHTML=h;
@@ -929,6 +958,19 @@ function renderSheet(){
   const host=document.getElementById("sheetHost");
   if(!state.sheet){host.innerHTML="";return;}
   let h='<div class="ovl" onclick="closeSheet()"><div class="sheet" onclick="event.stopPropagation()">';
+  if(state.sheet==="buy"){
+    const ITEMS=["証券アプリで直近の決算短信を開き、減配・下方修正が無いか確認した",
+      "指値は到達ライン以下（B）／計画した仕込み価格（A）になっている",
+      "株数はサイズ電卓の上限以内に収まっている",
+      "攻め銘柄なら撤退ライン（点火−8%／仕込み−25%）をメモした"];
+    const all=state.buyChk.every(Boolean);
+    h+='<h2>買い付け前チェック <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("close",15)+'</button></h2>'
+      +'<div class="note" style="margin:0 0 10px">◎○が出ても即発注しない。証券アプリを開いて1つずつ確認。</div>'
+      +ITEMS.map((x,i)=>'<button class="edrow" style="width:100%;text-align:left" onclick="toggleBuy('+i+')">'
+        +'<span class="k" style="flex:1">'+x+'</span>'
+        +'<span class="dot" style="background:'+(state.buyChk[i]?"rgba(63,201,139,.18)":"rgba(88,100,128,.14)")+';color:'+(state.buyChk[i]?"var(--ok)":"var(--na)")+'">'+(state.buyChk[i]?I("check",11):I("minus",11))+'</span></button>').join("")
+      +'<div style="margin-top:16px"><button class="abtn" style="width:100%;'+(all?"border-color:var(--ok);color:var(--ok)":"opacity:.45")+'" '+(all?'onclick="closeSheet()"':'disabled')+'>'+(all?"発注準備完了 — 証券アプリへ":"全項目チェックで完了")+'</button></div>';
+  }
   if(state.sheet==="help"){
     const TERMS=[["配当利回り","1年分の配当÷株価。年4%なら100万円分で年4万円もらえる"],
       ["PER","株価が「1年の利益の何倍か」。低いほど利益に対して安い"],
@@ -955,13 +997,15 @@ function renderSheet(){
       +'<span style="color:var(--dim)">%＋</span>'
       +'<input inputmode="decimal" value="'+esc(state.set.jp.spread)+'" oninput="onSet(\'jp\',\'spread\',this.value)">'
       +'<span id="thrJP" class="mono" style="font-size:13px;color:var(--B)">→ '+thrFor("JP").toFixed(2)+'%</span></div>'
-      +'<div class="note" style="margin:4px 0 14px">2026年7月時点の政策金利1.0%。日銀会合ごとに見直す。</div>'
+      +'<div class="chips" style="margin:6px 0 4px">'+[0.5,0.75,1.0,1.25,1.5].map(v=>'<button class="chip '+(state.set.jp.rate===v?"on":"")+'" onclick="setRatePreset(\'jp\','+v+')">'+v.toFixed(2)+'%</button>').join("")+'</div>'
+      +'<div class="note" style="margin:2px 0 14px">日銀会合後はプリセットをタップ。到達ライン・判定は即再計算。</div>'
       +'<div class="f-lb"><span class="mk">US</span> 米国 ─ 基準利回り＝FF金利＋スプレッド</div>'
       +'<div class="setrow"><input inputmode="decimal" value="'+esc(state.set.us.rate)+'" oninput="onSet(\'us\',\'rate\',this.value)">'
       +'<span style="color:var(--dim)">%＋</span>'
       +'<input inputmode="decimal" value="'+esc(state.set.us.spread)+'" oninput="onSet(\'us\',\'spread\',this.value)">'
       +'<span id="thrUS" class="mono" style="font-size:13px;color:var(--B)">→ '+thrFor("US").toFixed(2)+'%</span></div>'
-      +'<div class="note" style="margin:4px 0 0">FF金利は3.50〜3.75%（2026/6 FOMC）。日本式＋3%だと米国は6%台後半になり健全銘柄が消えるため＋1.0%を初期値にしている。</div>'
+      +'<div class="chips" style="margin:6px 0 4px">'+[3.25,3.5,3.75,4.0].map(v=>'<button class="chip '+(state.set.us.rate===v?"on":"")+'" onclick="setRatePreset(\'us\','+v+')">'+v.toFixed(2)+'%</button>').join("")+'</div>'
+      +'<div class="note" style="margin:2px 0 0">FF金利は3.50〜3.75%（2026/6 FOMC）。日本式＋3%だと米国は6%台後半になり健全銘柄が消えるため＋1.0%を初期値にしている。</div>'
       +'<div class="hr"></div>'
       +'<div class="f-lb">データ</div>'
       +'<div class="note" style="margin:0 0 12px">ファンダ基準日: '+esc(ASOF)+'。四半期ごとに build_dataset.py を回して dataset.json をこのファイルと同じ場所に置けば自動で最新化される。株価・52週レンジはTradingView、為替はfrankfurter（どちらも無料・キー不要）。ニュースは外部リンクで開く方式。</div>'
@@ -1020,6 +1064,7 @@ function render(){
   }catch(e){}
   render();
   refreshAll(false);
+  try{const r=await fetch("names_jp.json",{cache:"no-cache"});if(r.ok){NAMESJP=await r.json();render();}}catch(e){}
   ensureMkt(false);
 })();
 </script>
