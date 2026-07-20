@@ -282,6 +282,11 @@ const ago=ts=>{if(!ts)return"—";const s=(Date.now()-ts)/1e3;
   if(s<60)return"たった今";if(s<3600)return Math.round(s/60)+"分前";
   if(s<86400)return Math.round(s/3600)+"時間前";return Math.round(s/86400)+"日前";};
 
+function trendOf(m){
+  if(m.hist&&m.hist.length>=3)return epsTrend(m.hist);
+  if(m.yoy!=null)return{label:m.yoy>5?"直近増益":(m.yoy>=-10?"直近横ばい":"直近減益"),ok:m.yoy>=-10};
+  return{label:"データ不足",ok:null};
+}
 function epsTrend(h){const v=(h||[]).map(num).filter(x=>x!=null);
   if(v.length<3)return{label:"データ不足",ok:null};
   const N=v.length,xm=(N-1)/2,ym=v.reduce((a,b)=>a+b,0)/N;let nu=0,de=0;
@@ -306,7 +311,7 @@ async function tvScan(region,tickers){
   return out;
 }
 const TV_SEC_JA={"Utilities":"電力・公益","Communications":"通信","Consumer Non-Durables":"生活必需品・食品","Health Technology":"医薬品","Health Services":"ヘルスケア","Energy Minerals":"エネルギー","Non-Energy Minerals":"素材・鉄鋼(市況)","Transportation":"陸運・輸送","Distribution Services":"卸売","Finance":"金融","Process Industries":"素材・化学","Producer Manufacturing":"機械","Consumer Durables":"耐久消費財","Retail Trade":"小売","Commercial Services":"サービス","Consumer Services":"サービス","Technology Services":"情報サービス","Electronic Technology":"電子技術","Industrial Services":"産業サービス","Miscellaneous":"その他"};
-const MKT_COLS=["name","description","close","change","dividend_yield_recent","price_earnings_ttm","price_book_ratio","market_cap_basic","sector","price_52_week_high","price_52_week_low","dividend_payout_ratio_ttm","total_current_assets_fq","total_liabilities_fq","total_shares_outstanding_fundamental"];
+const MKT_COLS=["name","description","close","change","dividend_yield_recent","price_earnings_ttm","price_book_ratio","market_cap_basic","sector","price_52_week_high","price_52_week_low","dividend_payout_ratio_ttm","total_current_assets_fq","total_liabilities_fq","total_shares_outstanding_fundamental","continuous_dividend_growth","earnings_per_share_diluted_yoy_growth_ttm","total_assets_fq"];
 async function tvMarket(mode,mkt){
   const region=mkt==="JP"?"japan":"america";
   let filter,sort;
@@ -328,7 +333,7 @@ async function tvMarket(mode,mkt){
   const j=await r.json();
   return (j.data||[]).map(row=>{const d=row.d||[];
     return{code:cc(d[0]),sym:row.s,name:d[1]||d[0],p:d[2],chg:d[3],yld:d[4],per:d[5],pb:d[6],
-      mcap:d[7],sec:d[8],hi:d[9],lo:d[10],payout:d[11],ca:d[12],tl:d[13],shs:d[14],mkt:mkt};})
+      mcap:d[7],sec:d[8],hi:d[9],lo:d[10],payout:d[11],ca:d[12],tl:d[13],shs:d[14],cdg:d[15],yoy:d[16],ta:d[17],mkt:mkt};})
     .filter(o=>o.code&&o.p!=null)
     .filter(o=>mode!=="B"||!/reit|investment corp|投資法人|infrastructure fund|preferred|pfd|depositary|unsponsored|sponsored adr|warrant|\bunits?\b|\bnotes?\b/i.test(o.name));
 }
@@ -340,10 +345,12 @@ function mFromRow(o){
     sector:TV_SEC_JA[o.sec]||o.sec||"",desc:"",life:[],custom:false,marketRow:true,
     stale:false,price:o.p,chg:o.chg,hi:o.hi,lo:o.lo,pxTs:Date.now(),
     per:(o.per&&o.per>0)?o.per:null,pbr:(o.pb&&o.pb>0)?o.pb:null,bpsNeg:o.pb!=null&&o.pb<0,
-    yld:o.yld,dps:dps,payout:o.payout!=null?Math.round(o.payout*10)/10:null,eq:null,
+    yld:o.yld,dps:dps,payout:o.payout!=null?Math.round(o.payout*10)/10:null,
+    eq:(o.ta&&o.tl!=null&&o.ta>0)?Math.round((o.ta-o.tl)/o.ta*1000)/10:null,
+    yoy:o.yoy!=null?Math.round(o.yoy*10)/10:null,
     mcap:o.mcap!=null?o.mcap/1e6:null,
     nc:(ncps!=null&&sh)?ncps*sh/1e6:null,ncr:(ncps!=null&&o.p)?ncps/o.p:null,ncps:ncps!=null?Math.round(ncps*100)/100:null,
-    hist:[],cut:null};
+    hist:[],cut:(o.cdg!=null&&o.cdg>=10)?false:null};
 }
 function mktRegions(){return state.rankFilter==="ALL"?["JP","US"]:[state.rankFilter];}
 async function ensureMkt(force){
@@ -375,7 +382,7 @@ function tapMkt(code){
     d:"全市場スクリーニングから取り込み。数値は市場データ由来の推定（NCは簡易式: 流動資産−負債）。✎で精緻化できる。",l:[],
     sh:o.shs||null,eps_f:(o.per&&o.per>0&&o.p)?Math.round(o.p/o.per*100)/100:null,
     bps:(o.pb&&o.pb>0&&o.p)?Math.round(o.p/o.pb*100)/100:null,
-    dps:m.dps,payout:m.payout,ncps:m.ncps,eq:null,hist:[],cut10:null};
+    dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,hist:[],cut10:m.cut};
   state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,ts:Date.now()};
   saveAll();openStock(code);
 }
@@ -411,7 +418,7 @@ function metrics(code){
     yld:(price&&dps!=null)?dps/price*100:null, dps, payout, eq,
     mcap:(price&&sh)?price*sh/1e6:null,
     nc:(ncps!=null&&sh)?ncps*sh/1e6:null, ncr:(ncps!=null&&price)?ncps/price:null, ncps,
-    hist:r.hist||[], cut,
+    hist:r.hist||[], cut, yoy:num(val(code,"yoy")),
   };
 }
 
@@ -425,7 +432,7 @@ const em=(code,f,s)=>edited(code,f)?s+" ✎":s;
 function scoreA(m){
   const max=m.mkt==="US"?350:50000;
   const realPer=(m.per!=null&&m.ncr!=null)?m.per*(1-m.ncr):null;
-  const t=epsTrend(m.hist);
+  const t=trendOf(m);
   const perPass=(m.per==null&&realPer==null)?null:((m.per!=null&&m.per<=10)||(realPer!=null&&realPer<=10));
   const rows=[
     {k:m.mkt==="US"?"時価総額 3.5億ドル未満":"時価総額 500億円未満",pk:"会社の大きさ（小型か）",
@@ -457,7 +464,7 @@ function scoreA(m){
   return{rows,realPer,trend:t,catal,g,gl,fit};
 }
 function scoreB(m){
-  const T=thrFor(m.mkt),t=epsTrend(m.hist),sec=m.sector||"";
+  const T=thrFor(m.mkt),t=trendOf(m),sec=m.sector||"";
   const scls=hit(sec,S_CORE)?"core":hit(sec,S_MKT)?"mkt":"out";
   const isFin=hit(sec,S_FIN);
   let pn="";
@@ -489,7 +496,7 @@ function scoreB(m){
   const hf=rows.filter(r=>r.hard&&r.p===false),nulls=rows.filter(r=>r.p===null).length;
   let g,gl;
   if(hf.length===0&&nulls===0){g="◎";gl="買い値ゾーン";}
-  else if(hf.length===0){g="?";gl="データ不足";}
+  else if(hf.length===0){g="?";gl="合格圏・残り"+nulls+"項目不明";}
   else if(hf.length===1&&hf[0].k.indexOf("利回り")===0&&gap!=null&&gap>-12){g="○";gl="もう少し安ければ";}
   else if(hf.length<=2){g="△";gl="条件不足";}
   else{g="×";gl="対象外";}
@@ -704,7 +711,7 @@ function renderHome(){
       +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+esc(x.m.sector||"—")+'</div></div>'
       +miniRange(x.m.lo,x.m.hi,x.m.price,58,26)
       +'<div class="right">'+priceCell+'</div></button>';};
-  const GR={"◎":4,"○":3,"△":2,"?":1,"×":0};
+  const GR={"◎":4,"○":3,"?":2.5,"△":2,"×":0};
 
   if(state.rankSrc==="SAVED"){
     const list=allCodes().map(code=>{const m=metrics(code);return m?{code,m,sA:scoreA(m),sB:scoreB(m),tap:"saved"}:null;})
@@ -725,7 +732,7 @@ function renderHome(){
         const m=mFromRow(o);return{code:o.code,m,sA:scoreA(m),sB:scoreB(m),tap:"mkt"};})
       .filter(Boolean)
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
-        return (sb.fit-sa.fit)||(GR[sb.g]-GR[sa.g])||(state.rankMode==="A"
+        return (GR[sb.g]-GR[sa.g])||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));})
       .slice(0,40);
     state._mktRows=list;
