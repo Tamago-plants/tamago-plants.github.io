@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R11</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R12</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -516,6 +516,16 @@ const S_MKT=["卸売","商社","鉱業","石油","エネルギー","保険","海
 const S_FIN=["銀行","証券","その他金融","保険","卸売","商社","REIT","不動産"];
 const hit=(s,L)=>{s=(s||"");return L.some(k=>s.includes(k));};
 const em=(code,f,s)=>edited(code,f)?s+" ✎":s;
+function effThr(m){
+  const g=thrFor(m.mkt);
+  const o=num((state.ov[m.code]||{}).thr);
+  return (o&&o>g)?o:g;
+}
+function thrPill(code,m){
+  const g=thrFor(m.mkt), o=num((state.ov[code]||{}).thr);
+  if(!(o&&o>g))return"";
+  return '<span class="aim" style="font-size:10px;padding:2px 8px">個別基準 '+o.toFixed(1)+'%</span>';
+}
 
 function scoreA(m){
   const max=m.mkt==="US"?350:50000;
@@ -552,7 +562,7 @@ function scoreA(m){
   return{rows,realPer,trend:t,catal,g,gl,fit};
 }
 function scoreB(m){
-  const T=thrFor(m.mkt),t=trendOf(m),sec=m.sector||"";
+  const T=effThr(m),t=trendOf(m),sec=m.sector||"";
   const scls=hit(sec,S_CORE)?"core":hit(sec,S_MKT)?"mkt":"out";
   const isFin=hit(sec,S_FIN);
   let pn="";
@@ -595,10 +605,10 @@ function scoreB(m){
   return{rows,thr:T,target,gap,trend:t,g,gl,fit,tier:(typeof tier!=="undefined"?tier:0)};
 }
 const gCol=g=>g==="◎"?"var(--ok)":g==="○"?"var(--warn)":g==="△"?"var(--mut)":g==="×"?"var(--ng)":"var(--na)";
-function trapFlags(m){const f=[];
-  if(m.dps>0&&m.payout!=null&&m.payout>(m.mkt==="US"?80:70))f.push("配当維持力に疑問（性向"+Math.round(m.payout)+"%）");
-  if(m.dps>0&&m.payout==null&&m.per==null)f.push("赤字/利益不明のまま配当の疑い");
-  if(m.per!=null&&m.per<3.5)f.push("PER"+m.per.toFixed(1)+"倍＝一時的利益の疑い");
+function trapFlags(m,pl){const f=[];
+  if(m.dps>0&&m.payout!=null&&m.payout>(m.mkt==="US"?80:70))f.push(pl?"利益以上の配当を出している（減配の危険・性向"+Math.round(m.payout)+"%）":"配当維持力に疑問（性向"+Math.round(m.payout)+"%）");
+  if(m.dps>0&&m.payout==null&&m.per==null)f.push(pl?"利益が確認できないのに配当が出ている（タコ配の可能性）":"赤字/利益不明のまま配当の疑い");
+  if(m.per!=null&&m.per<3.5)f.push(pl?"一時的なもうけで安く見えているだけの可能性（PER"+m.per.toFixed(1)+"倍）":"PER"+m.per.toFixed(1)+"倍＝一時的利益の疑い");
   return f;}
 const fxNow=()=>state.fxAuto&&state.fxAuto.v?state.fxAuto.v:150;
 function timeFlags(m){
@@ -711,6 +721,43 @@ function buildP3Export(){
   return {asof:new Date().toISOString().slice(0,10),
     stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held}))};
 }
+function purgeStale(){
+  if(!state.purgeArm){state.purgeArm=true;render();setTimeout(()=>{state.purgeArm=false;render();},3000);return;}
+  state.purgeArm=false;
+  let del=0,keep=0;
+  Object.keys(state.custom).forEach(code=>{
+    const o=state.ov[code]||{};
+    if(num(o.hold)>0)return;
+    const m=metrics(code);if(!m)return;
+    const g=(modeOf(code,m)==="B"?scoreB(m):scoreA(m)).g;
+    if(g!=="△"&&g!=="×")return;
+    if(o.tag||o.memo){keep++;return;}
+    delete state.custom[code];delete state.px[code];delete state.ov[code];
+    del++;
+  });
+  saveAll();
+  state._pgMsg="削除 "+del+"件"+(keep?"・保護 "+keep+"件（タグ/メモあり）":"");
+  render();setTimeout(()=>{state._pgMsg=null;render();},2600);
+}
+function copySummary(){
+  const code=state.cur;if(!code)return;
+  const m=metrics(code);if(!m)return;
+  const sA=scoreA(m),sB=scoreB(m);
+  const vd=verdict(m,sA,sB);
+  const useB=vd.mode==="B";
+  const s=useB?sB:sA;
+  let txt="["+code+"] "+dn(m)+" - 判定"+s.g+"（"+(useB?"要塞":"攻め")+"）";
+  if(m.yld!=null)txt+=" / 利回り"+m.yld.toFixed(2)+"%";
+  if(useB&&sB.target!=null&&m.price!=null)txt+=" / 到達"+money(sB.target,m.ccy)+"（現在"+money(m.price,m.ccy)+(sB.gap!=null&&sB.gap>=0?"・圏内":"")+"）";
+  else if(m.price!=null)txt+=" / 現在"+money(m.price,m.ccy);
+  if(!useB&&m.ncr!=null)txt+=" / NC比率"+m.ncr.toFixed(2);
+  if(m.cdg!=null&&m.cdg>=10)txt+=" / 連続増配"+Math.round(m.cdg)+"年";
+  txt+=" / "+new Date().toISOString().slice(0,10)+"時点・銘柄鑑定ターミナル";
+  const done=()=>{state._smMsg=true;render();setTimeout(()=>{state._smMsg=false;render();},1600);};
+  const fb=()=>{try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,txt.length);document.execCommand("copy");ta.remove();done();}catch(e){state.err="コピーに失敗した";render();}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done).catch(fb);
+  else fb();
+}
 function copyP3(){
   const ex=buildP3Export();
   const flash=(msg,warn)=>{state._p3Msg=msg;state._p3Warn=!!warn;render();
@@ -798,7 +845,7 @@ function setSortB(k){state.sortB=k;render();}
 function toggleAim(){state.aimOnly=!state.aimOnly;render();}
 function tapTip(k){state.tipKey=state.tipKey===k?null:k;render();}
 function tipText(k,m,sB){
-  const T=thrFor(m.mkt);
+  const T=effThr(m);
   if(k==="yld"){
     if(m.yld==null)return "配当利回りのデータが取れていない。✎で年間配当を入れると計算できる。";
     return "配当利回り＝1年分の配当÷株価。この銘柄は年"+m.yld.toFixed(2)+"%。100万円分持つと年およそ"+yenI(Math.round(m.yld*10000))+"の配当。基準"+T.toFixed(1)+"%を"+(m.yld>=T?"クリアしている。":"下回っている——到達ラインまで待つのが基本。");
@@ -837,7 +884,7 @@ function verdict(m,sA,sB){
     if(sB.trend.ok===true)pros.push("利益は"+sB.trend.label);
     if(m.hi&&m.price&&m.price<=m.hi*0.85&&(sB.g==="◎"||sB.g==="○"))pros.unshift("52週高値から"+Math.round((1-m.price/m.hi)*100)+"%調整の押し目圏");
     if(sB.trend.ok===false)cons.push("利益が"+sB.trend.label+"ぎみで安定感に欠ける");
-    trapFlags(m).forEach(x=>cons.push("⚠ "+x));
+    trapFlags(m,state.simple).forEach(x=>cons.push("⚠ "+x));
     timeFlags(m).forEach(x=>cons.push("⚠ "+x.c));
     title=sB.g==="◎"?"今が買い値ゾーン。永久保有向きの高配当":
       sB.g==="○"?"良い会社。あと少し安くなれば買い":
@@ -851,7 +898,7 @@ function verdict(m,sA,sB){
     if(m.pbr!=null&&m.pbr<=1&&!m.bpsNeg)pros.push("純資産の"+m.pbr.toFixed(2)+"倍＝解散価値以下の値段");
     if(sA.catal)pros.push("配当余力たっぷり×利益成長中。増配・自社株買い発表で化けやすい");
     sA.rows.forEach(r=>{if(r.p===false&&cons.length<2)cons.push((r.pk||r.k)+"が条件外");});
-    trapFlags(m).forEach(x=>{if(x.indexOf("PER")===0)cons.push("⚠ "+x);});
+    trapFlags(m,state.simple).forEach(x=>{if(x.indexOf("PER")>=0)cons.push("⚠ "+x);});
     timeFlags(m).forEach(x=>cons.push("⚠ "+x.c));
     title=sA.g==="◎"?"超割安。監視リスト筆頭クラス":
       sA.g==="○"?"割安。準監視リスト入り":
@@ -1048,6 +1095,10 @@ function setSimple(v){state.simple=!!v;saveAll();render();}
 function dl(m){if(m.chg==null)return"";const d=m.chg;
   return '<span style="color:'+(d>=0?"var(--ok)":"var(--ng)")+'">'+(d>=0?"+":"")+d.toFixed(2)+"%</span>";}
 
+function lastDataTs(){
+  if(state.rankSrc==="MKT")return Math.max.apply(null,[0].concat(mktRegions().map(mkt=>((state.mktCache[state.rankMode+"_"+mkt]||{}).ts)||0)));
+  return Math.max.apply(null,[0].concat(allCodes().map(c=>(state.px[c]||{}).ts||0)));
+}
 function renderHome(){
   let h='<div class="pillrow">'
     +'<button class="pill '+(state.rankMode==="A"?"on-a":"")+'" onclick="setRank(\'A\')">モードA 攻め</button>'
@@ -1061,6 +1112,8 @@ function renderHome(){
   if(state.offlineTs&&state.rankSrc==="MKT")
     h+='<div class="note" style="border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:8px 12px;margin:-6px 0 12px;display:flex;gap:7px;align-items:center">'+I("alert",12)+'<span>オフライン閲覧中 ─ 最終取得 '+new Date(state.offlineTs).toTimeString().slice(0,5)+'。電波回復後に右の更新で再取得。</span></div>';
   if(state.err)h+='<div class="err">'+esc(state.err)+'</div>';
+  const _lts=lastDataTs(), _stale=_lts>0&&(Date.now()-_lts)>3*3600*1000;
+  if(_stale)h+='<div class="note" style="border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:8px 12px;margin:-2px 0 12px;display:flex;gap:7px;align-items:center">'+I("refresh",12)+'<span>データが3時間以上前のもの（最終更新 '+new Date(_lts).toTimeString().slice(0,5)+'）。右上の更新ボタンで再取得を。</span></div>';
   const col=state.rankMode==="A"?"var(--A)":"var(--B)";
   const rowHtml=(x,i)=>{
     const s=state.rankMode==="A"?x.sA:x.sB;
@@ -1177,6 +1230,8 @@ function renderHome(){
       const ts=Math.max.apply(null,allCodes().map(c=>(state.px[c]||{}).ts||0));
       a.textContent=ts>0?ago(ts):"焼込 "+ASOF.slice(5);
     }
+    const rb=a.parentElement;
+    if(rb){rb.style.borderColor=_stale?"var(--warn)":"";rb.style.color=_stale?"var(--warn)":"";}
   }
 }
 
@@ -1248,7 +1303,7 @@ function renderDetail(){
   /* ヒーロー */
   h+='<div class="card hero"><div class="top"><div style="min-width:0">'
     +'<div class="code"><span class="mk">'+m.mkt+'</span>'+esc(code)+'・'+esc(m.sector||"業種未設定")+'</div>'
-    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+crownBadge(m)+yocPill(code,m)+trapFlags(m).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
+    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m,state.simple).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m)||thrPill(code,m))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+crownBadge(m)+yocPill(code,m)+thrPill(code,m)+trapFlags(m,state.simple).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
     +'<div style="flex:none">'
     +(m.price==null?'<div class="sk" style="width:110px;height:30px"></div>'
       :'<div class="px"'+(m.stale?' style="color:var(--mut)"':"")+'>'+money(m.price,m.ccy)+'</div><div class="dl">'+(m.stale?'<span style="color:var(--warn)">焼込 '+esc(ASOF.slice(5))+'</span>':dl(m))+'</div>')
@@ -1263,7 +1318,8 @@ function renderDetail(){
     +'</div></div>';
   const vd=verdict(m,sA,sB);
   h+='<div class="card" style="border-left:3px solid '+vd.col+'">'
-    +'<div class="ey" style="color:'+vd.col+'">鑑定コメント ─ MODE '+vd.mode+'</div>'
+    +'<div class="card-h" style="margin-bottom:6px"><span class="ey" style="color:'+vd.col+'">鑑定コメント ─ MODE '+vd.mode+'</span>'
+    +'<button class="chip icon" style="margin:0'+(state._smMsg?';border-color:var(--ok);color:var(--ok)':'')+'" onclick="copySummary()">'+I("dl",11)+' '+(state._smMsg?'コピーした':'テキストでコピー')+'</button></div>'
     +'<div style="font-size:15px;font-weight:800;margin:8px 0 6px;line-height:1.5">'+esc(vd.title)+'</div>'
     +((vd.pros.length||vd.cons.length)?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px">'
       +vd.pros.slice(0,2).map(x=>'<span class="vpill" style="border-color:var(--ok);color:var(--ok)">'+esc(x.length>15?x.slice(0,14)+"…":x)+'</span>').join("")
@@ -1430,7 +1486,7 @@ function renderSheet(){
     }
   }
   if(state.sheet==="ovlist"){
-    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",avg:"取得単価",hmode:"保有モード",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
+    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",avg:"取得単価",thr:"個別目標利回り",hmode:"保有モード",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
     const fmt=v=>v===true?"あり":v===false?"なし":(v==null?"—":String(v).slice(0,18));
     const ents=Object.keys(state.ov).filter(c=>Object.keys(state.ov[c]||{}).length);
     h+='<h2>手修正データ一覧 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>';
@@ -1499,11 +1555,12 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R11 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R12 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
       +'<button class="chip icon" style="margin:0" onclick="openSheet(\'ovlist\')">'+I("pencil",12)+' 手修正一覧</button>'
+      +'<button class="chip icon" style="margin:0'+(state.purgeArm?';border-color:var(--ng);color:var(--ng)':'')+'" onclick="purgeStale()">'+I("trash",12)+' '+esc(state._pgMsg||(state.purgeArm?'もう一度タップで削除実行':'非保有の△×取込銘柄を掃除'))+'</button>'
       +'<input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importData(event)"></div>'
       +'<div class="f-lb">P-003 朝ダイジェスト連携</div>'
       +'<div style="margin:0 0 6px"><button class="abtn" style="width:100%'+(state._p3Msg?(state._p3Warn?';border-color:var(--warn);color:var(--warn)':';border-color:var(--ok);color:var(--ok)'):'')+'" onclick="copyP3()">'+I("ext",13)+' '+esc(state._p3Msg||'朝ダイジェスト用に書き出し（日本株の保有+◎○）')+'</button></div>'
@@ -1536,7 +1593,7 @@ function renderSheet(){
   }
   if(state.sheet==="edit"&&state.cur){
     const code=state.cur;
-    const F=[["dps","年間配当（1株）"],["eps_f","予想EPS"],["bps","BPS（1株純資産）"],["payout","配当性向 %"],["ncps","1株ネットキャッシュ"],["eq","自己資本比率 %"],["hold","保有株数（任意・市況枠監視用）"],["avg","取得単価（1株・任意。買値利回りとA撤退監視用）"]];
+    const F=[["dps","年間配当（1株）"],["eps_f","予想EPS"],["bps","BPS（1株純資産）"],["payout","配当性向 %"],["ncps","1株ネットキャッシュ"],["eq","自己資本比率 %"],["hold","保有株数（任意・市況枠監視用）"],["avg","取得単価（1株・任意。買値利回りとA撤退監視用）"],["thr","個別目標利回り %（任意・グローバル基準より高い値のみ有効）"]];
     const cut=val(code,"cut10");
     h+='<h2>数値を直す <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="note" style="margin:0 0 10px">証券アプリの値を写すだけでOK。空欄＝収穫値に戻す。編集は端末に保存され、判定に即反映（鉛筆マーク付き）。</div>'
@@ -1605,6 +1662,7 @@ function render(){
   document.addEventListener("touchstart",e=>{_tx=e.touches[0].clientX;_ty=e.touches[0].clientY;},{passive:true});
   document.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-_tx,dy=e.changedTouches[0].clientY-_ty;
     if(Math.abs(dx)>64&&Math.abs(dy)<48)swipeNav(dx<0?1:-1);},{passive:true});
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden&&state.view==="home")render();});
   try{const r=await fetch("names_jp.json",{cache:"no-cache"});if(r.ok){NAMESJP=await r.json();render();}}catch(e){}
   ensureMkt(false);
 })();
