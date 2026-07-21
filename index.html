@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R10</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R11</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -437,9 +437,9 @@ async function ensureMkt(force){
   state.mktBusy=false;render();
 }
 function setSrc(k){state.rankSrc=k;render();if(k==="MKT")ensureMkt(false);}
-function tapMkt(code){
-  if(recOf(code)){openStock(code);return;}
-  const o=state._mktMap&&state._mktMap[code];if(!o)return;
+function importMktRow(o){
+  const code=o.code;
+  if(recOf(code))return false;
   const m=mFromRow(o);
   state.custom[code]={custom:true,mkt:o.mkt,ccy:m.ccy,ysym:o.sym,
     asof:new Date().toISOString().slice(0,10),
@@ -449,7 +449,29 @@ function tapMkt(code){
     bps:(o.pb&&o.pb>0&&o.p)?Math.round(o.p/o.pb*100)/100:null,
     dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,ncSimple:true,hist:[],cut10:m.cut};
   state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,ts:Date.now()};
+  return true;
+}
+function tapMkt(code){
+  if(recOf(code)){openStock(code);return;}
+  const o=state._mktMap&&state._mktMap[code];if(!o)return;
+  importMktRow(o);
   saveAll();openStock(code);
+}
+function bulkImportTop(){
+  const list=state._mktRows||[];
+  let added=0;
+  list.forEach(x=>{
+    if(x.tap!=="mkt")return;
+    const s=state.rankMode==="A"?x.sA:x.sB;
+    if(s.g!=="◎")return;
+    const o=state._mktMap&&state._mktMap[x.code];
+    if(o&&importMktRow(o))added++;
+  });
+  if(added)saveAll();
+  state._biMsg=added?("取り込んだ（◎ "+added+"件 → 保存タブへ収録）"):"新規の◎は現在の一覧にありません";
+  state._biWarn=!added;
+  render();
+  setTimeout(()=>{state._biMsg=null;state._biWarn=false;render();},2200);
 }
 
 async function fetchFx(){
@@ -1127,6 +1149,10 @@ function renderHome(){
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));})
       .slice(0,40);
     state._mktRows=applyBView(list);
+    const impN=state._mktRows.filter(x=>x.tap==="mkt"&&(state.rankMode==="A"?x.sA:x.sB).g==="◎").length;
+    if(impN||state._biMsg){
+      h+='<div style="margin:-2px 0 10px"><button class="abtn" style="width:100%'+(state._biMsg?(state._biWarn?';border-color:var(--warn);color:var(--warn)':';border-color:var(--ok);color:var(--ok)'):'')+'" onclick="bulkImportTop()">'+I("dl",13)+' '+esc(state._biMsg||('◎を一括取り込み（'+impN+'件 → 保存タブへ）'))+'</button></div>';
+    }
     if(!list.length&&state.mktBusy){
       for(let i=0;i<8;i++)h+='<div class="sk" style="height:66px;border-radius:16px;margin-bottom:8px"></div>';
     }else{
@@ -1473,7 +1499,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R10 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R11 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
