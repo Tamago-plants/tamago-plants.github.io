@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R8</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R9</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -627,6 +627,42 @@ function takeSnap(){
   state.snap.push({ym:ym,b:Math.round(ab.tot-ab.a),a:Math.round(ab.a),div:Math.round(C.total)});
   if(state.snap.length>60)state.snap=state.snap.slice(-60);
   saveAll();render();}
+function buildP3Export(){
+  const rows=[];
+  allCodes().forEach(code=>{
+    const m=metrics(code);if(!m||m.mkt!=="JP")return;
+    const sA=scoreA(m),sB=scoreB(m);
+    const mode=modeOf(code,m);
+    const g=mode==="B"?sB.g:sA.g;
+    const held=num((state.ov[code]||{}).hold)>0;
+    if(!held&&g!=="◎"&&g!=="○")return;
+    const target=(mode==="B"&&sB.target!=null&&isFinite(sB.target))?Math.round(sB.target):null;
+    rows.push({code:code,name:dn(m),mode:mode,grade:g,target:target,held:!!held,
+      _gap:(sB.gap!=null?sB.gap:-1e9),_ncr:(m.ncr!=null?m.ncr:-1e9)});
+  });
+  const held=rows.filter(r=>r.held);
+  const rest=rows.filter(r=>!r.held).sort((a,b)=>{
+    const gv={"◎":0,"○":1};
+    if(gv[a.grade]!==gv[b.grade])return gv[a.grade]-gv[b.grade];
+    if(a.mode!==b.mode)return a.mode==="B"?-1:1;
+    const ka=a.mode==="B"?a._gap:a._ncr, kb=b.mode==="B"?b._gap:b._ncr;
+    return kb-ka;
+  });
+  const list=held.concat(rest.slice(0,Math.max(0,50-held.length)));
+  return {asof:new Date().toISOString().slice(0,10),
+    stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held}))};
+}
+function copyP3(){
+  const ex=buildP3Export();
+  const flash=(msg,warn)=>{state._p3Msg=msg;state._p3Warn=!!warn;render();
+    setTimeout(()=>{state._p3Msg=null;state._p3Warn=false;render();},2200);};
+  if(!ex.stocks.length){flash("対象銘柄がありません（日本株の保有か◎○判定が必要）",true);return;}
+  const txt=JSON.stringify(ex);
+  const done=()=>flash("コピーした（日本株 "+ex.stocks.length+"件）",false);
+  const fb=()=>{try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,txt.length);document.execCommand("copy");ta.remove();done();}catch(e){state.err="コピーに失敗した";render();}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done).catch(fb);
+  else fb();
+}
 function toggleNc1(){state.nc1Only=!state.nc1Only;render();}
 function onMemo(v){const code=state.cur;if(!code)return;
   if(!state.ov[code])state.ov[code]={};
@@ -1390,12 +1426,15 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R8 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R9 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
       +'<button class="chip icon" style="margin:0" onclick="openSheet(\'ovlist\')">'+I("pencil",12)+' 手修正一覧</button>'
       +'<input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importData(event)"></div>'
+      +'<div class="f-lb">P-003 朝ダイジェスト連携</div>'
+      +'<div style="margin:0 0 6px"><button class="abtn" style="width:100%'+(state._p3Msg?(state._p3Warn?';border-color:var(--warn);color:var(--warn)':';border-color:var(--ok);color:var(--ok)'):'')+'" onclick="copyP3()">'+I("ext",13)+' '+esc(state._p3Msg||'朝ダイジェスト用に書き出し（日本株の保有+◎○）')+'</button></div>'
+      +'<div class="note" style="margin:0 0 14px">タップ時点の判定で、保有中(全件)+非保有の◎○(合計50件まで・買い場に近い順)をJSONコピー。AI組織のClaudeに貼ると翌朝からP-003が監視・優先報告する。</div>'
       +'<div class="f-lb">年間配当の目標額（円・任意）</div>'
       +'<input class="f-in" inputmode="numeric" placeholder="例: 120000" value="'+(state.set.goal!=null?esc(state.set.goal):"")+'" oninput="onGoal(this.value)">'
       +'<div class="f-lb">表示モード</div><div class="chips" style="margin-bottom:14px">'
