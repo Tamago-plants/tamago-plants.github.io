@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R9</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R10</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -590,6 +590,43 @@ function crownBadge(m,small){
   if(m.cdg==null||m.cdg<10)return"";
   const king=m.cdg>=25, col=king?"#E8C36A":"#B4C1D8";
   return '<span class="aim" style="font-size:'+(small?'9px':'10px')+';padding:'+(small?'1px 6px':'2px 8px')+';color:'+col+';border-color:'+col+'">'+I(king?"crown":"medal",small?8:10)+' '+(king?'配当王者':'配当貴族')+' '+Math.round(m.cdg)+'年</span>';
+}
+function yocOf(code,m){
+  const o=state.ov[code]||{};
+  const avg=num(o.avg), hold=num(o.hold);
+  if(!avg||avg<=0||!hold||hold<=0||m.dps==null)return null;
+  return m.dps/avg*100;
+}
+function yocPill(code,m,small){
+  const y=yocOf(code,m); if(y==null)return"";
+  return '<span class="aim" style="font-size:'+(small?'9px':'10px')+';padding:'+(small?'1px 6px':'2px 8px')+';color:var(--ok);border-color:var(--ok)">'+(small?'YOC ':'買値利回り ')+y.toFixed(1)+'%</span>';
+}
+function exitFlag(code,m){
+  const o=state.ov[code]||{};
+  const avg=num(o.avg), hold=num(o.hold);
+  if(!avg||avg<=0||!hold||hold<=0||m.price==null)return null;
+  if(modeOf(code,m)!=="A")return null;
+  if(m.price<=avg*0.75)return{t:"撤退ライン−25%到達（最終防衛・戦略ルール上の撤退水準）",s:"撤退−25%",lv:2};
+  if(m.price<=avg*0.92)return{t:"撤退ライン−8%到達（点火型の撤退水準）",s:"撤退−8%",lv:1};
+  return null;
+}
+function exitPill(code,m,small){
+  const e=exitFlag(code,m); if(!e)return"";
+  const col=e.lv===2?"var(--ng)":"var(--warn)";
+  return '<span class="wtag" style="border-color:'+col+';color:'+col+(small?';font-size:9px;padding:1px 6px':'')+'">'+I("alert",small?8:10,col,2.4)+' '+esc(small?e.s:e.t)+'</span>';
+}
+function secColor(s){
+  s=s||"";
+  if(hit(s,["銀行","証券","保険","その他金融","REIT","不動産"]))return "#E08B9A";
+  if(hit(s,["通信","情報","電子","電気機器","サービス"]))return "#7FA8E0";
+  if(hit(s,["食","飲料","医薬","薬品","生活必需","ヘルスケア","水産","小売","たばこ"]))return "#7FC8A0";
+  if(hit(s,["エネルギー","石油","鉱業","電力","ガス","公益"]))return "#E0B97F";
+  if(hit(s,["卸売","商社","海運","鉄鋼","非鉄","機械","化学","建設","陸運","鉄道","倉庫","輸送","ゴム","金属"]))return "#B9A8D8";
+  return "";
+}
+function secSpan(s){
+  const c=secColor(s), t=esc(s||"—");
+  return c?'<span style="color:'+c+'">'+t+'</span>':t;
 }
 function buildCal(){
   const months=new Array(12).fill(0); let total=0, used=0, skipped=0;
@@ -1012,7 +1049,7 @@ function renderHome(){
     return '<button class="rk" onclick="'+(x.tap==="mkt"?'tapMkt(\''+esc(x.code)+'\')':'openStock(\''+esc(x.code)+'\')')+'">'
       +'<span class="no"'+(i===0?' style="color:#E8C36A;font-weight:800"':i===1?' style="color:#B4C1D8;font-weight:800"':i===2?' style="color:#C98A5E;font-weight:800"':'')+'>'+(i+1)+'</span>'+ring(state.simple?passRatio(s):s.fit,s.g,col,32)
       +'<div class="mid"><div class="nm">'+esc(dn(x.m))+'</div>'
-      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+esc(x.m.sector||"—")+(state.rankMode==="B"&&x.sB&&x.sB.gap!=null&&x.sB.gap>=0?' <span class="aim">'+I("target",9)+'射程</span>':'')+(val(x.code,"memo")?' <span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':'')+((state.ov[x.code]||{}).tag?' <span class="aim" style="color:var(--mut);border-color:var(--line)">'+esc((state.ov[x.code]||{}).tag)+'</span>':'')+(state.rankMode==="B"&&x.sB&&(x.sB.g==="◎"||x.sB.g==="○")&&x.m.hi&&x.m.price&&x.m.price<=x.m.hi*0.85?' <span class="aim" style="color:var(--ok);border-color:var(--ok)">'+I("bolt",8)+'押し目'+Math.round((1-x.m.price/x.m.hi)*100)+'%</span>':'')+(state.rankMode==="B"?' '+crownBadge(x.m,true):'')+(x.tap!=="mkt"?' <span class="aim" style="padding:2px 8px;'+(state.cmp.indexOf(x.code)>=0?'background:var(--B);color:#08131C;border-color:var(--B)':'color:var(--mut);border-color:var(--line)')+'" onclick="event.stopPropagation();quickCmp(\''+esc(x.code)+'\')">'+I("cmp",8)+' VS</span>':'')+'</div></div>'
+      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)+(state.rankMode==="B"&&x.sB&&x.sB.gap!=null&&x.sB.gap>=0?' <span class="aim">'+I("target",9)+'射程</span>':'')+(val(x.code,"memo")?' <span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':'')+((state.ov[x.code]||{}).tag?' <span class="aim" style="color:var(--mut);border-color:var(--line)">'+esc((state.ov[x.code]||{}).tag)+'</span>':'')+(state.rankMode==="B"&&x.sB&&(x.sB.g==="◎"||x.sB.g==="○")&&x.m.hi&&x.m.price&&x.m.price<=x.m.hi*0.85?' <span class="aim" style="color:var(--ok);border-color:var(--ok)">'+I("bolt",8)+'押し目'+Math.round((1-x.m.price/x.m.hi)*100)+'%</span>':'')+(state.rankMode==="B"?' '+crownBadge(x.m,true):'')+(exitPill(x.code,x.m,true)?' '+exitPill(x.code,x.m,true):'')+(state.rankMode==="B"?' '+yocPill(x.code,x.m,true):'')+(x.tap!=="mkt"?' <span class="aim" style="padding:2px 8px;'+(state.cmp.indexOf(x.code)>=0?'background:var(--B);color:#08131C;border-color:var(--B)':'color:var(--mut);border-color:var(--line)')+'" onclick="event.stopPropagation();quickCmp(\''+esc(x.code)+'\')">'+I("cmp",8)+' VS</span>':'')+'</div></div>'
       +miniRange(x.m.lo,x.m.hi,x.m.price,58,26,(state.rankMode==="B"&&x.sB)?x.sB.target:null)
       +'<div class="right">'+priceCell+'</div></button>';};
   const gr=s=>({"◎":4,"○":3,"?":2.5,"△":2,"×":0}[s.g]+(s.tier||0));
@@ -1048,8 +1085,8 @@ function renderHome(){
           const sec=portSectorsB();
           if(sec.tot>0){const ents=Object.keys(sec.by).map(k=>[k,sec.by[k]/sec.tot*100]).sort((x,y)=>y[1]-x[1]).slice(0,6);
             s+='<div style="margin-top:12px;font-size:11px;color:var(--dim)">要塞（B）のセクター内訳</div>'
-              +ents.map(e=>'<div style="display:flex;align-items:center;gap:8px;padding:3px 0"><span style="width:96px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(e[0])+'</span>'
-                +'<div style="flex:1;height:6px;border-radius:99px;background:#141C31;overflow:hidden"><div style="height:100%;width:'+e[1].toFixed(0)+'%;background:linear-gradient(90deg,#2CACB9,var(--B))"></div></div>'
+              +ents.map(e=>'<div style="display:flex;align-items:center;gap:8px;padding:3px 0"><span style="width:96px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+secSpan(e[0])+'</span>'
+                +'<div style="flex:1;height:6px;border-radius:99px;background:#141C31;overflow:hidden"><div style="height:100%;width:'+e[1].toFixed(0)+'%;background:'+(secColor(e[0])||"#2CACB9")+';opacity:.75"></div></div>'
                 +'<span class="mono" style="width:44px;text-align:right;font-size:11px;color:var(--mut)">'+e[1].toFixed(0)+'%</span></div>').join("");}
           const sn=(state.snap||[]).slice(-6).reverse();
           if(sn.length){const mx=Math.max.apply(null,sn.map(x=>x.div).concat([1]));
@@ -1185,7 +1222,7 @@ function renderDetail(){
   /* ヒーロー */
   h+='<div class="card hero"><div class="top"><div style="min-width:0">'
     +'<div class="code"><span class="mk">'+m.mkt+'</span>'+esc(code)+'・'+esc(m.sector||"業種未設定")+'</div>'
-    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m).length||timeFlags(m).length||dipP||crownBadge(m))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+crownBadge(m)+trapFlags(m).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
+    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+crownBadge(m)+yocPill(code,m)+trapFlags(m).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
     +'<div style="flex:none">'
     +(m.price==null?'<div class="sk" style="width:110px;height:30px"></div>'
       :'<div class="px"'+(m.stale?' style="color:var(--mut)"':"")+'>'+money(m.price,m.ccy)+'</div><div class="dl">'+(m.stale?'<span style="color:var(--warn)">焼込 '+esc(ASOF.slice(5))+'</span>':dl(m))+'</div>')
@@ -1252,6 +1289,16 @@ function renderDetail(){
     +(m.desc?'<div class="desc">'+esc(m.desc)+'</div>':"")
     +(m.life&&m.life.length?'<div class="sub-lb">生活との接点</div><div class="tags">'+m.life.map(l=>'<span class="tag">'+esc(l)+'</span>').join("")+'</div>':"")
     +'<a class="abtn" style="margin-top:14px" href="https://news.google.com/search?q='+encodeURIComponent(dn(m)+" 株")+'&hl=ja&gl=JP&ceid=JP:ja" target="_blank" rel="noopener">'+I("ext",13)+' '+esc(dn(m))+' の最新ニュースを見る</a>'
+    +'<div class="sub-lb">外部サイトで調査（?判定の手確認に）</div>'
+    +'<div class="chips" style="margin:0;flex-wrap:wrap">'
+    +(m.mkt==="JP"
+      ?'<a class="chip icon" style="margin:0" href="https://kabutan.jp/stock/?code='+esc(code)+'" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' 株探</a>'
+      +'<a class="chip icon" style="margin:0" href="https://irbank.net/'+esc(code)+'" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' IR BANK</a>'
+      +'<a class="chip icon" style="margin:0" href="https://finance.yahoo.co.jp/quote/'+esc(code)+'.T" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' Y!ファイナンス</a>'
+      +'<a class="chip icon" style="margin:0" href="https://www.tradingview.com/symbols/TSE-'+esc(code)+'/" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' TradingView</a>'
+      :'<a class="chip icon" style="margin:0" href="https://www.tradingview.com/symbols/'+esc(code)+'/" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' TradingView</a>'
+      +'<a class="chip icon" style="margin:0" href="https://finance.yahoo.com/quote/'+esc(code)+'" target="_blank" rel="noopener noreferrer">'+I("ext",11)+' Yahoo Finance</a>')
+    +'</div>'
     +'</div>';
   h+='<p class="note">※ 株価・52週レンジはTradingView（遅延あり）、ファンダは'+(rc.custom?'取り込み時点（'+esc(fA)+'）の推定/入力値':esc(fA)+'収穫のスナップショット')+'＋手修正。売買前は必ず一次情報（適時開示・決算資料）で確認。投資助言ではない。</p>';
   document.getElementById("app").innerHTML=h;
@@ -1357,7 +1404,7 @@ function renderSheet(){
     }
   }
   if(state.sheet==="ovlist"){
-    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",hmode:"保有モード",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
+    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",avg:"取得単価",hmode:"保有モード",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
     const fmt=v=>v===true?"あり":v===false?"なし":(v==null?"—":String(v).slice(0,18));
     const ents=Object.keys(state.ov).filter(c=>Object.keys(state.ov[c]||{}).length);
     h+='<h2>手修正データ一覧 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>';
@@ -1426,7 +1473,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R9 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R10 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
@@ -1463,7 +1510,7 @@ function renderSheet(){
   }
   if(state.sheet==="edit"&&state.cur){
     const code=state.cur;
-    const F=[["dps","年間配当（1株）"],["eps_f","予想EPS"],["bps","BPS（1株純資産）"],["payout","配当性向 %"],["ncps","1株ネットキャッシュ"],["eq","自己資本比率 %"],["hold","保有株数（任意・市況枠監視用）"]];
+    const F=[["dps","年間配当（1株）"],["eps_f","予想EPS"],["bps","BPS（1株純資産）"],["payout","配当性向 %"],["ncps","1株ネットキャッシュ"],["eq","自己資本比率 %"],["hold","保有株数（任意・市況枠監視用）"],["avg","取得単価（1株・任意。買値利回りとA撤退監視用）"]];
     const cut=val(code,"cut10");
     h+='<h2>数値を直す <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="note" style="margin:0 0 10px">証券アプリの値を写すだけでOK。空欄＝収穫値に戻す。編集は端末に保存され、判定に即反映（鉛筆マーク付き）。</div>'
