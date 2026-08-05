@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R13</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R14</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -273,7 +273,7 @@ const dn=m=>(m&&m.mkt==="JP"&&NAMESJP[m.code])||m.name;
 const state = {
   view:"home", cur:null, simple:true,
   set:{ jp:{rate:1.0,spread:3.0}, us:{rate:3.75,spread:1.0} },
-  ov:{}, custom:{}, px:{}, fxAuto:null, snap:[],
+  ov:{}, custom:{}, px:{}, fxAuto:null, snap:[], showHib:false,
   rankMode:"A", rankFilter:"JP",
   rankSrc:"MKT", mktCache:{}, mktBusy:false, offlineTs:null,
   q:"", err:null, busyPx:false, busyOne:false,
@@ -317,6 +317,7 @@ const IC={
  cross:'<path d="M6.2 6.2l11.6 11.6M17.8 6.2 6.2 17.8"/>',
  crown:'<path d="M3.5 8.5l4.7 3L12 5.5l3.8 6 4.7-3-3 8.5h-11z"/><path d="M6.8 19.5h10.4"/>',
  medal:'<circle cx="12" cy="14.5" r="5"/><path d="M9.2 10.2 6.5 3.5h4L12 7l1.5-3.5h4l-2.7 6.7"/>',
+ moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',
  alert:'<path d="M12 5.2v8.6"/><path d="M12 18.4v.01"/>',
  plus:'<path d="M12 5.2v13.6M5.2 12h13.6"/>',
  cart:'<path d="M2.5 4h2l2.2 11.5a1.5 1.5 0 0 0 1.5 1.2h8.9a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>',
@@ -533,6 +534,27 @@ function cosmFlag(m){
   if(m.oi>0&&m.ni>m.oi*lim)return 2;
   return 0;
 }
+function roeOf(m){
+  if(m.per==null||m.pbr==null||!(m.per>0)||!(m.pbr>0)||m.bpsNeg)return null;
+  const r=m.pbr/m.per*100;
+  return isFinite(r)?r:null;
+}
+function roePill(m,small){
+  const r=roeOf(m);
+  if(r==null||r>=4)return"";
+  const t=small?("低ROE "+r.toFixed(1)+"%"):(state.simple?"純資産のわりに利益が少ない（ROE"+r.toFixed(1)+"%）":"低ROE "+r.toFixed(1)+"%・資本効率に課題");
+  return '<span class="ttag" style="'+(small?'font-size:9px;padding:1px 6px':'')+'">'+I("alert",small?8:10,"var(--warn)",2.4)+' '+esc(t)+'</span>';
+}
+function isHib(code){return !!((state.ov[code]||{}).hib);}
+function setHib(v){const code=state.cur;if(!code)return;
+  if(v&&num((state.ov[code]||{}).hold)>0){state.err="保有中の銘柄は冬眠できない（配分・撤退監視の保護のため）";render();return;}
+  if(!state.ov[code])state.ov[code]={};
+  if(v)state.ov[code].hib=true;else{delete state.ov[code].hib;if(!Object.keys(state.ov[code]).length)delete state.ov[code];}
+  saveAll();render();}
+function toggleHibView(){state.showHib=!state.showHib;render();}
+function addMemoSnip(t){const code=state.cur;if(!code)return;
+  const cur=val(code,"memo")||"";
+  onMemo((cur?cur+" ":"")+t);render();}
 
 function scoreA(m){
   const max=m.mkt==="US"?350:50000;
@@ -712,10 +734,11 @@ function buildP3Export(){
   const rows=[];
   allCodes().forEach(code=>{
     const m=metrics(code);if(!m||m.mkt!=="JP")return;
+    const held=num((state.ov[code]||{}).hold)>0;
+    if(!held&&isHib(code))return;
     const sA=scoreA(m),sB=scoreB(m);
     const mode=modeOf(code,m);
     const g=mode==="B"?sB.g:sA.g;
-    const held=num((state.ov[code]||{}).hold)>0;
     if(!held&&g!=="◎"&&g!=="○")return;
     const target=(mode==="B"&&sB.target!=null&&isFinite(sB.target))?Math.round(sB.target):null;
     rows.push({code:code,name:dn(m),mode:mode,grade:g,target:target,held:!!held,
@@ -743,12 +766,12 @@ function purgeStale(){
     const m=metrics(code);if(!m)return;
     const g=(modeOf(code,m)==="B"?scoreB(m):scoreA(m)).g;
     if(g!=="△"&&g!=="×")return;
-    if(o.tag||o.memo){keep++;return;}
+    if(o.tag||o.memo||o.hib){keep++;return;}
     delete state.custom[code];delete state.px[code];delete state.ov[code];
     del++;
   });
   saveAll();
-  state._pgMsg="削除 "+del+"件"+(keep?"・保護 "+keep+"件（タグ/メモあり）":"");
+  state._pgMsg="削除 "+del+"件"+(keep?"・保護 "+keep+"件（タグ/メモ/冬眠）":"");
   render();setTimeout(()=>{state._pgMsg=null;render();},2600);
 }
 function copySummary(){
@@ -1038,6 +1061,7 @@ function applyBackup(o){
   if(o.set)state.set=o.set; if(o.ov)state.ov=o.ov; if(o.custom)state.custom=o.custom;
   if(typeof o.simple==="boolean")state.simple=o.simple;
   if(o.snap)state.snap=o.snap;
+  fixHibConflicts();
   saveAll();}
 function exportData(){
   const blob=new Blob([JSON.stringify(buildBackup(),null,1)],{type:"application/json"});
@@ -1073,12 +1097,20 @@ function onEdit(f,v){const code=state.cur;if(!code)return;
   if(!state.ov[code])state.ov[code]={};
   const r=num(v);
   if(v===""||r==null)delete state.ov[code][f];else state.ov[code][f]=r;
+  if(f==="hold"&&r>0&&state.ov[code].hib){delete state.ov[code].hib;render();}
   saveAll();}
+function fixHibConflicts(){
+  Object.keys(state.ov||{}).forEach(c=>{const o=state.ov[c];if(o&&o.hib&&num(o.hold)>0)delete o.hib;});
+}
 function setCut(v){const code=state.cur;if(!code)return;
   if(!state.ov[code])state.ov[code]={};
   if(v===null)delete state.ov[code].cut10;else state.ov[code].cut10=v;
   saveAll();render();}
-function clearOv(){if(state.cur){delete state.ov[state.cur];saveAll();render();}}
+function clearOv(){if(!state.cur)return;
+  const o=state.ov[state.cur];if(!o)return;
+  ["dps","eps_f","bps","payout","ncps","eq","cut10","yoy"].forEach(k=>{delete o[k];});
+  if(!Object.keys(o).length)delete state.ov[state.cur];
+  saveAll();render();}
 function resetData(){
   if(!state.resetArm){state.resetArm=true;render();setTimeout(()=>{state.resetArm=false;render();},3000);return;}
   state.ov={};state.custom={};state.px={};state.resetArm=false;
@@ -1115,7 +1147,7 @@ function renderHome(){
   let h='<div class="pillrow">'
     +'<button class="pill '+(state.rankMode==="A"?"on-a":"")+'" onclick="setRank(\'A\')">モードA 攻め</button>'
     +'<button class="pill '+(state.rankMode==="B"?"on-b":"")+'" onclick="setRank(\'B\')">モードB 要塞</button></div>';
-  const fcnt=(state.rankFilter!=="ALL"?1:0)+(state.rankMode==="B"?((state.sortB!=="fit"?1:0)+(state.aimOnly?1:0)):(state.nc1Only?1:0));
+  const fcnt=(state.rankFilter!=="ALL"?1:0)+(state.rankMode==="B"?((state.sortB!=="fit"?1:0)+(state.aimOnly?1:0)):(state.nc1Only?1:0))+(state.rankSrc==="SAVED"&&state.showHib?1:0);
   h+='<div class="ctl"><div class="seg">'
     +[["MKT","全市場"],["SAVED","保存"]].map(x=>'<button class="'+(state.rankSrc===x[0]?"on":"")+'" onclick="setSrc(\''+x[0]+'\')">'+x[1]+'</button>').join("")
     +'</div><button class="chip'+(fcnt?" on":"")+'" style="display:flex;align-items:center;gap:5px;margin:0" onclick="openSheet(\'flt\')">'+I("search",12)+' 絞り込み'+(fcnt?'('+fcnt+')':'')+'</button>'
@@ -1136,7 +1168,25 @@ function renderHome(){
     return '<button class="rk" onclick="'+(x.tap==="mkt"?'tapMkt(\''+esc(x.code)+'\')':'openStock(\''+esc(x.code)+'\')')+'">'
       +'<span class="no"'+(i===0?' style="color:#E8C36A;font-weight:800"':i===1?' style="color:#B4C1D8;font-weight:800"':i===2?' style="color:#C98A5E;font-weight:800"':'')+'>'+(i+1)+'</span>'+ring(state.simple?passRatio(s):s.fit,s.g,col,32)
       +'<div class="mid"><div class="nm">'+esc(dn(x.m))+'</div>'
-      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)+(state.rankMode==="B"&&x.sB&&x.sB.gap!=null&&x.sB.gap>=0?' <span class="aim">'+I("target",9)+'射程</span>':'')+(val(x.code,"memo")?' <span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':'')+((state.ov[x.code]||{}).tag?' <span class="aim" style="color:var(--mut);border-color:var(--line)">'+esc((state.ov[x.code]||{}).tag)+'</span>':'')+(state.rankMode==="B"&&x.sB&&(x.sB.g==="◎"||x.sB.g==="○")&&x.m.hi&&x.m.price&&x.m.price<=x.m.hi*0.85?' <span class="aim" style="color:var(--ok);border-color:var(--ok)">'+I("bolt",8)+'押し目'+Math.round((1-x.m.price/x.m.hi)*100)+'%</span>':'')+(state.rankMode==="B"?' '+crownBadge(x.m,true):'')+(exitPill(x.code,x.m,true)?' '+exitPill(x.code,x.m,true):'')+(state.rankMode==="B"?' '+yocPill(x.code,x.m,true):'')+(x.tap!=="mkt"?' <span class="aim" style="padding:2px 8px;'+(state.cmp.indexOf(x.code)>=0?'background:var(--B);color:#08131C;border-color:var(--B)':'color:var(--mut);border-color:var(--line)')+'" onclick="event.stopPropagation();quickCmp(\''+esc(x.code)+'\')">'+I("cmp",8)+' VS</span>':'')+'</div></div>'
+      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)
+      +(function(){
+        const B=[];
+        const push=(pri,html)=>{if(html)B.push({p:pri,h:html});};
+        push(0,exitPill(x.code,x.m,true));
+        push(1,(val(x.code,"memo")?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':''));
+        push(1,roePill(x.m,true));
+        push(2,(state.rankMode==="B"&&x.sB&&x.sB.gap!=null&&x.sB.gap>=0?'<span class="aim">'+I("target",9)+'射程</span>':''));
+        push(2,(state.rankMode==="B"&&x.sB&&(x.sB.g==="◎"||x.sB.g==="○")&&x.m.hi&&x.m.price&&x.m.price<=x.m.hi*0.85?'<span class="aim" style="color:var(--ok);border-color:var(--ok)">'+I("bolt",8)+'押し目'+Math.round((1-x.m.price/x.m.hi)*100)+'%</span>':''));
+        push(2,(state.rankMode==="B"?yocPill(x.code,x.m,true):''));
+        push(3,(state.rankMode==="B"?crownBadge(x.m,true):''));
+        push(4,((state.ov[x.code]||{}).tag?'<span class="aim" style="color:var(--mut);border-color:var(--line)">'+esc((state.ov[x.code]||{}).tag)+'</span>':''));
+        push(4,(isHib(x.code)?'<span class="aim" style="color:var(--dim);border-color:var(--line)">'+I("moon",8)+' 冬眠中</span>':''));
+        B.sort((a,b)=>a.p-b.p);
+        let out=B;
+        if(B.length>=3)out=B.slice(0,2).concat([{p:9,h:'<span class="aim" style="color:var(--dim);border-color:var(--line)">+'+(B.length-2)+'</span>'}]);
+        return out.map(b=>' '+b.h).join("");
+      })()
+      +(x.tap!=="mkt"?' <span class="aim" style="padding:2px 8px;'+(state.cmp.indexOf(x.code)>=0?'background:var(--B);color:#08131C;border-color:var(--B)':'color:var(--mut);border-color:var(--line)')+'" onclick="event.stopPropagation();quickCmp(\''+esc(x.code)+'\')">'+I("cmp",8)+' VS</span>':'')+'</div></div>'
       +miniRange(x.m.lo,x.m.hi,x.m.price,58,26,(state.rankMode==="B"&&x.sB)?x.sB.target:null)
       +'<div class="right">'+priceCell+'</div></button>';};
   const gr=s=>({"◎":4,"○":3,"?":2.5,"△":2,"×":0}[s.g]+(s.tier||0));
@@ -1186,14 +1236,14 @@ function renderHome(){
         +'<div style="margin-top:11px"><button class="abtn" style="width:100%" onclick="openCal()">'+I("cal",13)+' 配当カレンダー（月別の受取見込み）</button></div>'
         +'</div>';
     }
-    const tags=Array.from(new Set(allCodes().map(c=>(state.ov[c]||{}).tag).filter(Boolean)));
+    const tags=Array.from(new Set(allCodes().filter(c=>state.showHib||!isHib(c)).map(c=>(state.ov[c]||{}).tag).filter(Boolean)));
     if(tags.length){
       h+='<div class="chips" style="margin:-2px 0 12px;flex-wrap:wrap">'
         +'<button class="chip '+(state.tagFilter?"":"on")+'" onclick="setTagFilter(null)">すべて</button>'
         +tags.map(tg=>'<button class="chip '+(state.tagFilter===tg?"on":"")+'" onclick="setTagFilter(\''+esc(tg)+'\')">'+esc(tg)+'</button>').join("")+'</div>';
     }
     const list=allCodes().map(code=>{const m=metrics(code);return m?{code,m,sA:scoreA(m),sB:scoreB(m),tap:"saved"}:null;})
-      .filter(x=>x&&(state.rankFilter==="ALL"||x.m.mkt===state.rankFilter)&&(!state.tagFilter||((state.ov[x.code]||{}).tag===state.tagFilter)))
+      .filter(x=>x&&(state.rankFilter==="ALL"||x.m.mkt===state.rankFilter)&&(!state.tagFilter||((state.ov[x.code]||{}).tag===state.tagFilter))&&(state.showHib||!isHib(x.code)))
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
         return (gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));});
@@ -1315,7 +1365,7 @@ function renderDetail(){
   /* ヒーロー */
   h+='<div class="card hero"><div class="top"><div style="min-width:0">'
     +'<div class="code"><span class="mk">'+m.mkt+'</span>'+esc(code)+'・'+esc(m.sector||"業種未設定")+'</div>'
-    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m,state.simple).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m)||thrPill(code,m))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+crownBadge(m)+yocPill(code,m)+thrPill(code,m)+trapFlags(m,state.simple).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
+    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m,state.simple).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m)||thrPill(code,m)||roePill(m)||isHib(code))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+roePill(m)+crownBadge(m)+yocPill(code,m)+thrPill(code,m)+(isHib(code)?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--dim);border-color:var(--line)">'+I("moon",9)+' 冬眠中</span>':'')+trapFlags(m,state.simple).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
     +'<div style="flex:none">'
     +(m.price==null?'<div class="sk" style="width:110px;height:30px"></div>'
       :'<div class="px"'+(m.stale?' style="color:var(--mut)"':"")+'>'+money(m.price,m.ccy)+'</div><div class="dl">'+(m.stale?'<span style="color:var(--warn)">焼込 '+esc(ASOF.slice(5))+'</span>':dl(m))+'</div>')
@@ -1498,7 +1548,7 @@ function renderSheet(){
     }
   }
   if(state.sheet==="ovlist"){
-    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",avg:"取得単価",thr:"個別目標利回り",hmode:"保有モード",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
+    const FL={dps:"年間配当",eps_f:"予想EPS",bps:"BPS",payout:"配当性向",ncps:"1株NC",eq:"自己資本比率",cut10:"減配歴",hold:"保有株数",avg:"取得単価",thr:"個別目標利回り",hmode:"保有モード",hib:"冬眠",memo:"メモ",tag:"タグ",yoy:"EPS成長率"};
     const fmt=v=>v===true?"あり":v===false?"なし":(v==null?"—":String(v).slice(0,18));
     const ents=Object.keys(state.ov).filter(c=>Object.keys(state.ov[c]||{}).length);
     h+='<h2>手修正データ一覧 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>';
@@ -1548,6 +1598,10 @@ function renderSheet(){
       h+='<div class="f-lb" style="margin-top:12px">フィルタ（モードA）</div><div class="chips">'
         +'<button class="chip '+(state.nc1Only?"on":"")+'" onclick="toggleNc1()" style="display:flex;align-items:center;gap:5px">'+I("bolt",12)+' NC比率1.0以上のみ（会社の値段＜手元資金）</button></div>';
     }
+    if(state.rankSrc==="SAVED"){
+      h+='<div class="f-lb" style="margin-top:12px">保存タブ</div><div class="chips">'
+        +'<button class="chip '+(state.showHib?"on":"")+'" onclick="toggleHibView()" style="display:flex;align-items:center;gap:5px">'+I("moon",12)+' 冬眠中も表示</button></div>';
+    }
     h+='<div class="note" style="margin-top:10px">切り替えは即反映される。背面の番付が更新されたら「完了」で閉じる。</div>'
       +'<div style="margin-top:14px"><button class="abtn" style="width:100%" onclick="closeSheet()">完了</button></div>';
   }
@@ -1567,7 +1621,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R13 / 2026-08-05</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R14 / 2026-08-05</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
@@ -1608,6 +1662,7 @@ function renderSheet(){
     const F=[["dps","年間配当（1株）"],["eps_f","予想EPS"],["bps","BPS（1株純資産）"],["payout","配当性向 %"],["ncps","1株ネットキャッシュ"],["eq","自己資本比率 %"],["hold","保有株数（任意・市況枠監視用）"],["avg","取得単価（1株・任意。買値利回りとA撤退監視用）"],["thr","個別目標利回り %（任意・グローバル基準より高い値のみ有効）"]];
     const cut=val(code,"cut10");
     h+='<h2>数値を直す <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+      +(state.err?'<div class="err">'+esc(state.err)+'</div>':'')
       +'<div class="note" style="margin:0 0 10px">証券アプリの値を写すだけでOK。空欄＝収穫値に戻す。編集は端末に保存され、判定に即反映（鉛筆マーク付き）。</div>'
       +F.map(f=>'<div class="edrow"><span class="k">'+f[1]+(edited(code,f[0])?' <span style="color:var(--B)">'+I("pencil",11)+'</span>':"")+'</span>'
         +'<input inputmode="decimal" value="'+(val(code,f[0])==null?"":esc(val(code,f[0])))+'" placeholder="—" oninput="onEdit(\''+f[0]+'\',this.value)"></div>').join("")
@@ -1621,10 +1676,16 @@ function renderSheet(){
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==null?"on":"")+'" onclick="setHmode(null)">自動</button>'
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==="B"?"on":"")+'" onclick="setHmode(\'B\')">要塞B</button>'
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==="A"?"on":"")+'" onclick="setHmode(\'A\')">攻めA</button></div></div>'
+      +'<div class="edrow"><span class="k">冬眠（一覧・朝ダイジェストから隠す）'+(isHib(code)?' <span style="color:var(--B)">'+I("moon",11)+'</span>':"")+'</span>'
+      +'<div style="display:flex;gap:6px">'
+      +'<button class="chip '+(!isHib(code)?"on":"")+'" onclick="setHib(false)">通常</button>'
+      +'<button class="chip '+(isHib(code)?"on":"")+'" onclick="setHib(true)">冬眠</button></div></div>'
       +'<div class="f-lb" style="margin-top:14px">タグ（12字まで・保存タブで絞り込み）</div>'
       +'<input class="f-in" maxlength="12" placeholder="例: 核心 / 監視 / 決算待ち" value="'+esc(val(code,"tag")||"")+'" oninput="onTag(this.value)">'
       +'<div class="f-lb" style="margin-top:2px">じぶんメモ（200字まで・端末に保存）</div>'
       +'<textarea maxlength="200" placeholder="決算日・買う理由・確認したいこと…" style="width:100%;min-height:76px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--text);font-family:inherit" oninput="onMemo(this.value)">'+esc(val(code,"memo")||"")+'</textarea>'
+      +'<div class="chips" style="margin-top:8px;flex-wrap:wrap">'
+      +["[決算待ち]","[押し目待ち]","[有報のNC確認]","[減配歴チェック]"].map(sx=>'<button class="chip" style="margin:0" onclick="addMemoSnip(\''+sx+'\')">'+sx+'</button>').join("")+'</div>'
       +'<div style="margin-top:14px"><button class="abtn" style="width:100%" onclick="clearOv()">収穫値にすべて戻す</button></div>';
   }
   h+='</div></div>';
@@ -1661,6 +1722,7 @@ function render(){
     if(typeof s.simple==="boolean")state.simple=s.simple;
     if(s.mktCache)state.mktCache=s.mktCache;
     if(s.snap)state.snap=s.snap;
+    fixHibConflicts();
   }
   /* 同フォルダの dataset.json があれば焼き込みより優先（ホスティング時の更新用） */
   try{
