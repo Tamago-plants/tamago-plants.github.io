@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R12</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R13</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -359,7 +359,7 @@ function epsTrend(h){const v=(h||[]).map(num).filter(x=>x!=null);
   return{label:"下降",ok:false};}
 
 /* ============ 無料データ層（TradingViewスキャナー直結・プロキシ不要） ============ */
-const TV_COLS=["close","change","price_52_week_high","price_52_week_low","description","dividend_ex_date_upcoming","earnings_release_next_date","dividend_ex_date_recent","continuous_dividend_growth"];
+const TV_COLS=["close","change","price_52_week_high","price_52_week_low","description","dividend_ex_date_upcoming","earnings_release_next_date","dividend_ex_date_recent","continuous_dividend_growth","oper_income_ttm","net_income_ttm","total_revenue_ttm"];
 async function tvScan(region,tickers){
   const r=await fetch("https://scanner.tradingview.com/"+region+"/scan",{
     method:"POST",
@@ -367,11 +367,11 @@ async function tvScan(region,tickers){
   if(!r.ok)throw new Error("TradingView応答エラー ("+r.status+")");
   const j=await r.json();const out={};
   (j.data||[]).forEach(row=>{const d=row.d||[];
-    out[row.s]={p:d[0],chg:d[1],hi:d[2],lo:d[3],desc:d[4],exU:d[5],erN:d[6],exR:d[7],cdg:d[8]};});
+    out[row.s]={p:d[0],chg:d[1],hi:d[2],lo:d[3],desc:d[4],exU:d[5],erN:d[6],exR:d[7],cdg:d[8],oi:d[9],ni:d[10],rev:d[11]};});
   return out;
 }
 const TV_SEC_JA={"Utilities":"電力・公益","Communications":"通信","Consumer Non-Durables":"生活必需品・食品","Health Technology":"医薬品","Health Services":"ヘルスケア","Energy Minerals":"エネルギー","Non-Energy Minerals":"素材・鉄鋼(市況)","Transportation":"陸運・輸送","Distribution Services":"卸売","Finance":"金融","Process Industries":"素材・化学","Producer Manufacturing":"機械","Consumer Durables":"耐久消費財","Retail Trade":"小売","Commercial Services":"サービス","Consumer Services":"サービス","Technology Services":"情報サービス","Electronic Technology":"電子技術","Industrial Services":"産業サービス","Miscellaneous":"その他"};
-const MKT_COLS=["name","description","close","change","dividend_yield_recent","price_earnings_ttm","price_book_ratio","market_cap_basic","sector","price_52_week_high","price_52_week_low","dividend_payout_ratio_ttm","total_current_assets_fq","total_liabilities_fq","total_shares_outstanding_fundamental","continuous_dividend_growth","earnings_per_share_diluted_yoy_growth_ttm","total_assets_fq","dividend_ex_date_upcoming","earnings_release_next_date","dividend_ex_date_recent"];
+const MKT_COLS=["name","description","close","change","dividend_yield_recent","price_earnings_ttm","price_book_ratio","market_cap_basic","sector","price_52_week_high","price_52_week_low","dividend_payout_ratio_ttm","total_current_assets_fq","total_liabilities_fq","total_shares_outstanding_fundamental","continuous_dividend_growth","earnings_per_share_diluted_yoy_growth_ttm","total_assets_fq","dividend_ex_date_upcoming","earnings_release_next_date","dividend_ex_date_recent","oper_income_ttm","net_income_ttm","total_revenue_ttm"];
 async function tvMarket(mode,mkt){
   const region=mkt==="JP"?"japan":"america";
   let filter,sort;
@@ -393,7 +393,7 @@ async function tvMarket(mode,mkt){
   const j=await r.json();
   return (j.data||[]).map(row=>{const d=row.d||[];
     return{code:cc(d[0]),sym:row.s,name:d[1]||d[0],p:d[2],chg:d[3],yld:d[4],per:d[5],pb:d[6],
-      mcap:d[7],sec:d[8],hi:d[9],lo:d[10],payout:d[11],ca:d[12],tl:d[13],shs:d[14],cdg:d[15],yoy:d[16],ta:d[17],exU:d[18],erN:d[19],exR:d[20],mkt:mkt};})
+      mcap:d[7],sec:d[8],hi:d[9],lo:d[10],payout:d[11],ca:d[12],tl:d[13],shs:d[14],cdg:d[15],yoy:d[16],ta:d[17],exU:d[18],erN:d[19],exR:d[20],oi:d[21],ni:d[22],rev:d[23],mkt:mkt};})
     .filter(o=>o.code&&o.p!=null)
     .filter(o=>mode!=="B"||!/reit|investment corp|投資法人|infrastructure fund|preferred|pfd|depositary|unsponsored|sponsored adr|warrant|\bunits?\b|\bnotes?\b/i.test(o.name));
 }
@@ -403,7 +403,7 @@ function mFromRow(o){
   const ncps=(o.ca!=null&&o.tl!=null&&sh)?(o.ca-o.tl)/sh:null;
   return{code:o.code,mkt:o.mkt,ccy:o.mkt==="JP"?"JPY":"USD",name:o.name,
     sector:TV_SEC_JA[o.sec]||o.sec||"",desc:"",life:[],custom:false,marketRow:true,
-    stale:false,price:o.p,chg:o.chg,hi:o.hi,lo:o.lo,pxTs:Date.now(),exU:o.exU,erN:o.erN,exR:o.exR,cdg:(o.cdg!=null?o.cdg:null),
+    stale:false,price:o.p,chg:o.chg,hi:o.hi,lo:o.lo,pxTs:Date.now(),exU:o.exU,erN:o.erN,exR:o.exR,cdg:(o.cdg!=null?o.cdg:null),oi:(o.oi!=null?o.oi:null),ni:(o.ni!=null?o.ni:null),rev:(o.rev!=null?o.rev:null),
     per:(o.per&&o.per>0)?o.per:null,pbr:(o.pb&&o.pb>0)?o.pb:null,bpsNeg:o.pb!=null&&o.pb<0,
     yld:o.yld,dps:dps,payout:o.payout!=null?Math.round(o.payout*10)/10:null,
     eq:(o.ta&&o.tl!=null&&o.ta>0)?Math.round((o.ta-o.tl)/o.ta*1000)/10:null,
@@ -425,7 +425,7 @@ async function ensureMkt(force){
       const rows=await tvMarket(state.rankMode,mkt);
       state.mktCache[k]={rows:rows,ts:Date.now()};
       const now=Date.now();
-      rows.forEach(o=>{ if(recOf(o.code)) state.px[o.code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,ts:now}; });
+      rows.forEach(o=>{ if(recOf(o.code)) state.px[o.code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,oi:o.oi,ni:o.ni,rev:o.rev,ts:now}; });
     }
     state.offlineTs=null;
     saveAll();
@@ -448,7 +448,7 @@ function importMktRow(o){
     sh:o.shs||null,eps_f:(o.per&&o.per>0&&o.p)?Math.round(o.p/o.per*100)/100:null,
     bps:(o.pb&&o.pb>0&&o.p)?Math.round(o.p/o.pb*100)/100:null,
     dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,ncSimple:true,hist:[],cut10:m.cut};
-  state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,ts:Date.now()};
+  state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,oi:o.oi,ni:o.ni,rev:o.rev,ts:Date.now()};
   return true;
 }
 function tapMkt(code){
@@ -505,7 +505,7 @@ function metrics(code){
     yld:(price&&dps!=null)?dps/price*100:null, dps, payout, eq,
     mcap:(price&&sh)?price*sh/1e6:null,
     nc:(ncps!=null&&sh)?ncps*sh/1e6:null, ncr:(ncps!=null&&price)?ncps/price:null, ncps,
-    exU:px.exU!=null?px.exU:null, erN:px.erN!=null?px.erN:null, exR:px.exR!=null?px.exR:null, cdg:px.cdg!=null?px.cdg:null,
+    exU:px.exU!=null?px.exU:null, erN:px.erN!=null?px.erN:null, exR:px.exR!=null?px.exR:null, cdg:px.cdg!=null?px.cdg:null, oi:px.oi!=null?px.oi:null, ni:px.ni!=null?px.ni:null, rev:px.rev!=null?px.rev:null,
     hist:r.hist||[], cut, yoy:num(val(code,"yoy")), ncSimple:!!r.ncSimple,
   };
 }
@@ -525,6 +525,13 @@ function thrPill(code,m){
   const g=thrFor(m.mkt), o=num((state.ov[code]||{}).thr);
   if(!(o&&o>g))return"";
   return '<span class="aim" style="font-size:10px;padding:2px 8px">個別基準 '+o.toFixed(1)+'%</span>';
+}
+function cosmFlag(m){
+  if(m.oi==null||m.ni==null)return 0;
+  if(m.oi<=0&&m.ni>0)return 1;
+  const lim=hit(m.sector||"",S_FIN)?2:1.5;
+  if(m.oi>0&&m.ni>m.oi*lim)return 2;
+  return 0;
 }
 
 function scoreA(m){
@@ -576,7 +583,9 @@ function scoreB(m){
     {k:"過去10年 減配なし",pk:"配当を減らした歴史",p:m.cut==null?null:!m.cut,
      v:em(m.code,"cut10",m.cut==null?"—":(m.cut?"減配あり":"非減配")),
      pv:em(m.code,"cut10",m.cut==null?"不明":(m.cut?"10年内にあり":"10年なし")),hard:true},
-    {k:"EPS 横ばい〜右肩上がり",pk:"利益の傾向",p:t.ok,v:t.label,pv:t.label,hard:true},
+    {k:"EPS 横ばい〜右肩上がり",pk:"利益の傾向",p:t.ok,
+     v:t.label+((t.ok===true&&cosmFlag(m))?"（※一時益混入疑い）":""),
+     pv:t.label+((t.ok===true&&cosmFlag(m))?"（※一時益が混ざっている可能性）":""),hard:true},
     {k:"予想PER 20倍未満",pk:"利益に対する値段",p:m.per==null?null:m.per<20,
      v:em(m.code,"eps_f",fx2(m.per,"倍",1)),pv:m.per==null?"—":em(m.code,"eps_f","利益"+m.per.toFixed(1)+"年分"),hard:true},
     {k:"PBR 1.3倍以下（参考）",pk:"純資産との比較（参考）",p:m.bpsNeg?null:(m.pbr==null?null:m.pbr<=1.3),
@@ -609,6 +618,9 @@ function trapFlags(m,pl){const f=[];
   if(m.dps>0&&m.payout!=null&&m.payout>(m.mkt==="US"?80:70))f.push(pl?"利益以上の配当を出している（減配の危険・性向"+Math.round(m.payout)+"%）":"配当維持力に疑問（性向"+Math.round(m.payout)+"%）");
   if(m.dps>0&&m.payout==null&&m.per==null)f.push(pl?"利益が確認できないのに配当が出ている（タコ配の可能性）":"赤字/利益不明のまま配当の疑い");
   if(m.per!=null&&m.per<3.5)f.push(pl?"一時的なもうけで安く見えているだけの可能性（PER"+m.per.toFixed(1)+"倍）":"PER"+m.per.toFixed(1)+"倍＝一時的利益の疑い");
+  const cf=cosmFlag(m);
+  if(cf===1)f.push(pl?"本業は赤字なのに最終黒字（資産売却などの一時的なもうけで黒字に見えている可能性。決算短信の特別利益を確認）":"営業赤字なのに最終黒字（本業は赤字で、資産売却益等により最終利益を作っている可能性。決算短信の特別利益を確認）");
+  else if(cf===2)f.push(pl?"最終利益が本業のもうけの"+(m.ni/m.oi).toFixed(1)+"倍（一時的なもうけが混ざっている可能性。決算短信の特別利益を確認）":"純利益が本業超過（営業利益の"+(m.ni/m.oi).toFixed(1)+"倍。特別利益の有無を確認）");
   return f;}
 const fxNow=()=>state.fxAuto&&state.fxAuto.v?state.fxAuto.v:150;
 function timeFlags(m){
@@ -965,7 +977,7 @@ async function refreshAll(force){
       us.length?tvScan("america",us):Promise.resolve({})]);
     const res=Object.assign({},both[0],both[1]),now=Date.now();
     Object.keys(res).forEach(s=>{const c=map[s],d=res[s];
-      if(c&&d&&d.p!=null)state.px[c]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,exU:d.exU,erN:d.erN,exR:d.exR,cdg:d.cdg,ts:now};});
+      if(c&&d&&d.p!=null)state.px[c]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,exU:d.exU,erN:d.erN,exR:d.exR,cdg:d.cdg,oi:d.oi,ni:d.ni,rev:d.rev,ts:now};});
     saveAll();
   }catch(e){state.err=netErr(e);}
   state.busyPx=false;render();
@@ -980,7 +992,7 @@ async function refreshOne(code){
     const key=Object.keys(res).find(s=>res[s]&&res[s].p!=null);
     if(!key)throw new Error("株価が見つからない");
     const d=res[key];
-    state.px[code]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,exU:d.exU,erN:d.erN,exR:d.exR,cdg:d.cdg,ts:Date.now()};
+    state.px[code]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,exU:d.exU,erN:d.erN,exR:d.exR,cdg:d.cdg,oi:d.oi,ni:d.ni,rev:d.rev,ts:Date.now()};
     saveAll();
   }catch(e){state.err=netErr(e);}
   state.busyOne=false;render();
@@ -999,7 +1011,7 @@ async function addCustom(q){
     state.custom[raw]={custom:true,mkt:isJP?"JP":"US",ccy:isJP?"JPY":"USD",
       asof:new Date().toISOString().slice(0,10),ysym:key,n:d.desc||raw,s:"",d:"未収録銘柄。「数値を直す」からファンダを手入力すると完全判定できる。",l:[],
       sh:null,eps_f:null,bps:null,dps:null,payout:null,ncps:null,eq:null,hist:[],cut10:null};
-    state.px[raw]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,cdg:d.cdg,ts:Date.now()};
+    state.px[raw]={p:d.p,chg:d.chg,hi:d.hi,lo:d.lo,exU:d.exU,erN:d.erN,exR:d.exR,cdg:d.cdg,oi:d.oi,ni:d.ni,rev:d.rev,ts:Date.now()};
     state.cur=raw;state.view="detail";state.q="";
     saveAll();
   }catch(e){state.err=e.message||"取得に失敗した";}
@@ -1555,7 +1567,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R12 / 2026-07-21</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R13 / 2026-08-05</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
