@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R14</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R15</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -273,7 +273,7 @@ const dn=m=>(m&&m.mkt==="JP"&&NAMESJP[m.code])||m.name;
 const state = {
   view:"home", cur:null, simple:true,
   set:{ jp:{rate:1.0,spread:3.0}, us:{rate:3.75,spread:1.0} },
-  ov:{}, custom:{}, px:{}, fxAuto:null, snap:[], showHib:false,
+  ov:{}, custom:{}, px:{}, divWatch:{}, fxAuto:null, snap:[], showHib:false,
   rankMode:"A", rankFilter:"JP",
   rankSrc:"MKT", mktCache:{}, mktBusy:false, offlineTs:null,
   q:"", err:null, busyPx:false, busyOne:false,
@@ -294,7 +294,7 @@ const store = (()=>{
       async save(o){ try{localStorage.setItem("hst3",JSON.stringify(o));}catch(e){} } };
   }catch(e){ let mem=null; return {async load(){return mem;},async save(o){mem=o;}}; }
 })();
-function saveAll(){ store.save({set:state.set,ov:state.ov,custom:state.custom,px:state.px,fxAuto:state.fxAuto,simple:state.simple,mktCache:state.mktCache,snap:state.snap}); }
+function saveAll(){ store.save({set:state.set,ov:state.ov,custom:state.custom,px:state.px,fxAuto:state.fxAuto,simple:state.simple,mktCache:state.mktCache,snap:state.snap,divWatch:state.divWatch}); }
 
 /* ============ ユーティリティ ============ */
 const num=v=>{if(v===null||v===undefined||v==="")return null;
@@ -403,7 +403,7 @@ function mFromRow(o){
   const dps=(o.yld!=null&&o.p)?Math.round(o.yld*o.p)/100:null;
   const ncps=(o.ca!=null&&o.tl!=null&&sh)?(o.ca-o.tl)/sh:null;
   return{code:o.code,mkt:o.mkt,ccy:o.mkt==="JP"?"JPY":"USD",name:o.name,
-    sector:TV_SEC_JA[o.sec]||o.sec||"",desc:"",life:[],custom:false,marketRow:true,
+    sector:((state.ov[o.code]||{}).sec)||TV_SEC_JA[o.sec]||o.sec||"",sector0:TV_SEC_JA[o.sec]||o.sec||"",desc:"",life:[],custom:false,marketRow:true,
     stale:false,price:o.p,chg:o.chg,hi:o.hi,lo:o.lo,pxTs:Date.now(),exU:o.exU,erN:o.erN,exR:o.exR,cdg:(o.cdg!=null?o.cdg:null),oi:(o.oi!=null?o.oi:null),ni:(o.ni!=null?o.ni:null),rev:(o.rev!=null?o.rev:null),
     per:(o.per&&o.per>0)?o.per:null,pbr:(o.pb&&o.pb>0)?o.pb:null,bpsNeg:o.pb!=null&&o.pb<0,
     yld:o.yld,dps:dps,payout:o.payout!=null?Math.round(o.payout*10)/10:null,
@@ -426,7 +426,7 @@ async function ensureMkt(force){
       const rows=await tvMarket(state.rankMode,mkt);
       state.mktCache[k]={rows:rows,ts:Date.now()};
       const now=Date.now();
-      rows.forEach(o=>{ if(recOf(o.code)) state.px[o.code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,oi:o.oi,ni:o.ni,rev:o.rev,ts:now}; });
+      rows.forEach(o=>{ if(recOf(o.code)){ state.px[o.code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,oi:o.oi,ni:o.ni,rev:o.rev,ts:now}; noteDivObs(o.code,o.yld,now); } });
     }
     state.offlineTs=null;
     saveAll();
@@ -450,6 +450,7 @@ function importMktRow(o){
     bps:(o.pb&&o.pb>0&&o.p)?Math.round(o.p/o.pb*100)/100:null,
     dps:m.dps,payout:m.payout,ncps:m.ncps,eq:m.eq,yoy:m.yoy,ncSimple:true,hist:[],cut10:m.cut};
   state.px[code]={p:o.p,chg:o.chg,hi:o.hi,lo:o.lo,exU:o.exU,erN:o.erN,exR:o.exR,cdg:o.cdg,oi:o.oi,ni:o.ni,rev:o.rev,ts:Date.now()};
+  noteDivObs(code,o.yld,Date.now());
   return true;
 }
 function tapMkt(code){
@@ -499,7 +500,7 @@ function metrics(code){
   const payout=num(val(code,"payout")),ncps=num(val(code,"ncps")),eq=num(val(code,"eq"));
   const cut=val(code,"cut10"); const sh=r.sh;
   return{
-    code, mkt:r.mkt, ccy:r.ccy, name:r.n, sector:r.s, desc:r.d, life:r.l||[],
+    code, mkt:r.mkt, ccy:r.ccy, name:r.n, sector:((state.ov[code]||{}).sec)||r.s, sector0:r.s, desc:r.d, life:r.l||[],
     custom:!!r.custom, stale:!live&&price!=null, price, chg:px.chg, hi:px.hi, lo:px.lo, pxTs:px.ts,
     per:(price&&eps&&eps>0)?price/eps:null,
     pbr:(price&&bps&&bps>0)?price/bps:null, bpsNeg:bps!=null&&bps<=0,
@@ -942,6 +943,7 @@ function verdict(m,sA,sB){
     if(sA.g==="◎"||sA.g==="○")act="今すぐ買う銘柄ではなく「待ち伏せ」。増配・自社株買いのニュースが出た瞬間が動く合図";
   }
   if((useB&&sB.g==="?")||(!useB&&sA.g==="?"))act="「数値を直す」で足りない数字を入れると判定が完成する";
+  if(divLossOn(m.code))cons.unshift("⚠ 配当利回りデータが消失（TOB・上場廃止等のイベントで配当予想が取り下げられた可能性。適時開示を確認）");
   return{title,pros:pros.slice(0,3),cons:cons.slice(0,3),act,mode:useB?"B":"A",col:useB?"var(--B)":"var(--A)"};
 }
 
@@ -1055,12 +1057,13 @@ function openStock(code){state.cur=code;state.view="detail";state.err=null;state
 function setRank(m){state.rankMode=m;render();ensureMkt(false);}
 function setFilter(f){state.rankFilter=f;render();ensureMkt(false);}
 function onQ(v){state.q=v;renderSearchList();}
-function buildBackup(){return{v:1,app:"kantei-terminal",date:new Date().toISOString().slice(0,10),set:state.set,ov:state.ov,custom:state.custom,simple:state.simple,snap:state.snap};}
+function buildBackup(){return{v:1,app:"kantei-terminal",date:new Date().toISOString().slice(0,10),set:state.set,ov:state.ov,custom:state.custom,simple:state.simple,snap:state.snap,divWatch:state.divWatch};}
 function applyBackup(o){
   if(!o||o.app!=="kantei-terminal")throw new Error("形式が違う");
   if(o.set)state.set=o.set; if(o.ov)state.ov=o.ov; if(o.custom)state.custom=o.custom;
   if(typeof o.simple==="boolean")state.simple=o.simple;
   if(o.snap)state.snap=o.snap;
+  if(o.divWatch)state.divWatch=o.divWatch;
   fixHibConflicts();
   saveAll();}
 function exportData(){
@@ -1105,6 +1108,38 @@ function fixHibConflicts(){
 function setCut(v){const code=state.cur;if(!code)return;
   if(!state.ov[code])state.ov[code]={};
   if(v===null)delete state.ov[code].cut10;else state.ov[code].cut10=v;
+  saveAll();render();}
+/* 提案43: 配当データ消失の間接検知(TOB・上場廃止等のイベントシグナル。判定グレードには不介入) */
+function noteDivObs(code,y,now){
+  now=now||Date.now();
+  state.divWatch=state.divWatch||{};
+  const w=state.divWatch[code]||(state.divWatch[code]={});
+  if(y!=null){w.had=true;w.n=0;w.on=false;w.t=now;return;}
+  if(!w.had)return;
+  if(w.t&&now-w.t<3600e3)return;
+  w.n=(w.n||0)+1;w.t=now;
+  if(w.n>=2)w.on=true;
+}
+function divLossOn(code){const w=(state.divWatch||{})[code];return !!(w&&w.on);}
+function divLossPill(code,small){
+  if(!divLossOn(code))return"";
+  return '<span class="aim" style="font-size:'+(small?'9px':'10px')+';padding:'+(small?'1px 6px':'2px 8px')+';color:var(--warn);border-color:var(--warn)">'+I("alert",small?8:10)+' 配当データ消失</span>';
+}
+/* 提案42: セクター補正(選択式・判定/市況枠/内訳の分類語彙から選ぶ。自由入力は表記ゆれの温床のため不採用) */
+const SEC_OV_OPTS=[
+ ["ディフェンシブ核として扱う",["通信","情報サービス","電力・公益","食料品","医薬品","ヘルスケア","鉄道・陸運","水産","小売"]],
+ ["市況枠(25%上限)として扱う",["商社","卸売","銀行","保険","鉄鋼","非鉄","海運","石油・エネルギー","鉱業"]],
+ ["対象外として扱う",["不動産","証券","その他金融","REIT","その他(対象外)"]]];
+function secOvOptions(code){
+  const cur=(state.ov[code]||{}).sec||"";
+  const r=recOf(code); const base=(r&&r.s)||"";
+  let h='<option value=""'+(cur?"":" selected")+'>補正なし('+esc(base||"—")+')</option>';
+  SEC_OV_OPTS.forEach(g=>{h+='<optgroup label="'+g[0]+'">'+g[1].map(x=>'<option value="'+x+'"'+(cur===x?" selected":"")+'>'+x+'</option>').join("")+'</optgroup>';});
+  return h;
+}
+function setSecOv(v){const code=state.cur;if(!code)return;
+  state.ov[code]=state.ov[code]||{};
+  if(v)state.ov[code].sec=v;else{delete state.ov[code].sec;if(!Object.keys(state.ov[code]).length)delete state.ov[code];}
   saveAll();render();}
 function clearOv(){if(!state.cur)return;
   const o=state.ov[state.cur];if(!o)return;
@@ -1168,11 +1203,13 @@ function renderHome(){
     return '<button class="rk" onclick="'+(x.tap==="mkt"?'tapMkt(\''+esc(x.code)+'\')':'openStock(\''+esc(x.code)+'\')')+'">'
       +'<span class="no"'+(i===0?' style="color:#E8C36A;font-weight:800"':i===1?' style="color:#B4C1D8;font-weight:800"':i===2?' style="color:#C98A5E;font-weight:800"':'')+'>'+(i+1)+'</span>'+ring(state.simple?passRatio(s):s.fit,s.g,col,32)
       +'<div class="mid"><div class="nm">'+esc(dn(x.m))+'</div>'
-      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)
+      +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)+(x.m.sector0&&x.m.sector!==x.m.sector0?'<span style="font-size:9px;color:var(--mut)">(補正)</span>':'')
       +(function(){
         const B=[];
         const push=(pri,html)=>{if(html)B.push({p:pri,h:html});};
         push(0,exitPill(x.code,x.m,true));
+        push(0,(cosmFlag(x.m)?'<span class="aim" style="color:var(--ng);border-color:var(--ng)">'+I("alert",8)+' '+(state.simple?"見かけ黒字疑い":"化粧疑い")+'</span>':''));
+        push(1,divLossPill(x.code,true));
         push(1,(val(x.code,"memo")?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':''));
         push(1,roePill(x.m,true));
         push(2,(state.rankMode==="B"&&x.sB&&x.sB.gap!=null&&x.sB.gap>=0?'<span class="aim">'+I("target",9)+'射程</span>':''));
@@ -1365,14 +1402,14 @@ function renderDetail(){
   /* ヒーロー */
   h+='<div class="card hero"><div class="top"><div style="min-width:0">'
     +'<div class="code"><span class="mk">'+m.mkt+'</span>'+esc(code)+'・'+esc(m.sector||"業種未設定")+'</div>'
-    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m,state.simple).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m)||thrPill(code,m)||roePill(m)||isHib(code))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+roePill(m)+crownBadge(m)+yocPill(code,m)+thrPill(code,m)+(isHib(code)?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--dim);border-color:var(--line)">'+I("moon",9)+' 冬眠中</span>':'')+trapFlags(m,state.simple).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
+    +'<div class="nm">'+esc(dn(m))+'</div>'+((trapFlags(m,state.simple).length||timeFlags(m).length||dipP||crownBadge(m)||yocPill(code,m)||exitPill(code,m)||thrPill(code,m)||roePill(m)||divLossOn(code)||isHib(code))?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px">'+exitPill(code,m)+roePill(m)+divLossPill(code)+crownBadge(m)+yocPill(code,m)+thrPill(code,m)+(isHib(code)?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--dim);border-color:var(--line)">'+I("moon",9)+' 冬眠中</span>':'')+trapFlags(m,state.simple).map(x=>'<span class="wtag">⚠ '+esc(x.split("（")[0])+'</span>').join("")+timeFlags(m).map(x=>'<span class="ttag">'+esc(x.t)+'</span>').join("")+(dipP?'<span class="aim" style="font-size:10px;padding:2px 8px;color:var(--ok);border-color:var(--ok)">'+I("bolt",9)+' 押し目 高値−'+dipP+'%</span>':"")+'</div>':"")+'</div>'
     +'<div style="flex:none">'
     +(m.price==null?'<div class="sk" style="width:110px;height:30px"></div>'
       :'<div class="px"'+(m.stale?' style="color:var(--mut)"':"")+'>'+money(m.price,m.ccy)+'</div><div class="dl">'+(m.stale?'<span style="color:var(--warn)">焼込 '+esc(ASOF.slice(5))+'</span>':dl(m))+'</div>')
     +'</div></div>'
     +'<div style="margin-top:14px"></div>'
     +rangeBar(m.lo,m.hi,m.price,sB.target,m.ccy)
-    +'<div class="as">PRICE '+(m.pxTs?ago(m.pxTs):"—")+' ・ '+(rc.custom?"取込 ":"FUNDAMENTALS ")+esc(fA)+(Object.keys(state.ov[code]||{}).length?" ＋手修正":"")+'</div>'
+    +'<div class="as">PRICE '+(m.pxTs?ago(m.pxTs):"—")+' ・ '+(rc.custom?"取込 ":"FUNDAMENTALS ")+esc(fA)+(((state.ov[code]||{}).sec)?" ・ 業種 "+esc(m.sector0||"—")+"→"+esc(m.sector)+"(補正)":"")+(Object.keys(state.ov[code]||{}).length?" ＋手修正":"")+'</div>'
     +tipChips(m,sB)
     +'<div class="seals">'
     +'<div class="sealbox" onclick="openWhy(\'A\')">'+ring(state.simple?passRatio(sA):sA.fit,sA.g,"var(--A)",46)+'<div><div class="m" style="color:var(--A)">MODE A / 攻め</div><div class="gl">'+esc(sA.gl)+'</div><div class="fp">'+(state.simple?pc(sA):Math.round(sA.fit*100)+'% fit')+'</div></div></div>'
@@ -1621,7 +1658,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R14 / 2026-08-05</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R15 / 2026-08-10</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
@@ -1676,6 +1713,8 @@ function renderSheet(){
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==null?"on":"")+'" onclick="setHmode(null)">自動</button>'
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==="B"?"on":"")+'" onclick="setHmode(\'B\')">要塞B</button>'
       +'<button class="chip '+(((state.ov[code]||{}).hmode)==="A"?"on":"")+'" onclick="setHmode(\'A\')">攻めA</button></div></div>'
+      +'<div class="edrow"><span class="k">セクター補正（判定・市況枠・内訳に反映）'+(((state.ov[code]||{}).sec)?' <span style="color:var(--B)">'+I("pencil",11)+'</span>':"")+'</span>'
+      +'<select onchange="setSecOv(this.value)" style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:6px 8px;font-size:12px;max-width:180px">'+secOvOptions(code)+'</select></div>'
       +'<div class="edrow"><span class="k">冬眠（一覧・朝ダイジェストから隠す）'+(isHib(code)?' <span style="color:var(--B)">'+I("moon",11)+'</span>':"")+'</span>'
       +'<div style="display:flex;gap:6px">'
       +'<button class="chip '+(!isHib(code)?"on":"")+'" onclick="setHib(false)">通常</button>'
@@ -1722,6 +1761,7 @@ function render(){
     if(typeof s.simple==="boolean")state.simple=s.simple;
     if(s.mktCache)state.mktCache=s.mktCache;
     if(s.snap)state.snap=s.snap;
+    if(s.divWatch)state.divWatch=s.divWatch;
     fixHibConflicts();
   }
   /* 同フォルダの dataset.json があれば焼き込みより優先（ホスティング時の更新用） */
