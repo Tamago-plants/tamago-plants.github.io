@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R15.1</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R16</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -534,6 +534,57 @@ function cosmFlag(m){
   const lim=hit(m.sector||"",S_FIN)?2:1.5;
   if(m.oi>0&&m.ni>m.oi*lim)return 2;
   return 0;
+}
+/* ============ T1 2軸表示(build R16 / T1a・2026-08-11) ============
+   周囲色=判定(緑g/黄y/赤r)・中央=データ確認度%。内部値◎○?△×は不変(P-003互換・既存E2E温存)。
+   価格ゾーン(旧◎○の差)は価格ゲージ/射程バッジへ委譲(T1-⑧)のため、Bの利回り行はリングの条件判定から除外(確認度%には算入)。
+   T1.relaxGreen: 実測ゲート(T1c)で全市場B上位40の緑が0〜2件なら緩和案1へ切替する1フラグ(現在は厳格緑)。
+   T1.redShape: "dia"(菱形)|"oct"(八角形)。20px実寸スクショ比較+オーナー目視で最終決定。 */
+const T1={relaxGreen:false,redShape:"dia"};
+function t1Of(m,s,mode){
+  const rows=s.rows,isB=mode==="B";
+  const w=r=>isB?(r.hard?2:1):2;
+  let den=0,got=0;rows.forEach(r=>{den+=w(r);if(r.p!==null)got+=w(r);});
+  const pct=den?Math.round(got/den*100):0;
+  const unconf=rows.filter(r=>r.p===null).length;
+  const cond=isB?rows.filter(r=>r.k.indexOf("利回り")!==0):rows;
+  const hardNG=cond.filter(r=>(isB?r.hard:true)&&r.p===false).length;
+  const refNG=isB?cond.filter(r=>!r.hard&&r.p===false).length:0;
+  const cosm=cosmFlag(m)>0;
+  let color,dash=false,why=null,capped=false;
+  if(isB?hardNG>=1:hardNG>=2)color="r";
+  else if(!isB&&hardNG===1){color="y";dash=unconf>0;why="あと1条件";}
+  else if(refNG>=1){color="y";dash=unconf>0;
+    const rf=cond.find(r=>!r.hard&&r.p===false);
+    why=rf&&rf.k.indexOf("PBR")>=0?"PBR注意":"自己資本注意";}
+  else if(unconf>0){
+    const hardUnc=rows.filter(r=>(isB?r.hard:true)&&r.p===null).length;
+    if(T1.relaxGreen&&hardUnc===0&&!cosm)color="g";
+    else{color="y";dash=true;}}
+  else if(cosm){color="y";capped=true;}
+  else color="g";
+  return{color,pct,dash,why,capped,unconf};
+}
+function t1Ring(t,size,pre){
+  const col=t.color==="g"?"var(--ok)":t.color==="y"?"var(--warn)":"var(--ng)";
+  const mid=size/2,r=mid-3.5,C=2*Math.PI*r;
+  let bg,fg;
+  if(t.color==="r"){
+    const pts=T1.redShape==="oct"
+      ?(function(){const a=[];for(let i=0;i<8;i++){const th=Math.PI/8+i*Math.PI/4;a.push((mid+r*Math.cos(th)).toFixed(1)+","+(mid+r*Math.sin(th)).toFixed(1));}return a.join(" ");})()
+      :mid+","+(mid-r)+" "+(mid+r)+","+mid+" "+mid+","+(mid+r)+" "+(mid-r)+","+mid;
+    bg='<polygon points="'+pts+'" fill="var(--panel2)" stroke="#1C2540" stroke-width="3"/>';
+    fg='<polygon points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="3" stroke-linejoin="round"/>';
+  }else{
+    bg='<circle cx="'+mid+'" cy="'+mid+'" r="'+r+'" fill="var(--panel2)" stroke="#1C2540" stroke-width="3"/>';
+    const dp=t.color==="y"&&t.dash?' stroke-dasharray="'+(size*0.11).toFixed(1)+' '+(size*0.11).toFixed(1)+'"'
+      :t.color==="y"?' stroke-dasharray="'+(C*0.8).toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(54 '+mid+' '+mid+')"':'';
+    fg='<circle cx="'+mid+'" cy="'+mid+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="3" stroke-linecap="round"'+dp+'/>';
+  }
+  const label=(pre&&size>=40?"確":"")+t.pct+"%";
+  const fs=size*(label.length>=5?0.21:label.length===4?0.25:0.29);
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="flex:none" class="t1r t1-'+t.color+(t.dash?" t1-dash":"")+'">'+bg+fg
+    +'<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="'+fs.toFixed(1)+'" font-weight="800" fill="'+col+'">'+label+'</text></svg>';
 }
 function roeOf(m){
   if(m.per==null||m.pbr==null||!(m.per>0)||!(m.pbr>0)||m.bpsNeg)return null;
@@ -1196,12 +1247,13 @@ function renderHome(){
   const col=state.rankMode==="A"?"var(--A)":"var(--B)";
   const rowHtml=(x,i)=>{
     const s=state.rankMode==="A"?x.sA:x.sB;
+    const t1=t1Of(x.m,s,state.rankMode);
     const metric=state.rankMode==="A"?(x.m.ncr==null?"—":(state.simple?"資金 ":"NC ")+x.m.ncr.toFixed(2)):(x.m.yld==null?"—":(state.simple?"配当 ":"")+x.m.yld.toFixed(2)+"%");
     const priceCell=x.m.price==null
       ?'<div class="sk" style="width:64px;height:36px"></div>'
       :'<div class="mt'+((Date.now()-(x.m.pxTs||0))<4000?' pop':'')+'" style="color:'+col+'">'+metric+'</div><div class="dl">'+dl(x.m)+'</div>';
     return '<button class="rk" onclick="'+(x.tap==="mkt"?'tapMkt(\''+esc(x.code)+'\')':'openStock(\''+esc(x.code)+'\')')+'">'
-      +'<span class="no"'+(i===0?' style="color:#E8C36A;font-weight:800"':i===1?' style="color:#B4C1D8;font-weight:800"':i===2?' style="color:#C98A5E;font-weight:800"':'')+'>'+(i+1)+'</span>'+ring(state.simple?passRatio(s):s.fit,s.g,col,32)
+      +'<span class="no"'+(i===0?' style="color:#E8C36A;font-weight:800"':i===1?' style="color:#B4C1D8;font-weight:800"':i===2?' style="color:#C98A5E;font-weight:800"':'')+'>'+(i+1)+'</span>'+t1Ring(t1,32)
       +'<div class="mid"><div class="nm">'+esc(dn(x.m))+'</div>'
       +'<div class="sub"><span class="mk">'+x.m.mkt+'</span>'+esc(x.code)+'・'+secSpan(x.m.sector)+(x.m.sector0&&x.m.sector!==x.m.sector0?'<span style="font-size:9px;color:var(--mut)">(補正)</span>':'')
       +(function(){
@@ -1209,6 +1261,7 @@ function renderHome(){
         const push=(pri,html)=>{if(html)B.push({p:pri,h:html});};
         push(0,exitPill(x.code,x.m,true));
         push(0,(cosmFlag(x.m)?'<span class="aim" style="color:var(--ng);border-color:var(--ng)">'+I("alert",8)+' '+(state.simple?"見かけ黒字疑い":"化粧疑い")+'</span>':''));
+        push(1,(t1.why?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("alert",8)+' '+t1.why+'</span>':''));
         push(1,divLossPill(x.code,true));
         push(1,(val(x.code,"memo")?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':''));
         push(1,roePill(x.m,true));
@@ -1412,8 +1465,8 @@ function renderDetail(){
     +'<div class="as">PRICE '+(m.pxTs?ago(m.pxTs):"—")+' ・ '+(rc.custom?"取込 ":"FUNDAMENTALS ")+esc(fA)+(((state.ov[code]||{}).sec)?" ・ 業種 "+esc(m.sector0||"—")+"→"+esc(m.sector)+"(補正)":"")+(Object.keys(state.ov[code]||{}).length?" ＋手修正":"")+'</div>'
     +tipChips(m,sB)
     +'<div class="seals">'
-    +'<div class="sealbox" onclick="openWhy(\'A\')">'+ring(state.simple?passRatio(sA):sA.fit,sA.g,"var(--A)",46)+'<div><div class="m" style="color:var(--A)">MODE A / 攻め</div><div class="gl">'+esc(sA.gl)+'</div><div class="fp">'+(state.simple?pc(sA):Math.round(sA.fit*100)+'% fit')+'</div></div></div>'
-    +'<div class="sealbox" onclick="openWhy(\'B\')">'+ring(state.simple?passRatio(sB):sB.fit,sB.g,"var(--B)",46)+'<div><div class="m" style="color:var(--B)">MODE B / 要塞</div><div class="gl">'+esc(sB.gl)+'</div><div class="fp">'+(state.simple?pc(sB):Math.round(sB.fit*100)+'% fit')+'</div></div></div>'
+    +'<div class="sealbox" onclick="openWhy(\'A\')">'+t1Ring(t1Of(m,sA,"A"),46,1)+'<div><div class="m" style="color:var(--A)">MODE A / 攻め</div><div class="gl">'+esc(sA.gl)+'</div><div class="fp">'+(state.simple?pc(sA):Math.round(sA.fit*100)+'% fit')+'</div></div></div>'
+    +'<div class="sealbox" onclick="openWhy(\'B\')">'+t1Ring(t1Of(m,sB,"B"),46,1)+'<div><div class="m" style="color:var(--B)">MODE B / 要塞</div><div class="gl">'+esc(sB.gl)+'</div><div class="fp">'+(state.simple?pc(sB):Math.round(sB.fit*100)+'% fit')+'</div></div></div>'
     +'</div></div>';
   const vd=verdict(m,sA,sB);
   h+='<div class="card" style="border-left:3px solid '+vd.col+'">'
@@ -1558,7 +1611,7 @@ function renderSheet(){
       k.indexOf("頑丈")>=0||k.indexOf("自己資本")>=0?"自己資本比率を✎入力":"✎で数値を入れると判定が確定";
     const row=(r,col,ic)=>'<div style="padding:8px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="display:flex;gap:8px;align-items:center"><span style="color:'+col+'">'+ic+'</span><span style="font-size:13px;font-weight:700;flex:1">'+esc(state.simple?(r.pk||r.k):r.k)+'</span><span class="mono" style="font-size:11px;color:var(--mut)">'+esc(state.simple?(r.pv!=null?r.pv:r.v):r.v)+'</span></div>'+(r.p===null?'<div style="font-size:11px;color:var(--dim);margin:3px 0 0 21px;line-height:1.6">→ '+hint(r.pk||r.k)+'</div>':'')+'</div>';
     h+='<h2>判定の内訳 ─ MODE '+state.whyMode+' <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("close",15)+'</button></h2>'
-      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+s.g+' '+esc(s.gl)+'）</div>'
+      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+esc(s.gl)+'・データ確認度'+t1Of(m,s,state.whyMode).pct+'%）</div>'
       +(grp(true).length?'<div class="f-lb" style="margin-top:12px;color:var(--ok)">確定クリア '+grp(true).length+'件</div>'+grp(true).map(r=>row(r,"var(--ok)",I("check",11))).join(""):"")
       +(grp(null).length?'<div class="f-lb" style="margin-top:14px;color:var(--na)">未確定 ─ ここを手で確認</div>'+grp(null).map(r=>row(r,"var(--na)",I("minus",11))).join(""):"")
       +(grp(false).length?'<div class="f-lb" style="margin-top:14px;color:var(--ng)">確定NG</div>'+grp(false).map(r=>row(r,"var(--ng)",I("cross",11))).join(""):"");
@@ -1658,7 +1711,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R15.1 / 2026-08-11</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R16 / 2026-08-11</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
