@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R16</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R17</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -582,9 +582,28 @@ function t1Ring(t,size,pre){
     fg='<circle cx="'+mid+'" cy="'+mid+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="3" stroke-linecap="round"'+dp+'/>';
   }
   const label=(pre&&size>=40?"確":"")+t.pct+"%";
-  const fs=size*(label.length>=5?0.21:label.length===4?0.25:0.29);
+  const fs=size*(label.length>=5?0.21:label.length===4?(size<=26?0.22:0.25):0.29);
   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="flex:none" class="t1r t1-'+t.color+(t.dash?" t1-dash":"")+'">'+bg+fg
     +'<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="'+fs.toFixed(1)+'" font-weight="800" fill="'+col+'">'+label+'</text></svg>';
+}
+/* T1b: ✎シートの確認度プレビュー(build R17)。基準=シートを開いた時点(state._edPct0)。
+   onEditは入力フォーカス保護のため全再描画しない設計なので、#edpvのみを外科的に更新する。 */
+function edPreview(code){
+  const m=metrics(code); if(!m)return"";
+  const cur={A:t1Of(m,scoreA(m),"A"),B:t1Of(m,scoreB(m),"B")};
+  if(!state._edPct0||state._edPct0.code!==code)
+    state._edPct0={code:code,A:{color:cur.A.color,pct:cur.A.pct,dash:cur.A.dash},B:{color:cur.B.color,pct:cur.B.pct,dash:cur.B.dash}};
+  const line=(lbl,b4,now)=>{
+    const chg=now.pct!==b4.pct||now.color!==b4.color||now.dash!==b4.dash;
+    return '<div style="display:flex;align-items:center;gap:8px;margin-top:6px">'
+      +'<span class="mono" style="width:13px;font-size:11px;color:'+(lbl==="A"?"var(--A)":"var(--B)")+'">'+lbl+'</span>'
+      +t1Ring(b4,24)
+      +(chg?'<span style="color:var(--dim);flex:none">→</span>'+t1Ring({color:now.color,pct:now.pct,dash:now.dash},24):'')
+      +'<span class="mono" style="font-size:12px;color:'+(chg&&now.pct>b4.pct?"var(--ok)":"var(--mut)")+'">'
+      +(chg?'確認度 '+b4.pct+'%→'+now.pct+'%':'確認度 '+now.pct+'%')+'</span></div>';};
+  return '<div style="border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin:0 0 12px;background:var(--panel2)">'
+    +'<div style="font-size:11px;color:var(--dim)">この入力での確認度の変化（シートを開いた時点 → 現在）</div>'
+    +line("A",state._edPct0.A,cur.A)+line("B",state._edPct0.B,cur.B)+'</div>';
 }
 function roeOf(m){
   if(m.per==null||m.pbr==null||!(m.per>0)||!(m.pbr>0)||m.bpsNeg)return null;
@@ -1142,7 +1161,7 @@ function quickCmp(code){const i=state.cmp.indexOf(code);
   if(i>=0)state.cmp.splice(i,1);else{state.cmp.push(code);if(state.cmp.length>2)state.cmp.shift();}
   render();}
 function openSheet(k){state.sheet=k;state.resetArm=false;state._sheetAnim=true;render();}
-function closeSheet(){state.sheet=null;render();}
+function closeSheet(){state.sheet=null;state._edPct0=null;render();}
 function onSet(mkt,f,v){const r=num(v);state.set[mkt][f]=r==null?0:r;saveAll();
   const c=document.getElementById("thrChip");if(c)c.textContent="JP"+thrFor("JP").toFixed(1)+"·US"+thrFor("US").toFixed(2)+"%";
   const j=document.getElementById("thrJP");if(j)j.textContent="→ "+thrFor("JP").toFixed(2)+"%";
@@ -1152,7 +1171,8 @@ function onEdit(f,v){const code=state.cur;if(!code)return;
   const r=num(v);
   if(v===""||r==null)delete state.ov[code][f];else state.ov[code][f]=r;
   if(f==="hold"&&r>0&&state.ov[code].hib){delete state.ov[code].hib;render();}
-  saveAll();}
+  saveAll();
+  const pv=document.getElementById("edpv");if(pv)pv.innerHTML=edPreview(code);}
 function fixHibConflicts(){
   Object.keys(state.ov||{}).forEach(c=>{const o=state.ov[c];if(o&&o.hib&&num(o.hold)>0)delete o.hib;});
 }
@@ -1262,6 +1282,7 @@ function renderHome(){
         push(0,exitPill(x.code,x.m,true));
         push(0,(cosmFlag(x.m)?'<span class="aim" style="color:var(--ng);border-color:var(--ng)">'+I("alert",8)+' '+(state.simple?"見かけ黒字疑い":"化粧疑い")+'</span>':''));
         push(1,(t1.why?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("alert",8)+' '+t1.why+'</span>':''));
+        push(1,(t1.dash&&!t1.why?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+' あと'+t1.unconf+'項目で確認完了</span>':''));
         push(1,divLossPill(x.code,true));
         push(1,(val(x.code,"memo")?'<span class="aim" style="color:var(--warn);border-color:var(--warn)">'+I("pencil",8)+'メモ</span>':''));
         push(1,roePill(x.m,true));
@@ -1335,7 +1356,8 @@ function renderHome(){
     const list=allCodes().map(code=>{const m=metrics(code);return m?{code,m,sA:scoreA(m),sB:scoreB(m),tap:"saved"}:null;})
       .filter(x=>x&&(state.rankFilter==="ALL"||x.m.mkt===state.rankFilter)&&(!state.tagFilter||((state.ov[x.code]||{}).tag===state.tagFilter))&&(state.showHib||!isHib(x.code)))
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
-        return (gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
+        const ta=t1Of(a.m,sa,state.rankMode), tb=t1Of(b.m,sb,state.rankMode), cv={g:2,y:1,r:0};
+        return (cv[tb.color]-cv[ta.color])||(tb.pct-ta.pct)||(gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));});
     {const vl=applyBView(list);h+=vl.length?vl.map(rowHtml).join(""):'<p class="note" style="margin-top:8px">条件に合う銘柄が今はゼロ。「射程圏のみ」を外すか、待ち伏せ継続。</p>';}
     h+='<p class="note">保存＝焼き込み'+Object.keys(DATA).length+'銘柄＋取り込み分。減配履歴・利益傾向まで含む完全判定。</p>';
@@ -1350,7 +1372,8 @@ function renderHome(){
         const m=mFromRow(o);return{code:o.code,m,sA:scoreA(m),sB:scoreB(m),tap:"mkt"};})
       .filter(Boolean)
       .sort((a,b)=>{const sa=state.rankMode==="A"?a.sA:a.sB, sb=state.rankMode==="A"?b.sA:b.sB;
-        return (gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
+        const ta=t1Of(a.m,sa,state.rankMode), tb=t1Of(b.m,sb,state.rankMode), cv={g:2,y:1,r:0};
+        return (cv[tb.color]-cv[ta.color])||(tb.pct-ta.pct)||(gr(sb)-gr(sa))||(sb.fit-sa.fit)||(state.rankMode==="A"
           ?((b.m.ncr??-99)-(a.m.ncr??-99)):((b.m.yld??-99)-(a.m.yld??-99)));})
       .slice(0,40);
     state._mktRows=applyBView(list);
@@ -1711,7 +1734,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R16 / 2026-08-11</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R17 / 2026-08-12</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
@@ -1754,6 +1777,7 @@ function renderSheet(){
     h+='<h2>数値を直す <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +(state.err?'<div class="err">'+esc(state.err)+'</div>':'')
       +'<div class="note" style="margin:0 0 10px">証券アプリの値を写すだけでOK。空欄＝収穫値に戻す。編集は端末に保存され、判定に即反映（鉛筆マーク付き）。</div>'
+      +'<div id="edpv">'+edPreview(code)+'</div>'
       +F.map(f=>'<div class="edrow"><span class="k">'+f[1]+(edited(code,f[0])?' <span style="color:var(--B)">'+I("pencil",11)+'</span>':"")+'</span>'
         +'<input inputmode="decimal" value="'+(val(code,f[0])==null?"":esc(val(code,f[0])))+'" placeholder="—" oninput="onEdit(\''+f[0]+'\',this.value)"></div>').join("")
       +'<div class="edrow"><span class="k">過去10年の減配'+(edited(code,"cut10")?' <span style="color:var(--B)">'+I("pencil",11)+'</span>':"")+'</span>'
