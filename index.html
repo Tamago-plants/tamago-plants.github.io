@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R18</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R19</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -813,9 +813,13 @@ function buildP3Export(){
     const g=mode==="B"?sB.g:sA.g;
     if(!held&&g!=="◎"&&g!=="○")return;
     const target=(mode==="B"&&sB.target!=null&&isFinite(sB.target))?Math.round(sB.target):null;
-    const t1x=t1Of(m,mode==="B"?sB:sA,mode);
+    const sX=mode==="B"?sB:sA;
+    const t1x=t1Of(m,sX,mode);
+    /* checks: 判定内訳(条件ID×pass/na/fail)。IDは移植仕様書§4/§5の並び順で確定(A1..A5/B1..B8)。
+       P-003が毎朝再計算した判定との項目単位突合に使う(2026-08-12オーナー採用) */
+    const checks=sX.rows.map((r,i)=>({id:mode+(i+1),s:r.p===true?"pass":r.p===false?"fail":"na"}));
     rows.push({code:code,name:dn(m),mode:mode,grade:g,target:target,held:!!held,
-      color:t1x.color==="g"?"green":t1x.color==="y"?"yellow":"red",confidence:t1x.pct,
+      color:t1x.color==="g"?"green":t1x.color==="y"?"yellow":"red",confidence:t1x.pct,checks:checks,
       _gap:(sB.gap!=null?sB.gap:-1e9),_ncr:(m.ncr!=null?m.ncr:-1e9)});
   });
   const held=rows.filter(r=>r.held);
@@ -828,7 +832,7 @@ function buildP3Export(){
   });
   const list=held.concat(rest.slice(0,Math.max(0,50-held.length)));
   return {asof:new Date().toISOString().slice(0,10),
-    stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held,color:r.color,confidence:r.confidence}))};
+    stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held,color:r.color,confidence:r.confidence,checks:r.checks}))};
 }
 function purgeStale(){
   if(!state.purgeArm){state.purgeArm=true;render();setTimeout(()=>{state.purgeArm=false;render();},3000);return;}
@@ -1743,7 +1747,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R18 / 2026-08-12</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R19 / 2026-08-12</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
