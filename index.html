@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R17</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R18</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -538,9 +538,10 @@ function cosmFlag(m){
 /* ============ T1 2軸表示(build R16 / T1a・2026-08-11) ============
    周囲色=判定(緑g/黄y/赤r)・中央=データ確認度%。内部値◎○?△×は不変(P-003互換・既存E2E温存)。
    価格ゾーン(旧◎○の差)は価格ゲージ/射程バッジへ委譲(T1-⑧)のため、Bの利回り行はリングの条件判定から除外(確認度%には算入)。
-   T1.relaxGreen: 実測ゲート(T1c)で全市場B上位40の緑が0〜2件なら緩和案1へ切替する1フラグ(現在は厳格緑)。
+   T1.relaxGreen: 緩和案1(ハード全確認クリア+参考未確認可・抵触不可)への切替フラグ。
+   2026-08-12実測ゲート発動: 全市場B上位40の厳格緑=1件(0〜2件ルール成立)のため緩和案1をON(T1-⑥承認済みルールの機械適用)。
    T1.redShape: "dia"(菱形)|"oct"(八角形)。20px実寸スクショ比較+オーナー目視で最終決定。 */
-const T1={relaxGreen:false,redShape:"dia"};
+const T1={relaxGreen:true,redShape:"dia"};
 function t1Of(m,s,mode){
   const rows=s.rows,isB=mode==="B";
   const w=r=>isB?(r.hard?2:1):2;
@@ -812,7 +813,9 @@ function buildP3Export(){
     const g=mode==="B"?sB.g:sA.g;
     if(!held&&g!=="◎"&&g!=="○")return;
     const target=(mode==="B"&&sB.target!=null&&isFinite(sB.target))?Math.round(sB.target):null;
+    const t1x=t1Of(m,mode==="B"?sB:sA,mode);
     rows.push({code:code,name:dn(m),mode:mode,grade:g,target:target,held:!!held,
+      color:t1x.color==="g"?"green":t1x.color==="y"?"yellow":"red",confidence:t1x.pct,
       _gap:(sB.gap!=null?sB.gap:-1e9),_ncr:(m.ncr!=null?m.ncr:-1e9)});
   });
   const held=rows.filter(r=>r.held);
@@ -825,7 +828,7 @@ function buildP3Export(){
   });
   const list=held.concat(rest.slice(0,Math.max(0,50-held.length)));
   return {asof:new Date().toISOString().slice(0,10),
-    stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held}))};
+    stocks:list.map(r=>({code:r.code,name:r.name,mode:r.mode,grade:r.grade,target:r.target,held:r.held,color:r.color,confidence:r.confidence}))};
 }
 function purgeStale(){
   if(!state.purgeArm){state.purgeArm=true;render();setTimeout(()=>{state.purgeArm=false;render();},3000);return;}
@@ -965,13 +968,19 @@ function tipText(k,m,sB){
     if(!sB||sB.gap==null)return "到達ラインが計算できない（配当データ不足）。";
     return "到達ライン＝年間配当÷基準利回り"+T.toFixed(1)+"%で逆算した買付目安の株価。"+(sB.gap>=0?"現在値はラインの内側＝買い射程圏。":"あと"+Math.abs(sB.gap).toFixed(1)+"%下がると射程圏。指値の目安に。");
   }
+  if(k==="conf"){
+    let t="データ確認度＝システムが自動で確認できたデータの割合です。100%ではない銘柄は、未確認の項目が残っています。四季報や決算資料で調べて✎から入力すると、この数字が上がります。※儲かる確率や株価の予想ではありません。";
+    if(cosmFlag(m))t+=" また、この銘柄は本業の利益より最終利益が大きい状態のため、データが揃っていても合格圏（緑）には表示していません。※直近の四半期決算がまだ数字に反映されていない場合があります。";
+    return t;
+  }
   return "";
 }
 function tipChips(m,sB){
   if(!state.simple)return "";
   const chips=[["yld","利回り",m.yld!=null?m.yld.toFixed(2)+"%":"—"],
     ["payout","性向",m.payout!=null?Math.round(m.payout)+"%":"—"],
-    ["gap","到達まで",(sB&&sB.gap!=null)?(sB.gap>=0?"圏内":Math.abs(sB.gap).toFixed(1)+"%"):"—"]];
+    ["gap","到達まで",(sB&&sB.gap!=null)?(sB.gap>=0?"圏内":Math.abs(sB.gap).toFixed(1)+"%"):"—"],
+    ["conf","確認度",t1Of(m,sB,"B").pct+"%"]];
   let s='<div style="display:flex;gap:6px;margin-top:10px">'
     +chips.map(c=>'<button class="ichip'+(state.tipKey===c[0]?" on":"")+'" onclick="tapTip(\''+c[0]+'\')"><span>'+c[1]+'</span><b>'+c[2]+'</b></button>').join("")+'</div>';
   if(state.tipKey)s+='<div class="tipbox">'+tipText(state.tipKey,m,sB)+'</div>';
@@ -1634,7 +1643,7 @@ function renderSheet(){
       k.indexOf("頑丈")>=0||k.indexOf("自己資本")>=0?"自己資本比率を✎入力":"✎で数値を入れると判定が確定";
     const row=(r,col,ic)=>'<div style="padding:8px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="display:flex;gap:8px;align-items:center"><span style="color:'+col+'">'+ic+'</span><span style="font-size:13px;font-weight:700;flex:1">'+esc(state.simple?(r.pk||r.k):r.k)+'</span><span class="mono" style="font-size:11px;color:var(--mut)">'+esc(state.simple?(r.pv!=null?r.pv:r.v):r.v)+'</span></div>'+(r.p===null?'<div style="font-size:11px;color:var(--dim);margin:3px 0 0 21px;line-height:1.6">→ '+hint(r.pk||r.k)+'</div>':'')+'</div>';
     h+='<h2>判定の内訳 ─ MODE '+state.whyMode+' <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("close",15)+'</button></h2>'
-      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+esc(s.gl)+'・データ確認度'+t1Of(m,s,state.whyMode).pct+'%）</div>'
+      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+esc(s.gl)+'・データ確認度'+t1Of(m,s,state.whyMode).pct+'%）<span style="font-size:10px;color:var(--dim);font-weight:400">（旧表示: '+s.g+'）</span></div>'
       +(grp(true).length?'<div class="f-lb" style="margin-top:12px;color:var(--ok)">確定クリア '+grp(true).length+'件</div>'+grp(true).map(r=>row(r,"var(--ok)",I("check",11))).join(""):"")
       +(grp(null).length?'<div class="f-lb" style="margin-top:14px;color:var(--na)">未確定 ─ ここを手で確認</div>'+grp(null).map(r=>row(r,"var(--na)",I("minus",11))).join(""):"")
       +(grp(false).length?'<div class="f-lb" style="margin-top:14px;color:var(--ng)">確定NG</div>'+grp(false).map(r=>row(r,"var(--ng)",I("cross",11))).join(""):"");
@@ -1734,7 +1743,7 @@ function renderSheet(){
       +TERMS.map(x=>'<div style="padding:9px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="font-size:13px;font-weight:800">'+x[0]+'</div><div style="font-size:12px;color:var(--mut);line-height:1.7;margin-top:2px">'+x[1]+'</div></div>').join("");
   }
   if(state.sheet==="set"){
-    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R17 / 2026-08-12</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
+    h+='<div class="note" style="margin:0 0 8px;text-align:right">build R18 / 2026-08-12</div>'+'<h2>設定 <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("x",15)+'</button></h2>'
       +'<div class="f-lb">データの退避・復元</div><div class="chips" style="margin-bottom:14px;flex-wrap:wrap">'
       +'<button class="chip icon" onclick="exportData()">'+I("dl",12)+' 書き出し</button>'
       +'<button class="chip icon" onclick="document.getElementById(\'impFile\').click()">'+I("ul",12)+' 読み込み</button>'
