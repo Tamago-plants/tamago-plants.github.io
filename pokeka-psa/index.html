@@ -7,14 +7,14 @@
 <title>旧裏PSAターミナル</title>
 <style>
 :root{
-  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#30363d;
-  --tx:#e6edf3; --tx2:#9aa7b3; --tx3:#6e7c8a;
-  --gold:#e3b341; --green:#3fb950; --red:#f85149; --amber:#d29922;
-  --purple:#bc8cff; --blue:#58a6ff; --teal:#39c5cf;
+  --bg:#0d1117; --panel:#161b22; --panel2:#1b2230; --line:#2d333c;
+  --tx:#e6edf3; --tx2:#9aa7b3; --tx3:#697585;
+  --gold:#e3b341; --green:#4ac95e; --red:#f8615a; --amber:#d9a62e;
+  --purple:#c39aff; --blue:#58a6ff; --teal:#3fc9d4;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:14px;line-height:1.55;padding-bottom:48px}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:14px;line-height:1.55;padding-bottom:56px}
 .num{font-variant-numeric:tabular-nums}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
@@ -22,16 +22,16 @@ button{font-family:inherit;cursor:pointer}
 input,select{font-family:inherit;font-size:14px;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
 input:focus,select:focus{outline:1px solid var(--blue);border-color:var(--blue)}
 
-header{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.96);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 14px 8px}
+header{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.97);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:9px 14px 7px}
 .hrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 h1{font-size:19px;letter-spacing:.5px;color:var(--gold)}
 .vbadge{font-size:12px;color:var(--tx3);font-weight:normal}
 .hsub{font-size:11.5px;color:var(--tx2);margin-top:2px}
 .hsub b{color:var(--gold);font-weight:600}
-.gearbtn{margin-left:auto;background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:4px 10px;font-size:12px}
+.gearbtn{margin-left:auto;background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:4px 12px;font-size:12.5px}
 .gearbtn:hover{color:var(--tx);border-color:var(--tx3)}
 
-.wrap{max-width:1080px;margin:0 auto;padding:0 14px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 14px}
 
 /* 設定パネル */
 #settings{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:12px 0;padding:12px 14px}
@@ -48,66 +48,89 @@ h1{font-size:19px;letter-spacing:.5px;color:var(--gold)}
 
 /* サマリー */
 #summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
-.sumchip{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none}
-.sumchip b{color:var(--tx);font-size:13px}
-.sumchip.on{border-color:var(--gold);color:var(--gold);background:rgba(227,179,65,.08)}
-.sumchip.on b{color:var(--gold)}
+.sumchip{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--tx2);cursor:pointer;user-select:none}
+.sumchip b{color:var(--gold);font-size:15px;margin-left:2px}
+.sumchip.on{border-color:var(--gold);color:var(--gold);background:rgba(227,179,65,.1)}
 .sumchip.static{cursor:default}
-.costline{font-size:11px;color:var(--tx3);margin:2px 0 10px}
+.sumchip.static b{color:var(--tx)}
+.costline{font-size:11px;color:var(--tx3);margin:4px 0 10px}
 .costline a{color:var(--tx3);text-decoration:underline}
 
 /* コントロール */
-#controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+#controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 10px}
 #searchbox{flex:1;min-width:160px}
 .setchips{display:flex;gap:6px;flex-wrap:wrap}
-.schipbtn{background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:16px;padding:4px 10px;font-size:12px}
-.schipbtn.on{border-color:var(--teal);color:var(--teal);background:rgba(57,197,207,.08)}
+.schipbtn{background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:16px;padding:4px 11px;font-size:12px}
+.schipbtn.on{border-color:var(--teal);color:var(--teal);background:rgba(63,201,212,.09)}
 
-/* カード */
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
-.chead{padding:10px 12px 4px;cursor:pointer}
-.crow1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.cname{font-weight:600;font-size:14.5px}
-.schip{font-size:10.5px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;padding:1px 5px;white-space:nowrap}
-.tier{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 6px;white-space:nowrap}
-.tS{background:rgba(227,179,65,.15);color:var(--gold);border:1px solid rgba(227,179,65,.5)}
+/* ==== 価格表(テーブル型) ==== */
+#listwrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+#lhead{display:grid;grid-template-columns:132px minmax(200px,1fr) repeat(4,122px);gap:0 10px;
+  padding:8px 14px;border-bottom:1px solid var(--line);background:var(--panel2);
+  font-size:10.5px;color:var(--tx3);font-weight:700;letter-spacing:.4px}
+#lhead span:nth-child(n+3){text-align:right}
+.card{border-bottom:1px solid var(--line)}
+.card:last-child{border-bottom:none}
+.crow{display:grid;grid-template-columns:132px minmax(200px,1fr) repeat(4,122px);gap:0 10px;
+  align-items:center;padding:9px 14px;cursor:pointer}
+.crow:hover{background:rgba(88,166,255,.045)}
+
+/* 判定バッジ */
+.cline{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.lb{font-size:15px;font-weight:800;padding:5px 10px 4px;border-radius:8px;line-height:1.1;text-align:center;min-width:92px}
+.lb small{display:block;font-size:9.5px;font-weight:700;opacity:.8;margin-top:2px;letter-spacing:.3px}
+.lb.ok{background:rgba(74,201,94,.16);color:var(--green);border:1px solid rgba(74,201,94,.5)}
+.lb.ok9{background:rgba(63,201,212,.13);color:var(--teal);border:1px solid rgba(63,201,212,.45)}
+.lb.warn{background:rgba(217,166,46,.13);color:var(--amber);border:1px solid rgba(217,166,46,.45)}
+.lb.bad{background:rgba(248,97,90,.12);color:var(--red);border:1px solid rgba(248,97,90,.45)}
+.lb2{font-size:10.5px;font-weight:700;color:var(--purple);border:1px solid rgba(195,154,255,.45);
+  background:rgba(195,154,255,.1);border-radius:5px;padding:1px 7px}
+.lb2.hot{background:rgba(195,154,255,.25);color:#e6d5ff}
+
+/* カード名 */
+.cname{font-weight:700;font-size:14.5px;line-height:1.35}
+.cver{font-size:10.5px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;padding:1px 5px;white-space:nowrap;font-weight:600;margin-left:6px}
+.tier{font-size:10.5px;font-weight:800;border-radius:4px;padding:1px 6px;white-space:nowrap;margin-left:4px}
+.tS{background:rgba(227,179,65,.16);color:var(--gold);border:1px solid rgba(227,179,65,.5)}
 .tA{background:rgba(154,167,179,.12);color:#c9d4de;border:1px solid rgba(154,167,179,.45)}
 .tB{background:rgba(161,133,106,.12);color:#c4a687;border:1px solid rgba(161,133,106,.45)}
-.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
-.bdg{font-size:11px;border-radius:4px;padding:1.5px 7px;white-space:nowrap;font-weight:600}
-.bdg.ok{background:rgba(63,185,80,.14);color:var(--green);border:1px solid rgba(63,185,80,.45)}
-.bdg.ok9{background:rgba(57,197,207,.12);color:var(--teal);border:1px solid rgba(57,197,207,.4)}
-.bdg.warn{background:rgba(210,153,34,.12);color:var(--amber);border:1px solid rgba(210,153,34,.4)}
-.bdg.bad{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.4)}
-.bdg.low{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.4)}
-.bdg.low1{background:rgba(188,140,255,.22);color:#d9c2ff;border:1px solid var(--purple)}
-.cprices{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 12px 10px;cursor:pointer}
-.pc{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
-.pl{font-size:10.5px;color:var(--tx3);white-space:nowrap}
-.pv{font-size:15.5px;font-weight:700;white-space:nowrap}
-.ps{font-size:11px;color:var(--tx3);white-space:nowrap}
-.pos{color:var(--green)}
-.neg{color:var(--red)}
-.zero{color:var(--amber)}
+.csub{font-size:11px;color:var(--tx3);margin-top:2px}
+
+/* 価格セル */
+.pcs{display:contents}
+.pc{border-radius:8px;padding:5px 9px 4px;text-align:right;min-width:0}
+.pc .pl{display:block;font-size:10px;color:var(--tx3);font-weight:600;white-space:nowrap}
+.pc .pv{display:block;font-size:16.5px;font-weight:800;white-space:nowrap;letter-spacing:.2px}
+.pc .ps{display:block;font-size:12px;font-weight:700;white-space:nowrap}
+.pc.raw .pv{color:var(--tx)}
+.pc.raw .ps{color:var(--tx3);font-weight:600}
+.pc.pos{background:rgba(74,201,94,.09)}
+.pc.pos .ps{color:var(--green)}
+.pc.neg{background:rgba(248,97,90,.08)}
+.pc.neg .ps{color:var(--red)}
+.pc.neu .ps{color:var(--amber)}
 
 /* 詳細 */
-.cdetail{border-top:1px solid var(--line);background:var(--panel2);padding:10px 12px 14px}
-.linkrow{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-bottom:8px}
-.cnote{font-size:12px;color:var(--tx2);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--gold)}
-.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;min-width:700px;font-size:12.5px}
+.cdetail{border-top:1px dashed var(--line);background:var(--panel2);padding:12px 14px 15px}
+.linkrow{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;margin-bottom:9px}
+.cnote{font-size:12.5px;color:var(--tx2);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--gold)}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:13px}
 #guide table{min-width:460px}
-th{font-size:11px;color:var(--tx3);font-weight:600;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
+th{font-size:11px;color:var(--tx3);font-weight:700;text-align:right;padding:7px 9px;border-bottom:1px solid var(--line);background:var(--panel2);white-space:nowrap}
 th:first-child{text-align:left}
-td{padding:5px 8px;text-align:right;border-bottom:1px solid rgba(48,54,61,.5);white-space:nowrap}
-td:first-child{text-align:left;font-weight:600;color:var(--tx2)}
+td{padding:6px 9px;text-align:right;border-bottom:1px solid rgba(45,51,60,.55);white-space:nowrap}
+td:first-child{text-align:left;font-weight:700;color:var(--tx2)}
 tr:last-child td{border-bottom:none}
 tr.hi td{background:rgba(227,179,65,.05)}
-td input{width:92px;text-align:right;padding:3px 6px;font-size:12.5px}
-td a{font-size:11px}
+td .tpos{color:var(--green);font-weight:700}
+td .tneg{color:var(--red);font-weight:700}
+td .tzero{color:var(--amber);font-weight:700}
+td input{width:96px;text-align:right;padding:3px 6px;font-size:13px}
+td a{font-size:11.5px}
 .rawedit{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin:12px 0 4px}
-.rawedit .setitem input{width:100px}
-.rawnote{font-size:11px;color:var(--tx3);margin-top:6px}
+.rawedit .setitem input{width:104px}
+.rawnote{font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.6}
 
 /* ガイド */
 #guide{margin:26px 0 10px}
@@ -119,19 +142,25 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:13.5px;color:
 .dbody li{margin:3px 0}
 .dbody b{color:var(--tx)}
 .dbody .fm{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12px;margin:6px 0;color:var(--tx)}
+.dim{color:var(--tx3)}
 
 footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--tx3);line-height:1.7}
-
 #empty{color:var(--tx3);text-align:center;padding:30px 0;font-size:13px}
 
-@media (max-width:560px){
-  body{font-size:13.5px}
-  .cprices{grid-template-columns:repeat(2,1fr)}
+/* ==== モバイル ==== */
+@media (max-width:899px){
+  #lhead{display:none}
+  #listwrap{border:none;background:transparent;border-radius:0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+  .crow{display:block;padding:10px 12px}
+  .cline{flex-direction:row;align-items:center;margin-bottom:7px}
+  .cmain{margin-bottom:8px}
+  .pcs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .pc{background:var(--bg);border:1px solid var(--line);text-align:left;padding:6px 9px}
+  .pc.pos{background:rgba(74,201,94,.1);border-color:rgba(74,201,94,.35)}
+  .pc.neg{background:rgba(248,97,90,.09);border-color:rgba(248,97,90,.3)}
   h1{font-size:17px}
   .setitem input{width:96px}
-}
-@media (min-width:860px){
-  .cprices{grid-template-columns:1.1fr repeat(3,1fr)}
 }
 </style>
 </head>
@@ -140,10 +169,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <header>
   <div class="wrap">
     <div class="hrow">
-      <h1>旧裏PSAターミナル <span class="vbadge">· V1.2</span></h1>
+      <h1>旧裏PSAターミナル <span class="vbadge">· V2</span></h1>
       <button class="gearbtn" id="gearBtn" type="button">コスト設定</button>
     </div>
-    <div class="hsub">ポケカ旧裏 PSA鑑定品(1〜10)相場 × 素体仕入判断ボード / データ更新: <b id="updDate"></b> / 価格は参考値 — 各行のリンクで実勢(売切相場)を確認</div>
+    <div class="hsub">ポケカ旧裏 PSA相場 × 素体仕入判断 / データ更新: <b id="updDate"></b> / 価格は参考値 — 行を開いてリンクから実勢確認</div>
   </div>
 </header>
 
@@ -163,12 +192,17 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
         <option value="9">PSA9(推奨)</option>
         <option value="8">PSA8</option>
       </select></div>
-    <div class="setitem" id="wrapGrade" hidden><label>PSA鑑定料 / 枚(円)</label><input id="setGrade" type="number" inputmode="numeric" min="0" step="100"></div>
+    <div class="setitem" id="wrapMinp"><label>最低プラン</label>
+      <select id="setMinp">
+        <option value="0">レギュラー 11,980円(60営業日)</option>
+        <option value="1">エクスプレス 22,980円(25営業日)</option>
+      </select></div>
+    <div class="setitem" id="wrapGrade" hidden><label>鑑定料 / 枚(円)</label><input id="setGrade" type="number" inputmode="numeric" min="0" step="100"></div>
     <div class="setitem"><label>鑑定送料ほか按分 / 枚(円)</label><input id="setGship" type="number" inputmode="numeric" min="0" step="50"></div>
     <div class="setitem"><label>販売手数料(%)</label><input id="setFee" type="number" inputmode="decimal" min="0" max="50" step="0.5"></div>
     <div class="setitem"><label>販売時送料(円)</label><input id="setSship" type="number" inputmode="numeric" min="0" step="5"></div>
   </div>
-  <div class="setnote">自動モードは、狙いグレードの相場を申告価値としてPSAのプラン(バリュー4,980円〜)を選び、結果グレードの相場が申告上限を超える行は上位プラン料金で計算します(税込・2026-05-15改定/バリュー・バルク等は受付停止のため除外)。傷あり素体の計算は申告PSA4想定。料金・納期は変動するため提出前にPSA公式(psacard.co.jp)で確認してください。販売手数料の既定はメルカリ10%。</div>
+  <div class="setnote">自動モードは、狙いグレードの相場を申告価値としてPSAプランを選び、結果グレードの相場が申告上限を超える行は上位プラン料金で計算します(税込・2026-05-15改定)。<b>バリュー(4,980円)は現在受付していないため除外し、最低プランはレギュラーから</b>(オーナー運用 2026-08-25)。傷あり素体は申告PSA4想定。料金・納期は変動するため提出前にPSA公式(psacard.co.jp)で確認してください。販売手数料の既定はメルカリ10%。</div>
   <div class="setbtns">
     <button class="sbtn" id="btnDefSet" type="button">コストを既定に戻す</button>
     <button class="sbtn warn" id="btnResetAll" type="button">価格・素体の変更を全リセット</button>
@@ -190,7 +224,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
   <div class="setchips" id="setchips"></div>
 </section>
 
-<main id="list"></main>
+<div id="listwrap">
+  <div id="lhead"><span>判定(黒字ライン)</span><span>カード</span><span>素体 美品</span><span>PSA8</span><span>PSA9</span><span>PSA10</span></div>
+  <main id="list"></main>
+</div>
 
 <section id="guide">
   <h2>仕入れ・鑑定ガイド(まとめ)</h2>
@@ -200,11 +237,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
     <div class="dbody">
       <div class="fm">損益 = グレード相場 ×(1 − 販売手数料)− 販売送料 − 鑑定料(PSAプラン自動選択)− 鑑定送料按分 − 素体仕入値</div>
       <ul>
-        <li><b>黒字ラインのバッジ</b>が結論です。「美品仕入→PSA8〜黒字」なら、美品素体を参考価格で仕入れてPSA8止まりでも利益が残る、という意味。</li>
-        <li>各カードを開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が出ます。メルカリで素体を見つけたら仕入上限と見比べるだけでOK。</li>
-        <li><b>傷仕入</b>の行は「安い傷あり素体を拾って低グレードでも利益を取る」戦略用。高額カードほどPSA1でも値が付くため成立しやすい。</li>
-        <li>相場の数字は<b>参考値</b>です。各行の「売切相場」リンク(メルカリの売り切れ検索)で直近の実勢を確認し、ズレていたらその場で数字を書き換えてください(この端末に保存されます)。</li>
+        <li>左端の<b>判定バッジ</b>が結論。「PSA8〜黒字」=美品素体を参考価格で仕入れてPSA8止まりでも利益が残る。紫の「傷PSA◯〜」は傷あり素体を安く拾って低グレードでも黒字になるカード。</li>
+        <li>PSA8/9/10のセルは<b>緑=そのグレードで黒字、赤=赤字</b>(下段が損益額)。行を開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が見えます。</li>
         <li><b>素体の上限目安はカードラッシュ買取価格(美品)</b>: 買取価格以下で仕入れられれば、鑑定が振るわなくても店売りで逃げられる=実質の下限保証(2026-08-25 運用決定)。各カードの「買取価格(カードラッシュ)」リンクで現在値を確認。</li>
+        <li>相場の数字は<b>参考値</b>。各行の「売切相場」リンク(メルカリ売り切れ検索)で実勢を確認し、ズレていたらその場で書き換え(この端末に保存)。</li>
       </ul>
     </div>
   </details>
@@ -231,7 +267,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
       <div class="tblwrap" style="margin:6px 0"><table style="min-width:460px">
         <thead><tr><th>プラン</th><th>申告価格</th><th>料金(税込)</th><th>予定納期</th></tr></thead>
         <tbody>
-          <tr><td>バリュー</td><td class="num">8万円以下</td><td class="num">4,980円</td><td class="num">160営業日</td></tr>
+          <tr class="dim"><td>バリュー(利用しない)</td><td class="num">8万円以下</td><td class="num">4,980円</td><td class="num">160営業日</td></tr>
           <tr><td>レギュラー</td><td class="num">25万円以下</td><td class="num">11,980円</td><td class="num">60営業日</td></tr>
           <tr><td>エクスプレス</td><td class="num">40万円以下</td><td class="num">22,980円</td><td class="num">25営業日</td></tr>
           <tr><td>スーパー・エクスプレス</td><td class="num">75万円以下</td><td class="num">44,980円</td><td class="num">25営業日</td></tr>
@@ -240,9 +276,9 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
         </tbody>
       </table></div>
       <ul>
-        <li>プレミアム2〜10(申告800万円超〜)は省略。<b>バリュー・バルク/バリュー・プラス/バリュー・マックスは受付停止</b>(2026-05-15改定時点)。このボードの自動計算も同じ表・同じ除外で動いています。</li>
-        <li><b>鑑定費はグレード次第で跳ねる</b>: 例)ひかるリザードンがPSA10(相場120万円)ならウォーク・スルー89,980円。「PSA10が出た場合の上位プラン課金」まで含めて各行の損益に織り込み済み。</li>
-        <li><b>納期=資金拘束</b>: バリューは160営業日(約8ヶ月)。回転重視ならレギュラー(60営業日)以上をコスト増と天秤にかける。</li>
+        <li>プレミアム2〜10(申告800万円超〜)は省略。バリュー・バルク/プラス/マックスは受付停止。<b>バリューも現在は使わない前提で、このボードの自動計算は最低レギュラー(11,980円)から</b>。回転重視なら設定で最低エクスプレスに引き上げ可。</li>
+        <li><b>鑑定費はグレード次第で跳ねる</b>: 例)ひかるリザードンがPSA10(相場120万円)ならウォーク・スルー89,980円。「PSA10が出た場合の上位プラン課金」まで各行の損益に織り込み済み。</li>
+        <li><b>納期=資金拘束</b>: レギュラー60営業日(約3ヶ月)、エクスプレス25営業日。仕入資金の回転も含めてプランを選ぶ。</li>
         <li><b>申告価値</b>: 実際の提出では狙いグレードの相場で申告する。低く申告してもPSA側で実勢に合わせた上位料金になり得る(だからこのボードは高い方のプランで計算)。</li>
         <li><b>代行業者</b>: 会員登録や英語手続きなしで出せるが単価は上がる。代行の見積り額は「コスト設定→手動固定」に入れると全行に反映される。</li>
         <li><b>グレード読み</b>: 旧裏は経年で完美品が少なく10は簡単に出ない。「10前提」の仕入れはせず、9〜8で利益が残るカード(緑バッジ)を軸にすると事故らない。</li>
@@ -265,7 +301,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 </section>
 
 <footer>
-  旧裏PSAターミナル · V1.2 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
+  旧裏PSAターミナル · V2 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオク/カードラッシュのリンクで確認)。<br>
   データ更新はチャットからClaudeに依頼(例:「ひかるリザードンのPSA10を◯円に」「全体の相場を見直して」)。
 </footer>
 
@@ -282,10 +318,10 @@ var LS = {
   set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
   del:function(k){try{localStorage.removeItem(k);}catch(e){}}
 };
-/* PSA日本 グレーディング料金(税込・2026-05-15改定適用/受付停止プランは除外)
+/* PSA日本 グレーディング料金(税込・2026-05-15改定適用)
+   バリュー系は受付停止/利用しない(オーナー運用 2026-08-25)のため除外。最低プランはレギュラー。
    [申告価格上限, 料金/枚, プラン名] */
 var PSA_FEES=[
-  [80000,4980,'バリュー'],
   [250000,11980,'レギュラー'],
   [400000,22980,'エクスプレス'],
   [750000,44980,'スーパー・エクスプレス'],
@@ -296,7 +332,7 @@ var PSA_FEES=[
   [35000000,749980,'プレミアム5'],
   [9e15,1499980,'プレミアム10']
 ];
-var DEF_SET = {mode:'auto', base:9, grade:4980, gship:500, fee:10, sship:215};
+var DEF_SET = {mode:'auto', base:9, minp:0, grade:11980, gship:500, fee:10, sship:215};
 var S = Object.assign({}, DEF_SET, LS.get('p004.settings', {}));
 var rawOv = LS.get('p004.rawOv', {});
 var priceOv = LS.get('p004.priceOv', {});
@@ -306,7 +342,8 @@ var ui = {set:'all', text:'', sort:'p10', f9:false, f8:false, flow:false, open:{
 function price(c,g){var o=priceOv[c.id]; return (o && o[g]!=null) ? o[g] : c.psa[String(g)];}
 function raw(c){var o=rawOv[c.id]||{}; return {m:(o.m!=null?o.m:c.raw.m), p:(o.p!=null?o.p:c.raw.p)};}
 function feeFor(v){
-  for(var i=0;i<PSA_FEES.length;i++){if(v<=PSA_FEES[i][0])return {amt:PSA_FEES[i][1],name:PSA_FEES[i][2]};}
+  var start=Math.min(Math.max(0,(+S.minp||0)),PSA_FEES.length-1);
+  for(var i=start;i<PSA_FEES.length;i++){if(v<=PSA_FEES[i][0])return {amt:PSA_FEES[i][1],name:PSA_FEES[i][2]};}
   var last=PSA_FEES[PSA_FEES.length-1];return {amt:last[1],name:last[2]};
 }
 function declGrade(base){return base==='p'?4:(+S.base||9);} /* 傷素体は申告PSA4想定 */
@@ -338,23 +375,21 @@ function man(v){
   return (v<0?'-':'')+s;
 }
 function pm(v){return (v>=0?'+':'-')+man(Math.abs(v));}
-function pmCls(v){return v>0?'pos':(v<0?'neg':'zero');}
-
 function mercari(q,sold){return 'https://jp.mercari.com/search?keyword='+encodeURIComponent(q)+(sold?'&status=sold_out':'&status=on_sale');}
 function yahooClosed(q){return 'https://auctions.yahoo.co.jp/closedsearch/closedsearch?p='+encodeURIComponent(q)+'&va='+encodeURIComponent(q)+'&b=1&n=50';}
 function cardrush(c){return 'https://cardrush.media/pokemon/buying_prices?name='+encodeURIComponent(c.n.split('(')[0])+'&display_category=%E6%97%A7%E8%A3%8F';}
 
 function badgeMint(c){
   var l=lineOf(c,'m');
-  if(l==null) return {t:'美品仕入でも赤字', cls:'bad'};
-  if(l===10)  return {t:'PSA10のみ黒字', cls:'warn'};
-  if(l===9)   return {t:'美品仕入→PSA9〜黒字', cls:'ok9'};
-  return {t:'美品仕入→PSA'+l+'〜黒字', cls:'ok'};
+  if(l==null) return {t:'赤字圏', s:'美品仕入NG', cls:'bad'};
+  if(l===10)  return {t:'PSA10', s:'のみ黒字', cls:'warn'};
+  if(l===9)   return {t:'PSA9〜', s:'美品で黒字', cls:'ok9'};
+  return {t:'PSA'+l+'〜', s:'美品で黒字', cls:'ok'};
 }
 function badgePlayed(c){
   var l=lineOf(c,'p');
   if(l==null || l>6) return null;
-  return {t:'傷仕入→PSA'+l+'〜黒字', cls:(l<=3?'low1':'low')};
+  return {t:'傷PSA'+l+'〜黒字', cls:(l<=3?'lb2 hot':'lb2')};
 }
 
 /* ---- サマリー ---- */
@@ -366,7 +401,7 @@ function renderSummary(){
   });
   var el=document.getElementById('summary');
   el.innerHTML =
-    '<span class="sumchip static">掲載 <b>'+SEED.cards.length+'</b> 枚</span>'+
+    '<span class="sumchip static">掲載 <b>'+SEED.cards.length+'</b></span>'+
     '<span class="sumchip'+(ui.f9?' on':'')+'" id="chip9">PSA9でも黒字 <b>'+n9+'</b></span>'+
     '<span class="sumchip'+(ui.f8?' on':'')+'" id="chip8">PSA8以下でも黒字 <b>'+n8+'</b></span>'+
     '<span class="sumchip'+(ui.flow?' on':'')+'" id="chiplow">傷素体で低グレ黒字 <b>'+nl+'</b></span>';
@@ -374,7 +409,7 @@ function renderSummary(){
   document.getElementById('chip8').onclick=function(){ui.f8=!ui.f8;render();};
   document.getElementById('chiplow').onclick=function(){ui.flow=!ui.flow;render();};
   var feetxt = (S.mode==='auto')
-    ? 'PSA料金表で自動(申告基準PSA'+(+S.base)+'・バリュー4,980円〜)+按分'+yen(+S.gship)+'円'
+    ? 'PSA料金表で自動(最低'+PSA_FEES[Math.min(Math.max(0,+S.minp||0),1)][2]+'・申告基準PSA'+(+S.base)+')+按分'+yen(+S.gship)+'円'
     : '固定 '+yen((+S.grade)+(+S.gship))+'円/枚';
   document.getElementById('costline').innerHTML =
     '計算条件: 鑑定 '+feetxt+' ・ 販売手数料 '+(+S.fee)+'% ・ 販売送料 '+yen(+S.sship)+'円 (<a href="#" id="costEdit">変更</a>)';
@@ -419,27 +454,34 @@ function visibleCards(){
 }
 
 function priceCell(label,val,profit){
-  return '<div class="pc"><div class="pl">'+label+'</div><div class="pv num">'+man(val)+'</div>'+
-         '<div class="ps num '+pmCls(profit)+'">'+pm(profit)+'</div></div>';
+  var cls=profit>0?'pos':(profit<0?'neg':'neu');
+  return '<div class="pc '+cls+'"><span class="pl">'+label+'</span><span class="pv num">'+man(val)+'</span>'+
+         '<span class="ps num">'+pm(profit)+'</span></div>';
 }
 
 function cardHTML(c){
   var r=raw(c), bm=badgeMint(c), bp=badgePlayed(c);
   var open=!!ui.open[c.id];
+  var planTxt='';
+  if(S.mode==='auto'){
+    var dm=feeFor(price(c,declGrade('m')));
+    planTxt='申告PSA'+declGrade('m')+'→'+dm.name+' '+man(dm.amt);
+  }else{
+    planTxt='鑑定固定 '+man(+S.grade);
+  }
   var h='<div class="card" data-id="'+c.id+'">';
-  h+='<div class="chead" data-act="toggle">';
-  h+='<div class="crow1"><span class="cname">'+esc(c.n)+'</span>'+
-     '<span class="schip">'+esc(SEED.sets[c.set])+'</span>'+
-     '<span class="tier t'+c.tier+'">'+c.tier+'</span></div>';
-  h+='<div class="cbadges"><span class="bdg '+bm.cls+'">'+bm.t+'</span>';
-  if(bp) h+='<span class="bdg '+bp.cls+'">'+bp.t+'</span>';
-  h+='</div></div>';
-  h+='<div class="cprices" data-act="toggle">';
-  h+='<div class="pc"><div class="pl">素体 美品('+(c.buy?'買取基準':'参考')+')</div><div class="pv num">'+man(r.m)+'</div><div class="ps num">傷あり '+man(r.p)+'</div></div>';
+  h+='<div class="crow" data-act="toggle">';
+  h+='<div class="cline"><div class="lb '+bm.cls+'">'+bm.t+'<small>'+bm.s+'</small></div>';
+  if(bp) h+='<span class="'+bp.cls+'">'+bp.t+'</span>';
+  h+='</div>';
+  h+='<div class="cmain"><div class="cname">'+esc(c.n)+'<span class="cver">'+esc(SEED.sets[c.set])+'</span><span class="tier t'+c.tier+'">'+c.tier+'</span></div>';
+  h+='<div class="csub num">'+planTxt+'</div></div>';
+  h+='<div class="pcs">';
+  h+='<div class="pc raw"><span class="pl">素体 美品'+(c.buy?'(買取基準)':'(参考)')+'</span><span class="pv num">'+man(r.m)+'</span><span class="ps num">傷あり '+man(r.p)+'</span></div>';
   h+=priceCell('PSA8', price(c,8), net(c,8,'m'));
   h+=priceCell('PSA9', price(c,9), net(c,9,'m'));
   h+=priceCell('PSA10', price(c,10), net(c,10,'m'));
-  h+='</div>';
+  h+='</div></div>';
   if(open) h+=detailHTML(c);
   h+='</div>';
   return h;
@@ -461,18 +503,19 @@ function detailHTML(c){
   GRADES.forEach(function(g){
     var fm=gradeFee(c,g,'m'), cb=ceilBuy(c,g,'m'), nm=net(c,g,'m'), np=net(c,g,'p');
     var hi=(g>=8)?' class="hi"':'';
+    var cn=function(v){return v>0?'tpos':(v<0?'tneg':'tzero');};
     h+='<tr'+hi+'><td>PSA'+g+'</td>'+
       '<td><input type="number" inputmode="numeric" min="0" step="100" value="'+price(c,g)+'" data-edit="price" data-id="'+c.id+'" data-g="'+g+'"></td>'+
       '<td class="num" title="'+fm.name+'">'+man(fm.amt)+'</td>'+
       '<td class="num">'+man(cb)+'</td>'+
-      '<td class="num '+pmCls(nm)+'">'+pm(nm)+'</td>'+
-      '<td class="num '+pmCls(np)+'">'+pm(np)+'</td>'+
+      '<td class="num"><span class="'+cn(nm)+'">'+pm(nm)+'</span></td>'+
+      '<td class="num"><span class="'+cn(np)+'">'+pm(np)+'</span></td>'+
       '<td><a href="'+mercari(c.q+' PSA'+g,true)+'" target="_blank" rel="noopener">売切相場</a></td></tr>';
   });
   h+='</tbody></table></div>';
   if(S.mode==='auto'){
     var dm=feeFor(price(c,declGrade('m'))), dp=feeFor(price(c,declGrade('p')));
-    h+='<div class="rawnote">鑑定プラン想定: 美品仕入=申告基準PSA'+declGrade('m')+' → <b>'+dm.name+'</b>('+man(dm.amt)+'/枚)。傷仕入=申告PSA4 → '+dp.name+'('+man(dp.amt)+')。結果グレードの相場が申告プランの上限を超える行は、その相場に必要な上位プラン料金で計算しています(PSA 2026-05-15改定・税込)。</div>';
+    h+='<div class="rawnote">鑑定プラン想定: 美品仕入=申告基準PSA'+declGrade('m')+' → <b>'+dm.name+'</b>('+man(dm.amt)+'/枚)。傷仕入=申告PSA4 → '+dp.name+'('+man(dp.amt)+')。結果グレードの相場が申告プランの上限を超える行は、その相場に必要な上位プラン料金で計算しています(PSA 2026-05-15改定・税込・バリューは除外)。</div>';
   }
   h+='<div class="rawedit">'+
     '<div class="setitem"><label>素体 美品の仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.m+'" data-edit="rawm" data-id="'+c.id+'"></div>'+
@@ -483,7 +526,7 @@ function detailHTML(c){
   }else{
     h+='<div class="rawnote">素体美品の上限目安はカードラッシュの買取価格が使えます(上の「買取価格(カードラッシュ)」リンクで確認)。買取価格以下で仕入れられれば、店売りで逃げられる=実質の下限保証。</div>';
   }
-  h+='<div class="rawnote">仕入上限 = 相場 ×(1−手数料)− 販売送料 − 鑑定コスト。メルカリで見つけた素体がこの金額以下なら、そのグレードで終わっても赤字になりません。数字の変更はこの端末にのみ保存されます。</div>';
+  h+='<div class="rawnote">仕入上限 = 相場 ×(1−手数料)− 販売送料 − 鑑定料 − 按分。メルカリで見つけた素体がこの金額以下なら、そのグレードで終わっても赤字になりません。数字の変更はこの端末にのみ保存されます。</div>';
   h+='</div>';
   return h;
 }
@@ -542,8 +585,10 @@ document.getElementById('sortsel').addEventListener('change',function(){
 
 /* ---- 設定 ---- */
 function syncModeVis(){
-  document.getElementById('wrapBase').hidden=(S.mode!=='auto');
-  document.getElementById('wrapGrade').hidden=(S.mode!=='flat');
+  var auto=(S.mode==='auto');
+  document.getElementById('wrapBase').hidden=!auto;
+  document.getElementById('wrapMinp').hidden=!auto;
+  document.getElementById('wrapGrade').hidden=auto;
 }
 function toggleSettings(show){
   var el=document.getElementById('settings');
@@ -552,6 +597,7 @@ function toggleSettings(show){
   if(vis){
     document.getElementById('setMode').value=S.mode;
     document.getElementById('setBase').value=String(S.base);
+    document.getElementById('setMinp').value=String(S.minp);
     document.getElementById('setGrade').value=S.grade;
     document.getElementById('setGship').value=S.gship;
     document.getElementById('setFee').value=S.fee;
@@ -566,6 +612,10 @@ document.getElementById('setMode').addEventListener('change',function(){
 document.getElementById('setBase').addEventListener('change',function(){
   var v=parseInt(this.value,10);
   if(v===8||v===9||v===10){S.base=v;LS.set('p004.settings',S);render();}
+});
+document.getElementById('setMinp').addEventListener('change',function(){
+  var v=parseInt(this.value,10);
+  if(v===0||v===1){S.minp=v;LS.set('p004.settings',S);render();}
 });
 [['setGrade','grade'],['setGship','gship'],['setFee','fee'],['setSship','sship']].forEach(function(p){
   document.getElementById(p[0]).addEventListener('change',function(){
@@ -589,6 +639,9 @@ document.getElementById('btnExport').onclick=function(){
 };
 
 /* ---- 初期化 ---- */
+/* 旧設定の移行: minpが無い保存値・バリュー時代のflat既定を補正 */
+if(S.minp==null)S.minp=0;
+if(S.mode==null)S.mode='auto';
 document.getElementById('updDate').textContent=SEED.updated;
 render();
 })();
