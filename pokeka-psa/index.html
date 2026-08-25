@@ -7,124 +7,133 @@
 <title>旧裏PSAターミナル</title>
 <style>
 :root{
-  --bg:#0d1117; --panel:#161b22; --panel2:#1b2230; --line:#2d333c;
-  --tx:#e6edf3; --tx2:#9aa7b3; --tx3:#697585;
-  --gold:#e3b341; --green:#4ac95e; --red:#f8615a; --amber:#d9a62e;
-  --purple:#c39aff; --blue:#58a6ff; --teal:#3fc9d4;
+  --bg:#f3f4f6; --panel:#ffffff; --panel2:#faf9f8; --line:#e3e6ea;
+  --frame:rgba(217,69,58,.55); --red:#d9453a; --red2:#c0392b;
+  --tx:#1f242c; --tx2:#57606c; --tx3:#8b95a1;
+  --green:#178a3f; --greenbg:#e9f7ee; --redng:#c93a2f; --redbg:#fdedeb;
+  --amber:#a97a12; --amberbg:#fdf3dd; --purple:#7b3ff2; --purplebg:#f3edfe; --teal:#0c8b96; --tealbg:#e6f6f8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:14px;line-height:1.55;padding-bottom:56px}
 .num{font-variant-numeric:tabular-nums}
-a{color:var(--blue);text-decoration:none}
+a{color:#1668c7;text-decoration:none}
 a:hover{text-decoration:underline}
 button{font-family:inherit;cursor:pointer}
-input,select{font-family:inherit;font-size:14px;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-input:focus,select:focus{outline:1px solid var(--blue);border-color:var(--blue)}
+input,select{font-family:inherit;font-size:14px;background:#fff;color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+input:focus,select:focus{outline:2px solid rgba(217,69,58,.35);border-color:var(--red)}
 
-header{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.97);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:9px 14px 7px}
-.hrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-h1{font-size:19px;letter-spacing:.5px;color:var(--gold)}
-.vbadge{font-size:12px;color:var(--tx3);font-weight:normal}
-.hsub{font-size:11.5px;color:var(--tx2);margin-top:2px}
-.hsub b{color:var(--gold);font-weight:600}
-.gearbtn{margin-left:auto;background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:4px 12px;font-size:12.5px}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(4px);border-bottom:3px solid var(--red);padding:8px 14px 9px;box-shadow:0 1px 6px rgba(31,36,44,.06)}
+.hrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:18px;letter-spacing:.4px;color:var(--red)}
+.vbadge{font-size:11.5px;color:var(--tx3);font-weight:normal}
+.gearbtn{margin-left:auto;background:#fff;border:1px solid var(--line);color:var(--tx2);border-radius:8px;padding:5px 12px;font-size:12.5px}
 .gearbtn:hover{color:var(--tx);border-color:var(--tx3)}
+#searchbox{width:100%;margin-top:7px;font-size:16px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px}
 
-.wrap{max-width:1120px;margin:0 auto;padding:0 14px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 12px}
+
+#notice{background:var(--amberbg);border:1px solid #ecd9a8;color:#7a5c10;border-radius:10px;font-size:11.5px;line-height:1.6;padding:8px 12px;margin:10px 0 0}
+#notice b{color:#5f470a}
 
 /* 設定パネル */
-#settings{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:12px 0;padding:12px 14px}
-#settings h2{font-size:13px;color:var(--gold);margin-bottom:8px}
+#settings{background:var(--panel);border:1.5px solid var(--frame);border-radius:12px;margin:12px 0;padding:12px 14px}
+#settings h2{font-size:13px;color:var(--red2);margin-bottom:8px}
 .setgrid{display:flex;gap:14px;flex-wrap:wrap}
 .setitem{display:flex;flex-direction:column;gap:3px}
 .setitem label{font-size:11px;color:var(--tx2)}
 .setitem input{width:110px}
 .setnote{font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.6}
 .setbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.sbtn{background:var(--bg);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:5px 10px;font-size:12px}
-.sbtn:hover{color:var(--tx)}
-.sbtn.warn{color:var(--amber)}
+.sbtn{background:#fff;border:1px solid var(--line);color:var(--tx2);border-radius:8px;padding:5px 10px;font-size:12px}
+.sbtn:hover{color:var(--tx);border-color:var(--tx3)}
+.sbtn.warn{color:#a3540e}
 
 /* サマリー */
-#summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+#summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
 .sumchip{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--tx2);cursor:pointer;user-select:none}
-.sumchip b{color:var(--gold);font-size:15px;margin-left:2px}
-.sumchip.on{border-color:var(--gold);color:var(--gold);background:rgba(227,179,65,.1)}
+.sumchip b{color:var(--red2);font-size:15px;margin-left:2px}
+.sumchip.on{border-color:var(--red);color:var(--red2);background:var(--redbg)}
 .sumchip.static{cursor:default}
 .sumchip.static b{color:var(--tx)}
 .costline{font-size:11px;color:var(--tx3);margin:4px 0 10px}
 .costline a{color:var(--tx3);text-decoration:underline}
 
 /* コントロール */
-#controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 10px}
-#searchbox{flex:1;min-width:160px}
+#controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 12px}
 .setchips{display:flex;gap:6px;flex-wrap:wrap}
 .schipbtn{background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:16px;padding:4px 11px;font-size:12px}
-.schipbtn.on{border-color:var(--teal);color:var(--teal);background:rgba(63,201,212,.09)}
+.schipbtn.on{border-color:var(--teal);color:var(--teal);background:var(--tealbg)}
 
-/* ==== 価格表(テーブル型) ==== */
-#listwrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
-#lhead{display:grid;grid-template-columns:132px minmax(200px,1fr) repeat(4,122px);gap:0 10px;
-  padding:8px 14px;border-bottom:1px solid var(--line);background:var(--panel2);
-  font-size:10.5px;color:var(--tx3);font-weight:700;letter-spacing:.4px}
-#lhead span:nth-child(n+3){text-align:right}
-.card{border-bottom:1px solid var(--line)}
-.card:last-child{border-bottom:none}
-.crow{display:grid;grid-template-columns:132px minmax(200px,1fr) repeat(4,122px);gap:0 10px;
-  align-items:center;padding:9px 14px;cursor:pointer}
-.crow:hover{background:rgba(88,166,255,.045)}
+/* ==== カード一覧 ==== */
+#lhead{display:grid;grid-template-columns:52px minmax(200px,1fr) 118px repeat(4,116px);gap:0 10px;
+  padding:6px 14px;font-size:10.5px;color:var(--tx3);font-weight:700;letter-spacing:.4px}
+#lhead span:nth-child(n+4){text-align:right}
+.card{background:var(--panel);border:1.5px solid var(--frame);border-radius:12px;margin-bottom:8px;
+  box-shadow:0 1px 3px rgba(31,36,44,.05)}
+.crow{display:grid;grid-template-columns:52px minmax(200px,1fr) 118px repeat(4,116px);gap:0 10px;
+  align-items:center;padding:8px 14px;cursor:pointer}
+.crow:hover{background:#fdf7f6}
+
+/* スプライト */
+.sprwrap{width:48px;height:48px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.sprwrap .fb{font-size:15px;font-weight:800;color:var(--tx3)}
+.spr{width:48px;height:48px;image-rendering:pixelated;position:absolute;inset:0}
+
+/* カード名ブロック */
+.cname{font-weight:700;font-size:14px;line-height:1.35;color:var(--tx)}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;align-items:center}
+.chip{font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px;white-space:nowrap}
+.chip.no{background:var(--redbg);color:var(--red2);border:1px solid rgba(217,69,58,.45)}
+.chip.mk{background:#fff;color:var(--tx2);border:1px solid var(--line)}
+.chip.cat{background:var(--panel2);color:var(--tx3);border:1px solid var(--line);font-weight:600}
+.chip.tS{background:var(--redbg);color:var(--red2);border:1px solid rgba(217,69,58,.5)}
+.chip.tA{background:#eef1f4;color:#4a5560;border:1px solid #d7dde3}
+.chip.tB{background:#f5efe8;color:#8a6d4e;border:1px solid #e4d5c2}
+.csub{font-size:10.5px;color:var(--tx3);margin-top:3px}
 
 /* 判定バッジ */
 .cline{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-.lb{font-size:15px;font-weight:800;padding:5px 10px 4px;border-radius:8px;line-height:1.1;text-align:center;min-width:92px}
-.lb small{display:block;font-size:9.5px;font-weight:700;opacity:.8;margin-top:2px;letter-spacing:.3px}
-.lb.ok{background:rgba(74,201,94,.16);color:var(--green);border:1px solid rgba(74,201,94,.5)}
-.lb.ok9{background:rgba(63,201,212,.13);color:var(--teal);border:1px solid rgba(63,201,212,.45)}
-.lb.warn{background:rgba(217,166,46,.13);color:var(--amber);border:1px solid rgba(217,166,46,.45)}
-.lb.bad{background:rgba(248,97,90,.12);color:var(--red);border:1px solid rgba(248,97,90,.45)}
-.lb2{font-size:10.5px;font-weight:700;color:var(--purple);border:1px solid rgba(195,154,255,.45);
-  background:rgba(195,154,255,.1);border-radius:5px;padding:1px 7px}
-.lb2.hot{background:rgba(195,154,255,.25);color:#e6d5ff}
-
-/* カード名 */
-.cname{font-weight:700;font-size:14.5px;line-height:1.35}
-.cver{font-size:10.5px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;padding:1px 5px;white-space:nowrap;font-weight:600;margin-left:6px}
-.tier{font-size:10.5px;font-weight:800;border-radius:4px;padding:1px 6px;white-space:nowrap;margin-left:4px}
-.tS{background:rgba(227,179,65,.16);color:var(--gold);border:1px solid rgba(227,179,65,.5)}
-.tA{background:rgba(154,167,179,.12);color:#c9d4de;border:1px solid rgba(154,167,179,.45)}
-.tB{background:rgba(161,133,106,.12);color:#c4a687;border:1px solid rgba(161,133,106,.45)}
-.csub{font-size:11px;color:var(--tx3);margin-top:2px}
+.lb{font-size:14.5px;font-weight:800;padding:5px 10px 4px;border-radius:9px;line-height:1.1;text-align:center;min-width:88px}
+.lb small{display:block;font-size:9px;font-weight:700;opacity:.85;margin-top:2px;letter-spacing:.3px}
+.lb.ok{background:var(--greenbg);color:var(--green);border:1.5px solid #9adbb2}
+.lb.ok9{background:var(--tealbg);color:var(--teal);border:1.5px solid #9bd4da}
+.lb.warn{background:var(--amberbg);color:var(--amber);border:1.5px solid #e6cd90}
+.lb.bad{background:var(--redbg);color:var(--redng);border:1.5px solid #efb2ab}
+.lb2{font-size:10px;font-weight:700;color:var(--purple);border:1px solid #d4c2f7;background:var(--purplebg);border-radius:5px;padding:1px 6px}
 
 /* 価格セル */
 .pcs{display:contents}
-.pc{border-radius:8px;padding:5px 9px 4px;text-align:right;min-width:0}
-.pc .pl{display:block;font-size:10px;color:var(--tx3);font-weight:600;white-space:nowrap}
-.pc .pv{display:block;font-size:16.5px;font-weight:800;white-space:nowrap;letter-spacing:.2px}
-.pc .ps{display:block;font-size:12px;font-weight:700;white-space:nowrap}
-.pc.raw .pv{color:var(--tx)}
+.pc{border-radius:9px;padding:5px 9px 4px;text-align:right;min-width:0;border:1px solid transparent}
+.pc .pl{display:block;font-size:9.5px;color:var(--tx3);font-weight:700;white-space:nowrap}
+.pc .pv{display:block;font-size:16px;font-weight:800;white-space:nowrap;letter-spacing:.2px}
+.pc .ps{display:block;font-size:11.5px;font-weight:700;white-space:nowrap}
+.pc.raw{background:var(--panel2);border-color:var(--line)}
 .pc.raw .ps{color:var(--tx3);font-weight:600}
-.pc.pos{background:rgba(74,201,94,.09)}
+.pc.pos{background:var(--greenbg);border-color:#cdebd6}
 .pc.pos .ps{color:var(--green)}
-.pc.neg{background:rgba(248,97,90,.08)}
-.pc.neg .ps{color:var(--red)}
+.pc.neg{background:var(--redbg);border-color:#f3cfca}
+.pc.neg .ps{color:var(--redng)}
+.pc.neu{background:var(--amberbg)}
 .pc.neu .ps{color:var(--amber)}
 
 /* 詳細 */
-.cdetail{border-top:1px dashed var(--line);background:var(--panel2);padding:12px 14px 15px}
-.linkrow{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;margin-bottom:9px}
-.cnote{font-size:12.5px;color:var(--tx2);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--gold)}
-.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.cdetail{border-top:1.5px dashed var(--frame);background:var(--panel2);padding:12px 14px 15px;border-radius:0 0 12px 12px}
+.idline{font-size:12px;color:var(--tx2);margin-bottom:8px}
+.idline b{color:var(--tx)}
+.linkrow{display:flex;gap:13px;flex-wrap:wrap;font-size:12.5px;margin-bottom:9px}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px;background:#fff}
 table{border-collapse:collapse;width:100%;min-width:700px;font-size:13px}
 #guide table{min-width:460px}
 th{font-size:11px;color:var(--tx3);font-weight:700;text-align:right;padding:7px 9px;border-bottom:1px solid var(--line);background:var(--panel2);white-space:nowrap}
 th:first-child{text-align:left}
-td{padding:6px 9px;text-align:right;border-bottom:1px solid rgba(45,51,60,.55);white-space:nowrap}
+td{padding:6px 9px;text-align:right;border-bottom:1px solid #eef1f4;white-space:nowrap}
 td:first-child{text-align:left;font-weight:700;color:var(--tx2)}
 tr:last-child td{border-bottom:none}
-tr.hi td{background:rgba(227,179,65,.05)}
+tr.hi td{background:#fdf8f0}
 td .tpos{color:var(--green);font-weight:700}
-td .tneg{color:var(--red);font-weight:700}
+td .tneg{color:var(--redng);font-weight:700}
 td .tzero{color:var(--amber);font-weight:700}
 td input{width:96px;text-align:right;padding:3px 6px;font-size:13px}
 td a{font-size:11.5px}
@@ -134,49 +143,51 @@ td a{font-size:11.5px}
 
 /* ガイド */
 #guide{margin:26px 0 10px}
-#guide h2{font-size:15px;color:var(--gold);margin-bottom:10px}
-details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;padding:0}
+#guide h2{font-size:15px;color:var(--red2);margin-bottom:10px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;padding:0}
 summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:13.5px;color:var(--tx)}
 .dbody{padding:0 16px 14px;font-size:13px;color:var(--tx2);line-height:1.75}
 .dbody ul{padding-left:18px}
 .dbody li{margin:3px 0}
 .dbody b{color:var(--tx)}
-.dbody .fm{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12px;margin:6px 0;color:var(--tx)}
+.dbody .fm{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;margin:6px 0;color:var(--tx)}
 .dim{color:var(--tx3)}
 
 footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--tx3);line-height:1.7}
 #empty{color:var(--tx3);text-align:center;padding:30px 0;font-size:13px}
 
 /* ==== モバイル ==== */
-@media (max-width:899px){
+@media (max-width:919px){
   #lhead{display:none}
-  #listwrap{border:none;background:transparent;border-radius:0}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
   .crow{display:block;padding:10px 12px}
-  .cline{flex-direction:row;align-items:center;margin-bottom:7px}
-  .cmain{margin-bottom:8px}
+  .m1{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+  .cmain{flex:1;min-width:0}
+  .cline{flex-direction:column;align-items:flex-end;flex-shrink:0}
   .pcs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-  .pc{background:var(--bg);border:1px solid var(--line);text-align:left;padding:6px 9px}
-  .pc.pos{background:rgba(74,201,94,.1);border-color:rgba(74,201,94,.35)}
-  .pc.neg{background:rgba(248,97,90,.09);border-color:rgba(248,97,90,.3)}
-  h1{font-size:17px}
+  .pc{text-align:left}
+  h1{font-size:16.5px}
   .setitem input{width:96px}
+}
+@media (min-width:920px){
+  .m1{display:contents}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="wrap">
+  <div class="wrap" style="padding:0">
     <div class="hrow">
-      <h1>旧裏PSAターミナル <span class="vbadge">· V2</span></h1>
+      <h1>旧裏PSAターミナル <span class="vbadge">· V3</span></h1>
       <button class="gearbtn" id="gearBtn" type="button">コスト設定</button>
     </div>
-    <div class="hsub">ポケカ旧裏 PSA相場 × 素体仕入判断 / データ更新: <b id="updDate"></b> / 価格は参考値 — 行を開いてリンクから実勢確認</div>
+    <input id="searchbox" type="search" placeholder="カード名で検索(例: リザードン / ひかる / マークなし)">
   </div>
 </header>
 
 <div class="wrap">
+
+<div id="notice"><b>素体美品の参考値=カードラッシュ買取価格(<span id="updDate"></span>取得)</b>。PSA1〜10の相場は買取価格からの<b>機械推定</b>です — 売買前に必ず各行の「売切相場」リンクで実勢を確認してください(数字はタップで修正でき、この端末に保存されます)。</div>
 
 <section id="settings" hidden>
   <h2>コスト設定(損益計算に反映・端末に保存)</h2>
@@ -202,7 +213,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
     <div class="setitem"><label>販売手数料(%)</label><input id="setFee" type="number" inputmode="decimal" min="0" max="50" step="0.5"></div>
     <div class="setitem"><label>販売時送料(円)</label><input id="setSship" type="number" inputmode="numeric" min="0" step="5"></div>
   </div>
-  <div class="setnote">自動モードは、狙いグレードの相場を申告価値としてPSAプランを選び、結果グレードの相場が申告上限を超える行は上位プラン料金で計算します(税込・2026-05-15改定)。<b>バリュー(4,980円)は現在受付していないため除外し、最低プランはレギュラーから</b>(オーナー運用 2026-08-25)。傷あり素体は申告PSA4想定。料金・納期は変動するため提出前にPSA公式(psacard.co.jp)で確認してください。販売手数料の既定はメルカリ10%。</div>
+  <div class="setnote">自動モードは、狙いグレードの推定相場を申告価値としてPSAプランを選び、結果グレードの相場が申告上限を超える行は上位プラン料金で計算します(税込・2026-05-15改定)。<b>バリューは受付していないため除外し、最低プランはレギュラーから</b>(オーナー運用 2026-08-25)。傷あり素体は申告PSA4想定。料金・納期は変動するため提出前にPSA公式(psacard.co.jp)で確認してください。販売手数料の既定はメルカリ10%。</div>
   <div class="setbtns">
     <button class="sbtn" id="btnDefSet" type="button">コストを既定に戻す</button>
     <button class="sbtn warn" id="btnResetAll" type="button">価格・素体の変更を全リセット</button>
@@ -214,9 +225,9 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <div class="costline" id="costline"></div>
 
 <section id="controls">
-  <input id="searchbox" type="search" placeholder="カード名で検索(例: リザードン)">
   <select id="sortsel">
-    <option value="p10">PSA10相場が高い順</option>
+    <option value="buy">買取価格が高い順</option>
+    <option value="p10">PSA10推定が高い順</option>
     <option value="net9">PSA9利益が大きい順(美品仕入)</option>
     <option value="roi9">資金効率順(PSA9利益÷投下資金)</option>
     <option value="name">名前順</option>
@@ -224,10 +235,8 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
   <div class="setchips" id="setchips"></div>
 </section>
 
-<div id="listwrap">
-  <div id="lhead"><span>判定(黒字ライン)</span><span>カード</span><span>素体 美品</span><span>PSA8</span><span>PSA9</span><span>PSA10</span></div>
-  <main id="list"></main>
-</div>
+<div id="lhead"><span></span><span>カード</span><span>判定(黒字ライン)</span><span>買取=美品仕入</span><span>PSA8</span><span>PSA9</span><span>PSA10</span></div>
+<main id="list"></main>
 
 <section id="guide">
   <h2>仕入れ・鑑定ガイド(まとめ)</h2>
@@ -237,10 +246,11 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
     <div class="dbody">
       <div class="fm">損益 = グレード相場 ×(1 − 販売手数料)− 販売送料 − 鑑定料(PSAプラン自動選択)− 鑑定送料按分 − 素体仕入値</div>
       <ul>
-        <li>左端の<b>判定バッジ</b>が結論。「PSA8〜黒字」=美品素体を参考価格で仕入れてPSA8止まりでも利益が残る。紫の「傷PSA◯〜」は傷あり素体を安く拾って低グレードでも黒字になるカード。</li>
+        <li><b>判定バッジ</b>が結論。「PSA8〜黒字」=素体を買取価格(美品)で仕入れてPSA8止まりでも利益が残る。紫の「傷PSA◯〜」は傷あり素体を安く拾って低グレードでも黒字になるカード。</li>
         <li>PSA8/9/10のセルは<b>緑=そのグレードで黒字、赤=赤字</b>(下段が損益額)。行を開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が見えます。</li>
-        <li><b>素体の上限目安はカードラッシュ買取価格(美品)</b>: 買取価格以下で仕入れられれば、鑑定が振るわなくても店売りで逃げられる=実質の下限保証(2026-08-25 運用決定)。各カードの「買取価格(カードラッシュ)」リンクで現在値を確認。</li>
-        <li>相場の数字は<b>参考値</b>。各行の「売切相場」リンク(メルカリ売り切れ検索)で実勢を確認し、ズレていたらその場で書き換え(この端末に保存)。</li>
+        <li><b>素体美品の参考値=カードラッシュ買取価格</b>: 買取以下で仕入れられれば、鑑定が振るわなくても店売りで逃げられる=実質の下限保証(2026-08-25 運用決定)。</li>
+        <li><b>PSAの相場は買取価格からの機械推定</b>(PSA9=買取×1.8、PSA10=さらに×2.3〜3.2 など)。売買前に必ず「売切相場」リンクで実勢を確認し、ズレていたらその場で数字を修正(この端末に保存)。</li>
+        <li><b>カードの特定</b>: 旧裏には「3/110」のようなコレクター番号がありません。名前+LV+版注記(買取表と同じ表記)+全国図鑑No.+レアマーク(★=キラ/●=非キラ/P=プロモ/-)で一意に特定できます。画像は図鑑No.から機械的に決まる公式スプライト(カードの絵柄そのものではなくポケモンの確認用)。</li>
       </ul>
     </div>
   </details>
@@ -254,8 +264,8 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
         <li><b>横線・縦線</b>: パックの折りジワ由来の初期線。ひかる系・ホロ面は斜め光の写真がないと分からない — 出品者に追加写真を依頼。</li>
         <li><b>凹み・反り</b>: ローダー・スリーブ越し写真は凹みが見えない。気になる個体は素の状態の写真をもらう。</li>
         <li><b>「美品」表記を信用しない</b>: 旧裏の「美品」は20年前基準のことが多い。状態記載よりも写真で判断。</li>
-        <li><b>版・種類の確認</b>: マークなし/あり、同名の技違い(neo御三家)、プロモの版違いで相場が大きく変わる。</li>
-        <li><b>高額カードの真贋</b>: ひかる系・マークなし初版は精巧なコピーの報告あり。極端に安い出品・新規アカウント・画像使い回しは避ける。</li>
+        <li><b>版・種類の確認</b>: マークなし/あり、LV違い、同名の版違い(通信進化・とりかえっこ・ファンクラブ等)で相場が大きく変わる。このボードの表記(買取表と同一)と突き合わせる。</li>
+        <li><b>高額カードの真贋</b>: ひかる系・マークなし・通信進化系プロモは精巧なコピーの報告あり。極端に安い出品・新規アカウント・画像使い回しは避ける。</li>
         <li><b>店頭仕入れ</b>: 状態を直接検品できるのが最大の利点。ライトを持参して斜めから面の線傷を見る。ショーケース内は店員に出してもらい裏面四隅まで確認。</li>
       </ul>
     </div>
@@ -273,11 +283,13 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
           <tr><td>スーパー・エクスプレス</td><td class="num">75万円以下</td><td class="num">44,980円</td><td class="num">25営業日</td></tr>
           <tr><td>ウォーク・スルー</td><td class="num">150万円以下</td><td class="num">89,980円</td><td class="num">25営業日</td></tr>
           <tr><td>プレミアム1</td><td class="num">400万円以下</td><td class="num">149,980円</td><td class="num">25営業日</td></tr>
+          <tr><td>プレミアム2</td><td class="num">800万円以下</td><td class="num">299,980円</td><td class="num">25営業日</td></tr>
+          <tr><td>プレミアム3</td><td class="num">1,500万円以下</td><td class="num">449,980円</td><td class="num">25営業日</td></tr>
         </tbody>
       </table></div>
       <ul>
-        <li>プレミアム2〜10(申告800万円超〜)は省略。バリュー・バルク/プラス/マックスは受付停止。<b>バリューも現在は使わない前提で、このボードの自動計算は最低レギュラー(11,980円)から</b>。回転重視なら設定で最低エクスプレスに引き上げ可。</li>
-        <li><b>鑑定費はグレード次第で跳ねる</b>: 例)ひかるリザードンがPSA10(相場120万円)ならウォーク・スルー89,980円。「PSA10が出た場合の上位プラン課金」まで各行の損益に織り込み済み。</li>
+        <li>プレミアム5/10(申告1,500万円超〜)は省略。バリュー・バルク/プラス/マックスは受付停止。<b>バリューも使わない前提で、自動計算は最低レギュラー(11,980円)から</b>。回転重視なら設定で最低エクスプレスに引き上げ可。</li>
+        <li><b>鑑定費はグレード次第で跳ねる</b>: 高額カードは「PSA10が出た場合の上位プラン課金」まで各行の損益に織り込み済み。</li>
         <li><b>納期=資金拘束</b>: レギュラー60営業日(約3ヶ月)、エクスプレス25営業日。仕入資金の回転も含めてプランを選ぶ。</li>
         <li><b>申告価値</b>: 実際の提出では狙いグレードの相場で申告する。低く申告してもPSA側で実勢に合わせた上位料金になり得る(だからこのボードは高い方のプランで計算)。</li>
         <li><b>代行業者</b>: 会員登録や英語手続きなしで出せるが単価は上がる。代行の見積り額は「コスト設定→手動固定」に入れると全行に反映される。</li>
@@ -291,9 +303,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
     <summary>注意・免責</summary>
     <div class="dbody">
       <ul>
-        <li>掲載価格は手動更新の<b>参考値</b>であり、正確性・最新性は保証されません。売買判断の前に必ず実勢を確認してください。</li>
-        <li>相場データの一括更新は、チャットでClaudeに「相場更新して」と依頼 → データ差し替え → 再デプロイの運用です。</li>
-        <li>本サイトは個人用の非公式ツールです。PSA、株式会社ポケモン、任天堂、メルカリ、ヤフー、カードラッシュ各社とは一切関係ありません。買取価格の参照はリンク先(公開ページ)の目視確認が正です。</li>
+        <li>素体美品の参考値はカードラッシュ買取価格(2026-08-25にオーナーが取得)に基づきます。買取価格は日々変動するため、仕入判断の直前に各カードの「買取価格(カードラッシュ)」リンクで最新値を確認してください。</li>
+        <li>PSA1〜10の相場は買取価格からの<b>機械推定</b>であり、正確性・最新性は保証されません。売買判断の前に必ず実勢(売切相場・落札相場)を確認してください。</li>
+        <li>相場データの一括更新は、チャットでClaudeに依頼(買取表の貼り付け→再生成→再デプロイ)する運用です。</li>
+        <li>本サイトは個人用の非公式ツールです。PSA、株式会社ポケモン、任天堂、メルカリ、ヤフー、カードラッシュ、SNKRDUNK各社とは一切関係ありません。</li>
         <li>カード売買・鑑定提出の結果について、本サイトは責任を負いません。</li>
       </ul>
     </div>
@@ -301,13 +314,13 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 </section>
 
 <footer>
-  旧裏PSAターミナル · V2 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオク/カードラッシュのリンクで確認)。<br>
-  データ更新はチャットからClaudeに依頼(例:「ひかるリザードンのPSA10を◯円に」「全体の相場を見直して」)。
+  旧裏PSAターミナル · V3 — 個人用の相場・仕入判断ボード。素体美品=カードラッシュ買取基準/PSA相場=機械推定(端末内で編集可)。<br>
+  データ更新はチャットからClaudeに依頼(例:「最新の買取表を貼るから更新して」「ひかるリザードンのPSA10を◯円に」)。
 </footer>
 
 </div><!-- /wrap -->
 
-<script type="application/json" id="seed">{"updated":"2026-08-25","sets":{"dai1":"第1弾","jungle":"ジャングル","fossil":"化石","rocket":"ロケット団","gym":"ジム","neo":"金銀neo","promo":"プロモ"},"cards":[{"id":"zard-nomark","n":"リザードン(マークなし・初版)","set":"dai1","tier":"S","q":"リザードン 旧裏 マークなし","note":"旧裏最高峰。レアリティマーク無しの初版。低グレードでも値が付く代表格。真贋・状態は特に慎重に","raw":{"m":300000,"p":100000},"psa":{"10":6000000,"9":1500000,"8":900000,"7":650000,"6":505000,"5":425000,"4":370000,"3":335000,"2":305000,"1":290000}},{"id":"zard-mark","n":"リザードン(マークあり)","set":"dai1","tier":"A","q":"リザードン 旧裏 第1弾","note":"旧裏の看板。流通が多く相場が読みやすい定番","raw":{"m":45000,"p":18000},"psa":{"10":450000,"9":140000,"8":85000,"7":59000,"6":44000,"5":36000,"4":31000,"3":26000,"2":23000,"1":20000}},{"id":"kamex","n":"カメックス(第1弾)","set":"dai1","tier":"A","q":"カメックス 旧裏 第1弾","note":"御三家人気。マークなし版は別相場(さらに高い)","raw":{"m":25000,"p":9000},"psa":{"10":250000,"9":70000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"fushigibana","n":"フシギバナ(第1弾)","set":"dai1","tier":"A","q":"フシギバナ 旧裏 第1弾","note":"御三家人気。マークなし版は別相場(さらに高い)","raw":{"m":20000,"p":8000},"psa":{"10":200000,"9":60000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"mewtwo1","n":"ミュウツー(第1弾)","set":"dai1","tier":"A","q":"ミュウツー 旧裏 第1弾","note":"初代映画世代の需要が厚い","raw":{"m":12000,"p":4500},"psa":{"10":120000,"9":35000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"pika1","n":"ピカチュウ(第1弾)","set":"dai1","tier":"A","q":"ピカチュウ 旧裏 第1弾","note":"マークなし/あり・印刷差で相場が分かれる。出品画像で要確認","raw":{"m":15000,"p":5000},"psa":{"10":150000,"9":45000,"8":26000,"7":18000,"6":14000,"5":11000,"4":9500,"3":8000,"2":7000,"1":6000}},{"id":"alakazam1","n":"フーディン(第1弾)","set":"dai1","tier":"B","q":"フーディン 旧裏","note":"第1弾ホロの定番","raw":{"m":11000,"p":4500},"psa":{"10":90000,"9":27000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"gyarados1","n":"ギャラドス(第1弾)","set":"dai1","tier":"B","q":"ギャラドス 旧裏 第1弾","note":"第1弾ホロの定番","raw":{"m":11000,"p":4000},"psa":{"10":90000,"9":26000,"8":15500,"7":11000,"6":8000,"5":6500,"4":5500,"3":5000,"2":4000,"1":3500}},{"id":"booster-j","n":"ブースター(ジャングル)","set":"jungle","tier":"B","q":"ブースター 旧裏","note":"ブイズ人気で堅調","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"thunders-j","n":"サンダース(ジャングル)","set":"jungle","tier":"B","q":"サンダース 旧裏","note":"ブイズ人気で堅調","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"showers-j","n":"シャワーズ(ジャングル)","set":"jungle","tier":"B","q":"シャワーズ 旧裏","note":"ブイズ人気で堅調","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"kairyu-f","n":"カイリュー(化石)","set":"fossil","tier":"A","q":"カイリュー 旧裏","note":"初代600族。海外人気も強い","raw":{"m":18000,"p":7000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"thunder-f","n":"サンダー(化石)","set":"fossil","tier":"B","q":"サンダー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":12000,"p":4500},"psa":{"10":90000,"9":28000,"8":17000,"7":12000,"6":9000,"5":7000,"4":6000,"3":5500,"2":4500,"1":4000}},{"id":"freezer-f","n":"フリーザー(化石)","set":"fossil","tier":"B","q":"フリーザー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":12000,"p":4500},"psa":{"10":90000,"9":28000,"8":17000,"7":12000,"6":9000,"5":7000,"4":6000,"3":5500,"2":4500,"1":4000}},{"id":"fire-f","n":"ファイヤー(化石)","set":"fossil","tier":"B","q":"ファイヤー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":11000,"p":4000},"psa":{"10":85000,"9":26000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"laplace-f","n":"ラプラス(化石)","set":"fossil","tier":"B","q":"ラプラス 旧裏","note":"化石ホロの人気どころ","raw":{"m":7500,"p":3000},"psa":{"10":60000,"9":18000,"8":11000,"7":7500,"6":5500,"5":4500,"4":4000,"3":3500,"2":3000,"1":2500}},{"id":"dark-zard","n":"わるいリザードン","set":"rocket","tier":"S","q":"わるいリザードン","note":"わる系筆頭。状態の良い素体が少なく仕入れ競争が激しい","raw":{"m":50000,"p":20000},"psa":{"10":500000,"9":150000,"8":90000,"7":65000,"6":50000,"5":42000,"4":37000,"3":33000,"2":31000,"1":29000}},{"id":"dark-kamex","n":"わるいカメックス","set":"rocket","tier":"A","q":"わるいカメックス","note":"わる系御三家","raw":{"m":18000,"p":7000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"dark-fushigibana","n":"わるいフシギバナ","set":"rocket","tier":"A","q":"わるいフシギバナ","note":"わる系御三家","raw":{"m":20000,"p":7500},"psa":{"10":160000,"9":48000,"8":29000,"7":20000,"6":15000,"5":12000,"4":10000,"3":9000,"2":8000,"1":7000}},{"id":"dark-gyarados","n":"わるいギャラドス","set":"rocket","tier":"B","q":"わるいギャラドス","note":"海外(Dark Gyarados)でも定番","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"katsura-zard","n":"カツラのリザードン","set":"gym","tier":"A","q":"カツラのリザードン","note":"ジム弾の看板。海外Blaine's Charizard需要","raw":{"m":25000,"p":10000},"psa":{"10":250000,"9":75000,"8":45000,"7":31000,"6":23000,"5":19000,"4":16000,"3":14000,"2":12000,"1":11000}},{"id":"erika-fushigibana","n":"エリカのフシギバナ","set":"gym","tier":"B","q":"エリカのフシギバナ","note":"ジム弾の人気どころ","raw":{"m":10000,"p":4000},"psa":{"10":80000,"9":24000,"8":14500,"7":10000,"6":7500,"5":6000,"4":5000,"3":4500,"2":4000,"1":3500}},{"id":"lugia-n1","n":"ルギア(neo第1弾)","set":"neo","tier":"A","q":"ルギア 旧裏","note":"金銀の看板。海外需要強・状態難が出やすい(裏面スレ)","raw":{"m":30000,"p":11000},"psa":{"10":280000,"9":85000,"8":50000,"7":35000,"6":26000,"5":21000,"4":18000,"3":16000,"2":14000,"1":12000}},{"id":"bakphoon-n1","n":"バクフーン(neo第1弾)","set":"neo","tier":"A","q":"バクフーン 旧裏","note":"同名2種あり(技違い)。出品画像で要確認","raw":{"m":20000,"p":7500},"psa":{"10":160000,"9":48000,"8":29000,"7":20000,"6":15000,"5":12000,"4":10000,"3":9000,"2":8000,"1":7000}},{"id":"ordile-n1","n":"オーダイル(neo第1弾)","set":"neo","tier":"B","q":"オーダイル 旧裏","note":"同名2種あり(技違い)","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"meganium-n1","n":"メガニウム(neo第1弾)","set":"neo","tier":"B","q":"メガニウム 旧裏","note":"同名2種あり(技違い)","raw":{"m":10000,"p":4000},"psa":{"10":80000,"9":24000,"8":14500,"7":10000,"6":7500,"5":6000,"4":5000,"3":4500,"2":4000,"1":3500}},{"id":"denryu-n1","n":"デンリュウ(neo第1弾)","set":"neo","tier":"B","q":"デンリュウ 旧裏","note":"金銀人気ポケモン","raw":{"m":11000,"p":4500},"psa":{"10":90000,"9":27000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"blacky-n2","n":"ブラッキー(neo第2弾)","set":"neo","tier":"S","q":"ブラッキー 旧裏","note":"ブイズ人気筆頭。世界的に需要が厚い","raw":{"m":40000,"p":15000},"psa":{"10":350000,"9":110000,"8":65000,"7":47000,"6":36000,"5":31000,"4":27000,"3":24000,"2":22000,"1":21000}},{"id":"eifie-n2","n":"エーフィ(neo第2弾)","set":"neo","tier":"A","q":"エーフィ 旧裏","note":"ブラッキーと並ぶブイズ人気","raw":{"m":27000,"p":10000},"psa":{"10":250000,"9":80000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"bangiras-n2","n":"バンギラス(neo第2弾)","set":"neo","tier":"B","q":"バンギラス 旧裏","note":"600族人気","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"s-koiking","n":"ひかるコイキング(neo第3弾)","set":"neo","tier":"S","q":"ひかるコイキング","note":"ネタ×希少で世界的人気。偽物・状態詐称に注意","raw":{"m":70000,"p":28000},"psa":{"10":500000,"9":160000,"8":95000,"7":68000,"6":53000,"5":45000,"4":39000,"3":35000,"2":32000,"1":30000}},{"id":"s-gyarados","n":"ひかるギャラドス(neo第3弾)","set":"neo","tier":"A","q":"ひかるギャラドス","note":"色違い(赤)ギャラドス","raw":{"m":26000,"p":10000},"psa":{"10":200000,"9":62000,"8":37000,"7":26000,"6":19000,"5":16000,"4":13000,"3":11000,"2":10000,"1":9000}},{"id":"s-zard","n":"ひかるリザードン(neo第4弾)","set":"neo","tier":"S","q":"ひかるリザードン","note":"ひかる系最高峰。PSA低グレードでも需要あり","raw":{"m":180000,"p":70000},"psa":{"10":1200000,"9":400000,"8":230000,"7":165000,"6":130000,"5":110000,"4":94000,"3":85000,"2":78000,"1":74000}},{"id":"s-mewtwo","n":"ひかるミュウツー(neo第4弾)","set":"neo","tier":"A","q":"ひかるミュウツー","note":"ひかる系上位","raw":{"m":45000,"p":17000},"psa":{"10":350000,"9":110000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"s-raichu","n":"ひかるライチュウ(neo第4弾)","set":"neo","tier":"A","q":"ひかるライチュウ","note":"ひかる系上位","raw":{"m":37000,"p":14000},"psa":{"10":280000,"9":90000,"8":54000,"7":38000,"6":28000,"5":23000,"4":19000,"3":17000,"2":15000,"1":13000}},{"id":"s-bangiras","n":"ひかるバンギラス(neo第4弾)","set":"neo","tier":"A","q":"ひかるバンギラス","note":"ひかる系","raw":{"m":23000,"p":9000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"s-haganeil","n":"ひかるハガネール(neo第4弾)","set":"neo","tier":"B","q":"ひかるハガネール","note":"ひかる系","raw":{"m":15000,"p":6000},"psa":{"10":120000,"9":36000,"8":22000,"7":15000,"6":11000,"5":9000,"4":8000,"3":7000,"2":6000,"1":5500}},{"id":"s-kabutops","n":"ひかるカブトプス(neo第4弾)","set":"neo","tier":"B","q":"ひかるカブトプス","note":"ひかる系","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"s-yorunozuku","n":"ひかるヨルノズク(neo第4弾)","set":"neo","tier":"B","q":"ひかるヨルノズク","note":"ひかる系","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"birthday-pika","n":"おたんじょうびピカチュウ(プロモ)","set":"promo","tier":"S","q":"おたんじょうびピカチュウ","note":"プロモ人気筆頭。英語版とは別相場・要区別","raw":{"m":45000,"p":17000},"psa":{"10":400000,"9":120000,"8":70000,"7":50000,"6":39000,"5":33000,"4":29000,"3":26000,"2":24000,"1":22000}},{"id":"mew-coro","n":"ミュウ(コロコロプロモ・キラ)","set":"promo","tier":"A","q":"ミュウ 旧裏 プロモ","note":"旧裏ミュウの定番プロモ","raw":{"m":19000,"p":7000},"psa":{"10":150000,"9":45000,"8":27000,"7":19000,"6":14000,"5":11000,"4":9500,"3":8500,"2":7500,"1":6500}},{"id":"surf-pika","n":"なみのりピカチュウ(プロモ)","set":"promo","tier":"A","q":"なみのりピカチュウ 旧裏","note":"複数版あり。版で相場差","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"fly-pika","n":"そらをとぶピカチュウ(プロモ)","set":"promo","tier":"B","q":"そらをとぶピカチュウ 旧裏","note":"複数版あり。版で相場差","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"s-celebi","n":"ひかるセレビィ(プロモ)","set":"promo","tier":"B","q":"ひかるセレビィ","note":"プロモのひかる系","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}}]}</script>
+<script type="application/json" id="seed">{"updated":"2026-08-25","src":"素体美品=カードラッシュ買取価格(2026-08-25オーナー取得)。PSA相場=買取からの機械推定","sets":{"shining":"ひかる","dark":"わるい・やさしい","gym":"ジム・R団","promo":"プロモ","special":"特殊版・イベント","regular":"通常弾"},"cards":[{"id":"k001","n":"ひかるリザードン","sp":"リザードン","dex":6,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるリザードン 旧裏","buy":7000000,"raw":{"m":7000000,"p":2450000},"psa":{"10":40320000,"9":12600000,"8":9070000,"7":6530000,"6":5080000,"5":4260000,"4":3720000,"3":3360000,"2":3080000,"1":2900000}},{"id":"k002","n":"ひかるコイキング(ファンクラブ)","sp":"コイキング","dex":129,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるコイキング 旧裏 ファンクラブ","buy":5500000,"raw":{"m":5500000,"p":1920000},"psa":{"10":31680000,"9":9900000,"8":7130000,"7":5130000,"6":3990000,"5":3350000,"4":2920000,"3":2640000,"2":2420000,"1":2280000}},{"id":"k003","n":"ゲンガー LV.40(通信進化キャンペーン)","sp":"ゲンガー","dex":94,"lv":40,"mark":"★","set":"special","tier":"S","q":"ゲンガー 旧裏 通信進化","buy":3500000,"raw":{"m":3500000,"p":1220000},"psa":{"10":20160000,"9":6300000,"8":4540000,"7":3270000,"6":2540000,"5":2130000,"4":1860000,"3":1680000,"2":1540000,"1":1450000}},{"id":"k004","n":"ひかるギャラドス","sp":"ギャラドス","dex":130,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるギャラドス 旧裏","buy":2500000,"raw":{"m":2500000,"p":875000},"psa":{"10":14400000,"9":4500000,"8":3240000,"7":2330000,"6":1810000,"5":1520000,"4":1330000,"3":1200000,"2":1100000,"1":1040000}},{"id":"k005","n":"ひかるミュウツー","sp":"ミュウツー","dex":150,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるミュウツー 旧裏","buy":2400000,"raw":{"m":2400000,"p":840000},"psa":{"10":13820000,"9":4320000,"8":3110000,"7":2240000,"6":1740000,"5":1460000,"4":1280000,"3":1150000,"2":1060000,"1":995000}},{"id":"k006","n":"ひかるバンギラス","sp":"バンギラス","dex":248,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるバンギラス 旧裏","buy":1800000,"raw":{"m":1800000,"p":630000},"psa":{"10":10370000,"9":3240000,"8":2330000,"7":1680000,"6":1300000,"5":1100000,"4":955000,"3":860000,"2":790000,"1":745000}},{"id":"k007","n":"リザードン LV.76(かえん/マークあり)","sp":"リザードン","dex":6,"lv":76,"mark":"★","set":"regular","tier":"S","q":"リザードン 旧裏","buy":1500000,"raw":{"m":1500000,"p":525000},"psa":{"10":8640000,"9":2700000,"8":1940000,"7":1400000,"6":1090000,"5":910000,"4":795000,"3":720000,"2":660000,"1":620000}},{"id":"k008","n":"ひかるコイキング(めざめる伝説)","sp":"コイキング","dex":129,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるコイキング 旧裏","buy":1500000,"raw":{"m":1500000,"p":525000},"psa":{"10":8640000,"9":2700000,"8":1940000,"7":1400000,"6":1090000,"5":910000,"4":795000,"3":720000,"2":660000,"1":620000}},{"id":"k009","n":"ひかるミュウ","sp":"ミュウ","dex":151,"lv":null,"mark":"P","set":"shining","tier":"S","q":"ひかるミュウ 旧裏","buy":1500000,"raw":{"m":1500000,"p":525000},"psa":{"10":8640000,"9":2700000,"8":1940000,"7":1400000,"6":1090000,"5":910000,"4":795000,"3":720000,"2":660000,"1":620000}},{"id":"k010","n":"ひかるライチュウ","sp":"ライチュウ","dex":26,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるライチュウ 旧裏","buy":1400000,"raw":{"m":1400000,"p":490000},"psa":{"10":8060000,"9":2520000,"8":1810000,"7":1300000,"6":1010000,"5":850000,"4":740000,"3":670000,"2":615000,"1":580000}},{"id":"k011","n":"ピカチュウ LV.12(マークなし)","sp":"ピカチュウ","dex":25,"lv":12,"mark":"-","set":"regular","tier":"S","q":"ピカチュウ 旧裏 マークなし","buy":1300000,"raw":{"m":1300000,"p":455000},"psa":{"10":7490000,"9":2340000,"8":1680000,"7":1210000,"6":940000,"5":790000,"4":690000,"3":620000,"2":570000,"1":540000}},{"id":"k012","n":"ひかるセレビィ","sp":"セレビィ","dex":251,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるセレビィ 旧裏","buy":1000000,"raw":{"m":1000000,"p":350000},"psa":{"10":5760000,"9":1800000,"8":1300000,"7":935000,"6":730000,"5":610000,"4":535000,"3":480000,"2":440000,"1":415000}},{"id":"k013","n":"ひかるヨルノズク","sp":"ヨルノズク","dex":164,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるヨルノズク 旧裏","buy":900000,"raw":{"m":900000,"p":315000},"psa":{"10":4540000,"9":1620000,"8":1170000,"7":840000,"6":655000,"5":550000,"4":480000,"3":435000,"2":400000,"1":375000}},{"id":"k014","n":"ひかるカブトプス","sp":"カブトプス","dex":141,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるカブトプス 旧裏","buy":900000,"raw":{"m":900000,"p":315000},"psa":{"10":4540000,"9":1620000,"8":1170000,"7":840000,"6":655000,"5":550000,"4":480000,"3":435000,"2":400000,"1":375000}},{"id":"k015","n":"ひかるハガネール","sp":"ハガネール","dex":208,"lv":null,"mark":"-","set":"shining","tier":"S","q":"ひかるハガネール 旧裏","buy":900000,"raw":{"m":900000,"p":315000},"psa":{"10":4540000,"9":1620000,"8":1170000,"7":840000,"6":655000,"5":550000,"4":480000,"3":435000,"2":400000,"1":375000}},{"id":"k016","n":"ナツメのゲンガー LV.39","sp":"ゲンガー","dex":94,"lv":39,"mark":"★","set":"gym","tier":"S","q":"ナツメのゲンガー 旧裏","buy":800000,"raw":{"m":800000,"p":280000},"psa":{"10":4030000,"9":1440000,"8":1040000,"7":750000,"6":580000,"5":490000,"4":425000,"3":385000,"2":355000,"1":335000}},{"id":"k017","n":"ミュウツー LV.53(マークあり)","sp":"ミュウツー","dex":150,"lv":53,"mark":"★","set":"regular","tier":"S","q":"ミュウツー 旧裏","buy":600000,"raw":{"m":600000,"p":210000},"psa":{"10":3020000,"9":1080000,"8":780000,"7":560000,"6":435000,"5":365000,"4":320000,"3":290000,"2":265000,"1":250000}},{"id":"k018","n":"ルギア LV.55","sp":"ルギア","dex":249,"lv":55,"mark":"-","set":"regular","tier":"S","q":"ルギア 旧裏","buy":550000,"raw":{"m":550000,"p":190000},"psa":{"10":2770000,"9":990000,"8":715000,"7":515000,"6":400000,"5":335000,"4":295000,"3":265000,"2":245000,"1":230000}},{"id":"k019","n":"ミュウ LV.23","sp":"ミュウ","dex":151,"lv":23,"mark":"★","set":"regular","tier":"S","q":"ミュウ 旧裏","buy":500000,"raw":{"m":500000,"p":175000},"psa":{"10":2520000,"9":900000,"8":650000,"7":470000,"6":365000,"5":305000,"4":265000,"3":240000,"2":220000,"1":210000}},{"id":"k020","n":"わるいリザードン LV.38","sp":"リザードン","dex":6,"lv":38,"mark":"★","set":"dark","tier":"S","q":"わるいリザードン 旧裏","buy":500000,"raw":{"m":500000,"p":175000},"psa":{"10":2520000,"9":900000,"8":650000,"7":470000,"6":365000,"5":305000,"4":265000,"3":240000,"2":220000,"1":210000}},{"id":"k021","n":"ナツメのゲンガー LV.42","sp":"ゲンガー","dex":94,"lv":42,"mark":"-","set":"gym","tier":"S","q":"ナツメのゲンガー 旧裏","buy":500000,"raw":{"m":500000,"p":175000},"psa":{"10":2520000,"9":900000,"8":650000,"7":470000,"6":365000,"5":305000,"4":265000,"3":240000,"2":220000,"1":210000}},{"id":"k022","n":"イーブイ(ポケモンカードファンクラブ)","sp":"イーブイ","dex":133,"lv":null,"mark":"P","set":"promo","tier":"S","q":"イーブイ 旧裏 ファンクラブ","buy":500000,"raw":{"m":500000,"p":175000},"psa":{"10":2520000,"9":900000,"8":650000,"7":470000,"6":365000,"5":305000,"4":265000,"3":240000,"2":220000,"1":210000}},{"id":"k023","n":"ブラッキー LV.40","sp":"ブラッキー","dex":197,"lv":40,"mark":"★","set":"regular","tier":"A","q":"ブラッキー 旧裏","buy":450000,"raw":{"m":450000,"p":160000},"psa":{"10":2270000,"9":810000,"8":535000,"7":375000,"6":280000,"5":225000,"4":195000,"3":165000,"2":145000,"1":130000}},{"id":"k024","n":"＿のピカチュウ LV.17(未開封/セカンドアニバーサリースペシャルカード)","sp":"ピカチュウ","dex":25,"lv":17,"mark":"P","set":"promo","tier":"A","q":"ピカチュウ 旧裏 アニバーサリー","buy":420000,"raw":{"m":420000,"p":145000},"psa":{"10":2110000,"9":755000,"8":500000,"7":350000,"6":260000,"5":210000,"4":180000,"3":155000,"2":135000,"1":120000}},{"id":"k025","n":"ゲンガー LV.38","sp":"ゲンガー","dex":94,"lv":38,"mark":"★","set":"regular","tier":"A","q":"ゲンガー 旧裏","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k026","n":"ルギア LV.45","sp":"ルギア","dex":249,"lv":45,"mark":"★","set":"regular","tier":"A","q":"ルギア 旧裏","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k027","n":"わるいゲンガー LV.32","sp":"ゲンガー","dex":94,"lv":32,"mark":"★","set":"dark","tier":"A","q":"わるいゲンガー 旧裏","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k028","n":"リザードン LV.76(とりかえっこプリーズ！)","sp":"リザードン","dex":6,"lv":76,"mark":"★","set":"special","tier":"A","q":"リザードン 旧裏 とりかえっこ","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k029","n":"GR団のミュウツー LV.35","sp":"ミュウツー","dex":150,"lv":35,"mark":"-","set":"gym","tier":"A","q":"GR団のミュウツー 旧裏","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k030","n":"フーディン LV.45(通信進化キャンペーン)","sp":"フーディン","dex":65,"lv":45,"mark":"★","set":"special","tier":"A","q":"フーディン 旧裏 通信進化","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k031","n":"＿のピカチュウ LV.17(ポケモンカードになったわけ6)","sp":"ピカチュウ","dex":25,"lv":17,"mark":"P","set":"promo","tier":"A","q":"ピカチュウ 旧裏 になったわけ","buy":400000,"raw":{"m":400000,"p":140000},"psa":{"10":2020000,"9":720000,"8":475000,"7":330000,"6":245000,"5":200000,"4":170000,"3":145000,"2":130000,"1":115000}},{"id":"k032","n":"カメックス LV.52(マークあり)","sp":"カメックス","dex":9,"lv":52,"mark":"★","set":"regular","tier":"A","q":"カメックス 旧裏","buy":350000,"raw":{"m":350000,"p":120000},"psa":{"10":1760000,"9":630000,"8":415000,"7":290000,"6":215000,"5":175000,"4":150000,"3":130000,"2":110000,"1":100000}},{"id":"k033","n":"シャワーズ LV.42","sp":"シャワーズ","dex":134,"lv":42,"mark":"★","set":"regular","tier":"A","q":"シャワーズ 旧裏","buy":350000,"raw":{"m":350000,"p":120000},"psa":{"10":1760000,"9":630000,"8":415000,"7":290000,"6":215000,"5":175000,"4":150000,"3":130000,"2":110000,"1":100000}},{"id":"k034","n":"カビゴン LV.20","sp":"カビゴン","dex":143,"lv":20,"mark":"★","set":"regular","tier":"A","q":"カビゴン 旧裏","buy":350000,"raw":{"m":350000,"p":120000},"psa":{"10":1760000,"9":630000,"8":415000,"7":290000,"6":215000,"5":175000,"4":150000,"3":130000,"2":110000,"1":100000}},{"id":"k035","n":"＿のピカチュウ LV.17(セカンドアニバーサリースペシャルカード)","sp":"ピカチュウ","dex":25,"lv":17,"mark":"P","set":"promo","tier":"A","q":"ピカチュウ 旧裏 アニバーサリー","buy":350000,"raw":{"m":350000,"p":120000},"psa":{"10":1760000,"9":630000,"8":415000,"7":290000,"6":215000,"5":175000,"4":150000,"3":130000,"2":110000,"1":100000}},{"id":"k036","n":"フシギバナ LV.67(マークあり)","sp":"フシギバナ","dex":3,"lv":67,"mark":"★","set":"regular","tier":"A","q":"フシギバナ 旧裏","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k037","n":"オムスター LV.36(通信進化キャンペーン)","sp":"オムスター","dex":139,"lv":36,"mark":"★","set":"special","tier":"A","q":"オムスター 旧裏 通信進化","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k038","n":"カイリキー LV.54(通信進化キャンペーン)","sp":"カイリキー","dex":68,"lv":54,"mark":"★","set":"special","tier":"A","q":"カイリキー 旧裏 通信進化","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k039","n":"ゴローニャ LV.37(通信進化キャンペーン)","sp":"ゴローニャ","dex":76,"lv":37,"mark":"★","set":"special","tier":"A","q":"ゴローニャ 旧裏 通信進化","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k040","n":"リザードン LV.78","sp":"リザードン","dex":6,"lv":78,"mark":"-","set":"regular","tier":"A","q":"リザードン 旧裏","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k041","n":"ミュウ LV.5","sp":"ミュウ","dex":151,"lv":5,"mark":"-","set":"regular","tier":"A","q":"ミュウ 旧裏","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k042","n":"ピカチュウ LV.12(マークあり)","sp":"ピカチュウ","dex":25,"lv":12,"mark":"●","set":"regular","tier":"A","q":"ピカチュウ 旧裏","buy":300000,"raw":{"m":300000,"p":105000},"psa":{"10":1510000,"9":540000,"8":355000,"7":250000,"6":185000,"5":150000,"4":130000,"3":110000,"2":96000,"1":85000}},{"id":"k043","n":"ギャラドス LV.41(マークあり)","sp":"ギャラドス","dex":130,"lv":41,"mark":"★","set":"regular","tier":"A","q":"ギャラドス 旧裏","buy":250000,"raw":{"m":250000,"p":88000},"psa":{"10":1260000,"9":450000,"8":295000,"7":205000,"6":155000,"5":125000,"4":105000,"3":91000,"2":80000,"1":71000}},{"id":"k044","n":"サンダース LV.29","sp":"サンダース","dex":135,"lv":29,"mark":"★","set":"regular","tier":"A","q":"サンダース 旧裏","buy":250000,"raw":{"m":250000,"p":88000},"psa":{"10":1260000,"9":450000,"8":295000,"7":205000,"6":155000,"5":125000,"4":105000,"3":91000,"2":80000,"1":71000}},{"id":"k045","n":"カツラのリザードン LV.50","sp":"リザードン","dex":6,"lv":50,"mark":"★","set":"gym","tier":"A","q":"カツラのリザードン 旧裏","buy":250000,"raw":{"m":250000,"p":88000},"psa":{"10":1260000,"9":450000,"8":295000,"7":205000,"6":155000,"5":125000,"4":105000,"3":91000,"2":80000,"1":71000}},{"id":"k046","n":"ブースター LV.28","sp":"ブースター","dex":136,"lv":28,"mark":"★","set":"regular","tier":"A","q":"ブースター 旧裏","buy":220000,"raw":{"m":220000,"p":77000},"psa":{"10":1110000,"9":395000,"8":260000,"7":180000,"6":135000,"5":110000,"4":94000,"3":81000,"2":70000,"1":62000}},{"id":"k047","n":"わるいカイリュー LV.33","sp":"カイリュー","dex":149,"lv":33,"mark":"★","set":"dark","tier":"A","q":"わるいカイリュー 旧裏","buy":220000,"raw":{"m":220000,"p":77000},"psa":{"10":1110000,"9":395000,"8":260000,"7":180000,"6":135000,"5":110000,"4":94000,"3":81000,"2":70000,"1":62000}},{"id":"k048","n":"ホウオウ LV.45","sp":"ホウオウ","dex":250,"lv":45,"mark":"★","set":"regular","tier":"A","q":"ホウオウ 旧裏","buy":220000,"raw":{"m":220000,"p":77000},"psa":{"10":1110000,"9":395000,"8":260000,"7":180000,"6":135000,"5":110000,"4":94000,"3":81000,"2":70000,"1":62000}},{"id":"k049","n":"サンダー LV.64(マークあり)","sp":"サンダー","dex":145,"lv":64,"mark":"★","set":"regular","tier":"A","q":"サンダー 旧裏","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k050","n":"R団のミュウツー LV.35","sp":"ミュウツー","dex":150,"lv":35,"mark":"★","set":"gym","tier":"A","q":"R団のミュウツー 旧裏","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k051","n":"カメックス LV.52(とりかえっこプリーズ！)","sp":"カメックス","dex":9,"lv":52,"mark":"★","set":"special","tier":"A","q":"カメックス 旧裏 とりかえっこ","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k052","n":"とりかえっこプリーズ！","sp":"","dex":null,"lv":null,"mark":"-","set":"regular","tier":"A","q":"とりかえっこプリーズ！ 旧裏","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k053","n":"サンダー LV.28(キラ)","sp":"サンダー","dex":145,"lv":28,"mark":"-","set":"regular","tier":"A","q":"サンダー 旧裏 キラ","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k054","n":"フリーザー LV.34(キラ)","sp":"フリーザー","dex":144,"lv":34,"mark":"-","set":"regular","tier":"A","q":"フリーザー 旧裏 キラ","buy":200000,"raw":{"m":200000,"p":70000},"psa":{"10":1010000,"9":360000,"8":240000,"7":170000,"6":125000,"5":100000,"4":86000,"3":74000,"2":65000,"1":58000}},{"id":"k055","n":"ライチュウ LV.40(マークあり)","sp":"ライチュウ","dex":26,"lv":40,"mark":"★","set":"regular","tier":"A","q":"ライチュウ 旧裏","buy":180000,"raw":{"m":180000,"p":63000},"psa":{"10":910000,"9":325000,"8":215000,"7":150000,"6":110000,"5":90000,"4":77000,"3":67000,"2":58000,"1":52000}},{"id":"k056","n":"わるいカメックス LV.28","sp":"カメックス","dex":9,"lv":28,"mark":"★","set":"dark","tier":"A","q":"わるいカメックス 旧裏","buy":170000,"raw":{"m":170000,"p":59000},"psa":{"10":855000,"9":305000,"8":200000,"7":140000,"6":105000,"5":84000,"4":72000,"3":62000,"2":54000,"1":48000}},{"id":"k057","n":"ファイヤー LV.37(キラ)","sp":"ファイヤー","dex":146,"lv":37,"mark":"-","set":"regular","tier":"A","q":"ファイヤー 旧裏 キラ","buy":170000,"raw":{"m":170000,"p":59000},"psa":{"10":855000,"9":305000,"8":200000,"7":140000,"6":105000,"5":84000,"4":72000,"3":62000,"2":54000,"1":48000}},{"id":"k058","n":"ピチュー LV.5(エラー修正版)","sp":"ピチュー","dex":172,"lv":5,"mark":"★","set":"special","tier":"A","q":"ピチュー 旧裏 エラー","buy":150000,"raw":{"m":150000,"p":52000},"psa":{"10":755000,"9":270000,"8":180000,"7":125000,"6":94000,"5":76000,"4":65000,"3":56000,"2":49000,"1":43000}},{"id":"k059","n":"わるいエーフィ LV.32","sp":"エーフィ","dex":196,"lv":32,"mark":"★","set":"dark","tier":"A","q":"わるいエーフィ 旧裏","buy":150000,"raw":{"m":150000,"p":52000},"psa":{"10":755000,"9":270000,"8":180000,"7":125000,"6":94000,"5":76000,"4":65000,"3":56000,"2":49000,"1":43000}},{"id":"k060","n":"わるいフシギバナ LV.37","sp":"フシギバナ","dex":3,"lv":37,"mark":"-","set":"dark","tier":"A","q":"わるいフシギバナ 旧裏","buy":150000,"raw":{"m":150000,"p":52000},"psa":{"10":755000,"9":270000,"8":180000,"7":125000,"6":94000,"5":76000,"4":65000,"3":56000,"2":49000,"1":43000}},{"id":"k061","n":"ストライク LV.23","sp":"ストライク","dex":123,"lv":23,"mark":"-","set":"regular","tier":"A","q":"ストライク 旧裏","buy":150000,"raw":{"m":150000,"p":52000},"psa":{"10":755000,"9":270000,"8":180000,"7":125000,"6":94000,"5":76000,"4":65000,"3":56000,"2":49000,"1":43000}},{"id":"k062","n":"カイリュー LV.41(未開封)","sp":"カイリュー","dex":149,"lv":41,"mark":"-","set":"special","tier":"A","q":"カイリュー 旧裏","buy":140000,"raw":{"m":140000,"p":49000},"psa":{"10":700000,"9":250000,"8":165000,"7":115000,"6":86000,"5":69000,"4":59000,"3":51000,"2":45000,"1":40000}},{"id":"k063","n":"カイリュー LV.41","sp":"カイリュー","dex":149,"lv":41,"mark":"-","set":"regular","tier":"A","q":"カイリュー 旧裏","buy":140000,"raw":{"m":140000,"p":49000},"psa":{"10":700000,"9":250000,"8":165000,"7":115000,"6":86000,"5":69000,"4":59000,"3":51000,"2":45000,"1":40000}},{"id":"k064","n":"フーディン LV.42(マークあり)","sp":"フーディン","dex":65,"lv":42,"mark":"★","set":"regular","tier":"A","q":"フーディン 旧裏","buy":130000,"raw":{"m":130000,"p":46000},"psa":{"10":660000,"9":235000,"8":155000,"7":110000,"6":81000,"5":65000,"4":56000,"3":48000,"2":42000,"1":37000}},{"id":"k065","n":"カードトレーナー認定証","sp":"","dex":null,"lv":null,"mark":"-","set":"regular","tier":"A","q":"カードトレーナー認定証 旧裏","buy":130000,"raw":{"m":130000,"p":46000},"psa":{"10":660000,"9":235000,"8":155000,"7":110000,"6":81000,"5":65000,"4":56000,"3":48000,"2":42000,"1":37000}},{"id":"k066","n":"ラッキー LV.55(マークあり)","sp":"ラッキー","dex":113,"lv":55,"mark":"★","set":"regular","tier":"A","q":"ラッキー 旧裏","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k067","n":"カイリュー LV.45","sp":"カイリュー","dex":149,"lv":45,"mark":"★","set":"regular","tier":"A","q":"カイリュー 旧裏","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k068","n":"ヘルガー LV.35","sp":"ヘルガー","dex":229,"lv":35,"mark":"★","set":"regular","tier":"A","q":"ヘルガー 旧裏","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k069","n":"やさしいカイリュー LV.47","sp":"カイリュー","dex":149,"lv":47,"mark":"★","set":"dark","tier":"A","q":"やさしいカイリュー 旧裏","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k070","n":"ヤドキング LV.36","sp":"ヤドキング","dex":199,"lv":36,"mark":"-","set":"regular","tier":"A","q":"ヤドキング 旧裏","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k071","n":"カメックス LV.52(イントロパック)","sp":"カメックス","dex":9,"lv":52,"mark":"-","set":"special","tier":"A","q":"カメックス 旧裏 イントロ","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k072","n":"そらをとぶピカチュウ(ANA/でんきショック)","sp":"ピカチュウ","dex":25,"lv":null,"mark":"P","set":"promo","tier":"A","q":"そらをとぶピカチュウ 旧裏 ANA","buy":120000,"raw":{"m":120000,"p":42000},"psa":{"10":600000,"9":215000,"8":140000,"7":98000,"6":73000,"5":59000,"4":50000,"3":43000,"2":38000,"1":34000}},{"id":"k073","n":"エーフィ LV.45","sp":"エーフィ","dex":196,"lv":45,"mark":"★","set":"regular","tier":"A","q":"エーフィ 旧裏","buy":110000,"raw":{"m":110000,"p":38000},"psa":{"10":560000,"9":200000,"8":130000,"7":91000,"6":68000,"5":55000,"4":47000,"3":40000,"2":35000,"1":31000}},{"id":"k074","n":"キュウコン LV.32(マークあり)","sp":"キュウコン","dex":38,"lv":32,"mark":"★","set":"regular","tier":"A","q":"キュウコン 旧裏","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k075","n":"わるいライチュウ LV.31","sp":"ライチュウ","dex":26,"lv":31,"mark":"★","set":"dark","tier":"A","q":"わるいライチュウ 旧裏","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k076","n":"フシギバナ LV.67(とりかえっこプリーズ！)","sp":"フシギバナ","dex":3,"lv":67,"mark":"★","set":"special","tier":"A","q":"フシギバナ 旧裏 とりかえっこ","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k077","n":"くいしんぼカビゴン LV.50","sp":"カビゴン","dex":143,"lv":50,"mark":"-","set":"regular","tier":"A","q":"くいしんぼカビゴン 旧裏","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k078","n":"ブラッキー LV.33","sp":"ブラッキー","dex":197,"lv":33,"mark":"-","set":"regular","tier":"A","q":"ブラッキー 旧裏","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k079","n":"フシギバナ LV.67(イントロパック)","sp":"フシギバナ","dex":3,"lv":67,"mark":"-","set":"special","tier":"A","q":"フシギバナ 旧裏 イントロ","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k080","n":"フシギバナ LV.64(GB)","sp":"フシギバナ","dex":3,"lv":64,"mark":"-","set":"special","tier":"A","q":"フシギバナ 旧裏 GB","buy":100000,"raw":{"m":100000,"p":35000},"psa":{"10":505000,"9":180000,"8":120000,"7":84000,"6":62000,"5":50000,"4":43000,"3":37000,"2":32000,"1":29000}},{"id":"k081","n":"ファイヤー LV.35","sp":"ファイヤー","dex":146,"lv":35,"mark":"★","set":"regular","tier":"B","q":"ファイヤー 旧裏","buy":90000,"raw":{"m":90000,"p":31000},"psa":{"10":370000,"9":160000,"8":105000,"7":74000,"6":55000,"5":44000,"4":38000,"3":33000,"2":28000,"1":25000}},{"id":"k082","n":"フリーザー LV.35","sp":"フリーザー","dex":144,"lv":35,"mark":"★","set":"regular","tier":"B","q":"フリーザー 旧裏","buy":90000,"raw":{"m":90000,"p":31000},"psa":{"10":370000,"9":160000,"8":105000,"7":74000,"6":55000,"5":44000,"4":38000,"3":33000,"2":28000,"1":25000}},{"id":"k083","n":"わるいギャラドス LV.31","sp":"ギャラドス","dex":130,"lv":31,"mark":"★","set":"dark","tier":"B","q":"わるいギャラドス 旧裏","buy":90000,"raw":{"m":90000,"p":31000},"psa":{"10":370000,"9":160000,"8":105000,"7":74000,"6":55000,"5":44000,"4":38000,"3":33000,"2":28000,"1":25000}},{"id":"k084","n":"ガルーラ LV.40","sp":"ガルーラ","dex":115,"lv":40,"mark":"★","set":"regular","tier":"B","q":"ガルーラ 旧裏","buy":80000,"raw":{"m":80000,"p":28000},"psa":{"10":335000,"9":145000,"8":96000,"7":67000,"6":50000,"5":40000,"4":35000,"3":30000,"2":26000,"1":23000}},{"id":"k085","n":"サンダー LV.40","sp":"サンダー","dex":145,"lv":40,"mark":"★","set":"regular","tier":"B","q":"サンダー 旧裏","buy":80000,"raw":{"m":80000,"p":28000},"psa":{"10":335000,"9":145000,"8":96000,"7":67000,"6":50000,"5":40000,"4":35000,"3":30000,"2":26000,"1":23000}},{"id":"k086","n":"スイクン LV.33","sp":"スイクン","dex":245,"lv":33,"mark":"★","set":"regular","tier":"B","q":"スイクン 旧裏","buy":80000,"raw":{"m":80000,"p":28000},"psa":{"10":335000,"9":145000,"8":96000,"7":67000,"6":50000,"5":40000,"4":35000,"3":30000,"2":26000,"1":23000}},{"id":"k087","n":"カイリキー LV.67(マークあり)","sp":"カイリキー","dex":68,"lv":67,"mark":"★","set":"regular","tier":"B","q":"カイリキー 旧裏","buy":70000,"raw":{"m":70000,"p":24000},"psa":{"10":290000,"9":125000,"8":82000,"7":57000,"6":43000,"5":34000,"4":30000,"3":25000,"2":22000,"1":20000}},{"id":"k088","n":"ピッピ LV.14(マークあり)","sp":"ピッピ","dex":35,"lv":14,"mark":"★","set":"regular","tier":"B","q":"ピッピ 旧裏","buy":70000,"raw":{"m":70000,"p":24000},"psa":{"10":290000,"9":125000,"8":82000,"7":57000,"6":43000,"5":34000,"4":30000,"3":25000,"2":22000,"1":20000}},{"id":"k089","n":"やさしいウインディ LV.47","sp":"ウインディ","dex":59,"lv":47,"mark":"★","set":"dark","tier":"B","q":"やさしいウインディ 旧裏","buy":70000,"raw":{"m":70000,"p":24000},"psa":{"10":290000,"9":125000,"8":82000,"7":57000,"6":43000,"5":34000,"4":30000,"3":25000,"2":22000,"1":20000}},{"id":"k090","n":"ニドキング LV.48(マークあり)","sp":"ニドキング","dex":34,"lv":48,"mark":"★","set":"regular","tier":"B","q":"ニドキング 旧裏","buy":65000,"raw":{"m":65000,"p":23000},"psa":{"10":265000,"9":115000,"8":76000,"7":53000,"6":40000,"5":32000,"4":27000,"3":24000,"2":21000,"1":18000}},{"id":"k091","n":"ゴースト LV.17","sp":"ゴースト","dex":93,"lv":17,"mark":"★","set":"regular","tier":"B","q":"ゴースト 旧裏","buy":60000,"raw":{"m":60000,"p":21000},"psa":{"10":255000,"9":110000,"8":73000,"7":51000,"6":38000,"5":31000,"4":26000,"3":23000,"2":20000,"1":18000}},{"id":"k092","n":"サカキのニドキング LV.58","sp":"ニドキング","dex":34,"lv":58,"mark":"★","set":"gym","tier":"B","q":"サカキのニドキング 旧裏","buy":60000,"raw":{"m":60000,"p":21000},"psa":{"10":255000,"9":110000,"8":73000,"7":51000,"6":38000,"5":31000,"4":26000,"3":23000,"2":20000,"1":18000}},{"id":"k093","n":"バンギラス LV.54","sp":"バンギラス","dex":248,"lv":54,"mark":"★","set":"regular","tier":"B","q":"バンギラス 旧裏","buy":60000,"raw":{"m":60000,"p":21000},"psa":{"10":255000,"9":110000,"8":73000,"7":51000,"6":38000,"5":31000,"4":26000,"3":23000,"2":20000,"1":18000}},{"id":"k094","n":"ルギア LV.43","sp":"ルギア","dex":249,"lv":43,"mark":"-","set":"regular","tier":"B","q":"ルギア 旧裏","buy":60000,"raw":{"m":60000,"p":21000},"psa":{"10":255000,"9":110000,"8":73000,"7":51000,"6":38000,"5":31000,"4":26000,"3":23000,"2":20000,"1":18000}},{"id":"k095","n":"ラプラス LV.31","sp":"ラプラス","dex":131,"lv":31,"mark":"★","set":"regular","tier":"B","q":"ラプラス 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k096","n":"わるいヤドラン LV.27","sp":"ヤドラン","dex":80,"lv":27,"mark":"★","set":"dark","tier":"B","q":"わるいヤドラン 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k097","n":"サカキのギャラドス LV.40","sp":"ギャラドス","dex":130,"lv":40,"mark":"★","set":"gym","tier":"B","q":"サカキのギャラドス 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k098","n":"エンテイ LV.38","sp":"エンテイ","dex":244,"lv":38,"mark":"★","set":"regular","tier":"B","q":"エンテイ 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k099","n":"ライコウ LV.40","sp":"ライコウ","dex":243,"lv":40,"mark":"★","set":"regular","tier":"B","q":"ライコウ 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k100","n":"ハガネール LV.57","sp":"ハガネール","dex":208,"lv":57,"mark":"-","set":"regular","tier":"B","q":"ハガネール 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k101","n":"ピチュー LV.4","sp":"ピチュー","dex":172,"lv":4,"mark":"-","set":"regular","tier":"B","q":"ピチュー 旧裏","buy":55000,"raw":{"m":55000,"p":19000},"psa":{"10":230000,"9":99000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"k102","n":"ニョロボン LV.48(マークあり)","sp":"ニョロボン","dex":62,"lv":48,"mark":"★","set":"regular","tier":"B","q":"ニョロボン 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k103","n":"エビワラー LV.33(マークあり)","sp":"エビワラー","dex":107,"lv":33,"mark":"★","set":"regular","tier":"B","q":"エビワラー 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k104","n":"ライチュウ LV.45","sp":"ライチュウ","dex":26,"lv":45,"mark":"★","set":"regular","tier":"B","q":"ライチュウ 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k105","n":"わるいフーディン LV.30","sp":"フーディン","dex":65,"lv":30,"mark":"★","set":"dark","tier":"B","q":"わるいフーディン 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k106","n":"エリカのフシギバナ LV.45","sp":"フシギバナ","dex":3,"lv":45,"mark":"★","set":"gym","tier":"B","q":"エリカのフシギバナ 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k107","n":"カツラのファイヤー LV.44","sp":"ファイヤー","dex":146,"lv":44,"mark":"★","set":"gym","tier":"B","q":"カツラのファイヤー 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k108","n":"R団のサンダー LV.34","sp":"サンダー","dex":145,"lv":34,"mark":"★","set":"gym","tier":"B","q":"R団のサンダー 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k109","n":"バクフーン LV.55(エラー修正版)","sp":"バクフーン","dex":157,"lv":55,"mark":"★","set":"special","tier":"B","q":"バクフーン 旧裏 エラー","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k110","n":"ヤドキング LV.39","sp":"ヤドキング","dex":199,"lv":39,"mark":"★","set":"regular","tier":"B","q":"ヤドキング 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k111","n":"セレビィ LV.16","sp":"セレビィ","dex":251,"lv":16,"mark":"★","set":"regular","tier":"B","q":"セレビィ 旧裏","buy":50000,"raw":{"m":50000,"p":18000},"psa":{"10":205000,"9":90000,"8":59000,"7":41000,"6":31000,"5":25000,"4":21000,"3":18000,"2":16000,"1":14000}},{"id":"k112","n":"レアコイル LV.28(マークあり)","sp":"レアコイル","dex":82,"lv":28,"mark":"★","set":"regular","tier":"B","q":"レアコイル 旧裏","buy":45000,"raw":{"m":45000,"p":16000},"psa":{"10":185000,"9":81000,"8":53000,"7":37000,"6":28000,"5":22000,"4":19000,"3":16000,"2":14000,"1":13000}},{"id":"k113","n":"ニドクイン LV.43","sp":"ニドクイン","dex":31,"lv":43,"mark":"★","set":"regular","tier":"B","q":"ニドクイン 旧裏","buy":45000,"raw":{"m":45000,"p":16000},"psa":{"10":185000,"9":81000,"8":53000,"7":37000,"6":28000,"5":22000,"4":19000,"3":16000,"2":14000,"1":13000}},{"id":"k114","n":"カイロス LV.24","sp":"カイロス","dex":127,"lv":24,"mark":"★","set":"regular","tier":"B","q":"カイロス 旧裏","buy":45000,"raw":{"m":45000,"p":16000},"psa":{"10":185000,"9":81000,"8":53000,"7":37000,"6":28000,"5":22000,"4":19000,"3":16000,"2":14000,"1":13000}},{"id":"k115","n":"R団のストライク LV.23","sp":"ストライク","dex":123,"lv":23,"mark":"★","set":"gym","tier":"B","q":"R団のストライク 旧裏","buy":45000,"raw":{"m":45000,"p":16000},"psa":{"10":185000,"9":81000,"8":53000,"7":37000,"6":28000,"5":22000,"4":19000,"3":16000,"2":14000,"1":13000}},{"id":"k116","n":"タケシのキュウコン LV.30","sp":"キュウコン","dex":38,"lv":30,"mark":"★","set":"gym","tier":"B","q":"タケシのキュウコン 旧裏","buy":45000,"raw":{"m":45000,"p":16000},"psa":{"10":185000,"9":81000,"8":53000,"7":37000,"6":28000,"5":22000,"4":19000,"3":16000,"2":14000,"1":13000}},{"id":"k117","n":"ラフレシア LV.35","sp":"ラフレシア","dex":45,"lv":35,"mark":"★","set":"regular","tier":"B","q":"ラフレシア 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k118","n":"ウツボット LV.42","sp":"ウツボット","dex":71,"lv":42,"mark":"★","set":"regular","tier":"B","q":"ウツボット 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k119","n":"ストライク LV.25","sp":"ストライク","dex":123,"lv":25,"mark":"★","set":"regular","tier":"B","q":"ストライク 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k120","n":"プクリン LV.36","sp":"プクリン","dex":40,"lv":36,"mark":"★","set":"regular","tier":"B","q":"プクリン 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k121","n":"R団のファイヤー LV.26","sp":"ファイヤー","dex":146,"lv":26,"mark":"★","set":"gym","tier":"B","q":"R団のファイヤー 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k122","n":"カスミのギャラドス LV.42","sp":"ギャラドス","dex":130,"lv":42,"mark":"★","set":"gym","tier":"B","q":"カスミのギャラドス 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k123","n":"エリカのハクリュー LV.32","sp":"ハクリュー","dex":148,"lv":32,"mark":"★","set":"gym","tier":"B","q":"エリカのハクリュー 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k124","n":"カツラのウインディ LV.42","sp":"ウインディ","dex":59,"lv":42,"mark":"★","set":"gym","tier":"B","q":"カツラのウインディ 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k125","n":"ピチュー LV.5(エラー版)","sp":"ピチュー","dex":172,"lv":5,"mark":"★","set":"special","tier":"B","q":"ピチュー 旧裏 エラー","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k126","n":"ハピナス LV.62","sp":"ハピナス","dex":242,"lv":62,"mark":"★","set":"regular","tier":"B","q":"ハピナス 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k127","n":"わるいバクフーン LV.45","sp":"バクフーン","dex":157,"lv":45,"mark":"★","set":"dark","tier":"B","q":"わるいバクフーン 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k128","n":"わるいオーダイル LV.44","sp":"オーダイル","dex":160,"lv":44,"mark":"★","set":"dark","tier":"B","q":"わるいオーダイル 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k129","n":"セレビィ LV.14","sp":"セレビィ","dex":251,"lv":14,"mark":"-","set":"regular","tier":"B","q":"セレビィ 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k130","n":"ホウオウ LV.44","sp":"ホウオウ","dex":250,"lv":44,"mark":"-","set":"regular","tier":"B","q":"ホウオウ 旧裏","buy":40000,"raw":{"m":40000,"p":14000},"psa":{"10":165000,"9":72000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"k131","n":"ピジョット LV.40","sp":"ピジョット","dex":18,"lv":40,"mark":"★","set":"regular","tier":"B","q":"ピジョット 旧裏","buy":35000,"raw":{"m":35000,"p":12000},"psa":{"10":145000,"9":63000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"k132","n":"ピクシー LV.34","sp":"ピクシー","dex":36,"lv":34,"mark":"★","set":"regular","tier":"B","q":"ピクシー 旧裏","buy":35000,"raw":{"m":35000,"p":12000},"psa":{"10":145000,"9":63000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"k133","n":"マチスのライチュウ LV.38","sp":"ライチュウ","dex":26,"lv":38,"mark":"★","set":"gym","tier":"B","q":"マチスのライチュウ 旧裏","buy":35000,"raw":{"m":35000,"p":12000},"psa":{"10":145000,"9":63000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"k134","n":"ニョロトノ LV.53","sp":"ニョロトノ","dex":186,"lv":53,"mark":"★","set":"regular","tier":"B","q":"ニョロトノ 旧裏","buy":35000,"raw":{"m":35000,"p":12000},"psa":{"10":145000,"9":63000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"k135","n":"エーフィ LV.38","sp":"エーフィ","dex":196,"lv":38,"mark":"-","set":"regular","tier":"B","q":"エーフィ 旧裏","buy":35000,"raw":{"m":35000,"p":12000},"psa":{"10":145000,"9":63000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"k136","n":"モルフォン LV.28","sp":"モルフォン","dex":49,"lv":28,"mark":"★","set":"regular","tier":"B","q":"モルフォン 旧裏","buy":32000,"raw":{"m":32000,"p":11000},"psa":{"10":135000,"9":58000,"8":38000,"7":27000,"6":20000,"5":16000,"4":14000,"3":12000,"2":10000,"1":9000}},{"id":"k137","n":"マルマイン LV.42","sp":"マルマイン","dex":101,"lv":42,"mark":"★","set":"regular","tier":"B","q":"マルマイン 旧裏","buy":32000,"raw":{"m":32000,"p":11000},"psa":{"10":135000,"9":58000,"8":38000,"7":27000,"6":20000,"5":16000,"4":14000,"3":12000,"2":10000,"1":9000}},{"id":"k138","n":"バリヤード LV.28","sp":"バリヤード","dex":122,"lv":28,"mark":"★","set":"regular","tier":"B","q":"バリヤード 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k139","n":"サカキのペルシアン LV.23","sp":"ペルシアン","dex":53,"lv":23,"mark":"★","set":"gym","tier":"B","q":"サカキのペルシアン 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k140","n":"ソーナンス LV.46","sp":"ソーナンス","dex":202,"lv":46,"mark":"★","set":"regular","tier":"B","q":"ソーナンス 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k141","n":"キングドラ LV.49","sp":"キングドラ","dex":230,"lv":49,"mark":"★","set":"regular","tier":"B","q":"キングドラ 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k142","n":"プテラ LV.27","sp":"プテラ","dex":142,"lv":27,"mark":"★","set":"regular","tier":"B","q":"プテラ 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k143","n":"わるいヘルガー LV.32","sp":"ヘルガー","dex":229,"lv":32,"mark":"★","set":"dark","tier":"B","q":"わるいヘルガー 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k144","n":"わるいデンリュウ LV.36","sp":"デンリュウ","dex":181,"lv":36,"mark":"★","set":"dark","tier":"B","q":"わるいデンリュウ 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k145","n":"わるいバンギラス LV.47","sp":"バンギラス","dex":248,"lv":47,"mark":"★","set":"dark","tier":"B","q":"わるいバンギラス 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k146","n":"やさしいトゲチック LV.32","sp":"トゲチック","dex":176,"lv":32,"mark":"★","set":"dark","tier":"B","q":"やさしいトゲチック 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k147","n":"かっこいいポリゴン LV.15","sp":"ポリゴン","dex":137,"lv":15,"mark":"-","set":"regular","tier":"B","q":"かっこいいポリゴン 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k148","n":"マリル LV.10","sp":"マリル","dex":183,"lv":10,"mark":"-","set":"regular","tier":"B","q":"マリル 旧裏","buy":30000,"raw":{"m":30000,"p":10000},"psa":{"10":125000,"9":54000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"k149","n":"マチスのレアコイル LV.30","sp":"レアコイル","dex":82,"lv":30,"mark":"★","set":"gym","tier":"B","q":"マチスのレアコイル 旧裏","buy":27000,"raw":{"m":27000,"p":9500},"psa":{"10":115000,"9":49000,"8":32000,"7":22000,"6":17000,"5":13000,"4":12000,"3":10000,"2":8500,"1":7500}},{"id":"k150","n":"ベトベトン LV.34","sp":"ベトベトン","dex":89,"lv":34,"mark":"★","set":"regular","tier":"B","q":"ベトベトン 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k151","n":"プテラ LV.28","sp":"プテラ","dex":142,"lv":28,"mark":"★","set":"regular","tier":"B","q":"プテラ 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k152","n":"メタモン LV.20","sp":"メタモン","dex":132,"lv":20,"mark":"★","set":"regular","tier":"B","q":"メタモン 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k153","n":"わるいマタドガス LV.24","sp":"マタドガス","dex":110,"lv":24,"mark":"★","set":"dark","tier":"B","q":"わるいマタドガス 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k154","n":"わるいダグトリオ LV.18","sp":"ダグトリオ","dex":51,"lv":18,"mark":"★","set":"dark","tier":"B","q":"わるいダグトリオ 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k155","n":"カスミのシードラ LV.30","sp":"シードラ","dex":117,"lv":30,"mark":"★","set":"gym","tier":"B","q":"カスミのシードラ 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k156","n":"マチスのエレブー LV.28","sp":"エレブー","dex":125,"lv":28,"mark":"★","set":"gym","tier":"B","q":"マチスのエレブー 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k157","n":"エリカのピクシー LV.35","sp":"ピクシー","dex":36,"lv":35,"mark":"★","set":"gym","tier":"B","q":"エリカのピクシー 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k158","n":"ナツメのフーディン LV.44","sp":"フーディン","dex":65,"lv":44,"mark":"★","set":"gym","tier":"B","q":"ナツメのフーディン 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k159","n":"サカキのカイリキー LV.50","sp":"カイリキー","dex":68,"lv":50,"mark":"★","set":"gym","tier":"B","q":"サカキのカイリキー 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k160","n":"キョウのメタモン LV.12","sp":"メタモン","dex":132,"lv":12,"mark":"★","set":"gym","tier":"B","q":"キョウのメタモン 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k161","n":"ヘラクロス LV.28","sp":"ヘラクロス","dex":214,"lv":28,"mark":"★","set":"regular","tier":"B","q":"ヘラクロス 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k162","n":"バクフーン LV.55(エラー版)","sp":"バクフーン","dex":157,"lv":55,"mark":"★","set":"special","tier":"B","q":"バクフーン 旧裏 エラー","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k163","n":"オーダイル LV.56","sp":"オーダイル","dex":160,"lv":56,"mark":"★","set":"regular","tier":"B","q":"オーダイル 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k164","n":"マリルリ LV.29","sp":"マリルリ","dex":184,"lv":29,"mark":"★","set":"regular","tier":"B","q":"マリルリ 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k165","n":"スピアー LV.36","sp":"スピアー","dex":15,"lv":36,"mark":"★","set":"regular","tier":"B","q":"スピアー 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k166","n":"カブトプス LV.42","sp":"カブトプス","dex":141,"lv":42,"mark":"★","set":"regular","tier":"B","q":"カブトプス 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k167","n":"ムウマ LV.25","sp":"ムウマ","dex":200,"lv":25,"mark":"★","set":"regular","tier":"B","q":"ムウマ 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k168","n":"わるいポリゴン2 LV.28","sp":"ポリゴン2","dex":233,"lv":28,"mark":"★","set":"dark","tier":"B","q":"わるいポリゴン2 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k169","n":"ラフレシア LV.30","sp":"ラフレシア","dex":45,"lv":30,"mark":"-","set":"regular","tier":"B","q":"ラフレシア 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k170","n":"トゲピー LV.10","sp":"トゲピー","dex":175,"lv":10,"mark":"-","set":"regular","tier":"B","q":"トゲピー 旧裏","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k171","n":"そらをとぶピカチュウ(コロコロ)","sp":"ピカチュウ","dex":25,"lv":null,"mark":"P","set":"promo","tier":"B","q":"そらをとぶピカチュウ 旧裏 コロコロ","buy":25000,"raw":{"m":25000,"p":9000},"psa":{"10":105000,"9":45000,"8":30000,"7":21000,"6":16000,"5":13000,"4":11000,"3":9500,"2":8000,"1":7000}},{"id":"k172","n":"デンリュウ LV.46","sp":"デンリュウ","dex":181,"lv":46,"mark":"★","set":"regular","tier":"B","q":"デンリュウ 旧裏","buy":24000,"raw":{"m":24000,"p":8500},"psa":{"10":99000,"9":43000,"8":28000,"7":20000,"6":15000,"5":12000,"4":10000,"3":8500,"2":7500,"1":6500}},{"id":"k173","n":"スターミー LV.31","sp":"スターミー","dex":121,"lv":31,"mark":"★","set":"regular","tier":"B","q":"スターミー 旧裏","buy":24000,"raw":{"m":24000,"p":8500},"psa":{"10":99000,"9":43000,"8":28000,"7":20000,"6":15000,"5":12000,"4":10000,"3":8500,"2":7500,"1":6500}},{"id":"k174","n":"レアコイル LV.35","sp":"レアコイル","dex":82,"lv":35,"mark":"★","set":"regular","tier":"B","q":"レアコイル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k175","n":"スリーパー LV.36","sp":"スリーパー","dex":97,"lv":36,"mark":"★","set":"regular","tier":"B","q":"スリーパー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k176","n":"サワムラー LV.30","sp":"サワムラー","dex":106,"lv":30,"mark":"★","set":"regular","tier":"B","q":"サワムラー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k177","n":"カブトプス LV.30","sp":"カブトプス","dex":141,"lv":30,"mark":"★","set":"regular","tier":"B","q":"カブトプス 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k178","n":"わるいアーボック LV.25","sp":"アーボック","dex":24,"lv":25,"mark":"★","set":"dark","tier":"B","q":"わるいアーボック 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k179","n":"わるいゴルバット LV.25","sp":"ゴルバット","dex":42,"lv":25,"mark":"★","set":"dark","tier":"B","q":"わるいゴルバット 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k180","n":"わるいレアコイル LV.26","sp":"レアコイル","dex":82,"lv":26,"mark":"★","set":"dark","tier":"B","q":"わるいレアコイル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k181","n":"わるいスリーパー LV.26","sp":"スリーパー","dex":97,"lv":26,"mark":"★","set":"dark","tier":"B","q":"わるいスリーパー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k182","n":"わるいカイリキー LV.30","sp":"カイリキー","dex":68,"lv":30,"mark":"★","set":"dark","tier":"B","q":"わるいカイリキー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k183","n":"エリカのラフレシア LV.34","sp":"ラフレシア","dex":45,"lv":34,"mark":"★","set":"gym","tier":"B","q":"エリカのラフレシア 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k184","n":"カスミのゴルダック LV.32","sp":"ゴルダック","dex":55,"lv":32,"mark":"★","set":"gym","tier":"B","q":"カスミのゴルダック 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k185","n":"カスミのドククラゲ LV.30","sp":"ドククラゲ","dex":73,"lv":30,"mark":"★","set":"gym","tier":"B","q":"カスミのドククラゲ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k186","n":"R団のエビワラー LV.29","sp":"エビワラー","dex":107,"lv":29,"mark":"★","set":"gym","tier":"B","q":"R団のエビワラー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k187","n":"マチスのオニドリル LV.30","sp":"オニドリル","dex":22,"lv":30,"mark":"★","set":"gym","tier":"B","q":"マチスのオニドリル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k188","n":"メガニウム LV.57","sp":"メガニウム","dex":154,"lv":57,"mark":"★","set":"regular","tier":"B","q":"メガニウム 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k189","n":"ワタッコ LV.35","sp":"ワタッコ","dex":189,"lv":35,"mark":"★","set":"regular","tier":"B","q":"ワタッコ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k190","n":"キングドラ LV.50","sp":"キングドラ","dex":230,"lv":50,"mark":"★","set":"regular","tier":"B","q":"キングドラ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k191","n":"デンリュウ LV.40","sp":"デンリュウ","dex":181,"lv":40,"mark":"★","set":"regular","tier":"B","q":"デンリュウ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k192","n":"ハガネール LV.64","sp":"ハガネール","dex":208,"lv":64,"mark":"★","set":"regular","tier":"B","q":"ハガネール 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k193","n":"トゲチック LV.31","sp":"トゲチック","dex":176,"lv":31,"mark":"★","set":"regular","tier":"B","q":"トゲチック 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k194","n":"バタフリー LV.38","sp":"バタフリー","dex":12,"lv":38,"mark":"★","set":"regular","tier":"B","q":"バタフリー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k195","n":"デルビル LV.22","sp":"デルビル","dex":228,"lv":22,"mark":"★","set":"regular","tier":"B","q":"デルビル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k196","n":"ヘルガー LV.37","sp":"ヘルガー","dex":229,"lv":37,"mark":"★","set":"regular","tier":"B","q":"ヘルガー 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k197","n":"コイル LV.16","sp":"コイル","dex":81,"lv":16,"mark":"★","set":"regular","tier":"B","q":"コイル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k198","n":"ハッサム LV.43","sp":"ハッサム","dex":212,"lv":43,"mark":"★","set":"regular","tier":"B","q":"ハッサム 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k199","n":"ドーブル LV.27","sp":"ドーブル","dex":235,"lv":27,"mark":"★","set":"regular","tier":"B","q":"ドーブル 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k200","n":"デリバード LV.34","sp":"デリバード","dex":225,"lv":34,"mark":"★","set":"regular","tier":"B","q":"デリバード 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k201","n":"ポリゴン2 LV.33","sp":"ポリゴン2","dex":233,"lv":33,"mark":"★","set":"regular","tier":"B","q":"ポリゴン2 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k202","n":"わるいクロバット LV.39","sp":"クロバット","dex":169,"lv":39,"mark":"★","set":"dark","tier":"B","q":"わるいクロバット 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k203","n":"やさしいマリルリ LV.37","sp":"マリルリ","dex":184,"lv":37,"mark":"★","set":"dark","tier":"B","q":"やさしいマリルリ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k204","n":"わるいドンファン LV.29","sp":"ドンファン","dex":232,"lv":29,"mark":"★","set":"dark","tier":"B","q":"わるいドンファン 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k205","n":"わるいハッサム LV.35","sp":"ハッサム","dex":212,"lv":35,"mark":"★","set":"dark","tier":"B","q":"わるいハッサム 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k206","n":"イーブイ LV.14","sp":"イーブイ","dex":133,"lv":14,"mark":"-","set":"regular","tier":"B","q":"イーブイ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k207","n":"エンテイ LV.37","sp":"エンテイ","dex":244,"lv":37,"mark":"-","set":"regular","tier":"B","q":"エンテイ 旧裏","buy":20000,"raw":{"m":20000,"p":7000},"psa":{"10":83000,"9":36000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"k208","n":"タケシのサイドン LV.38","sp":"サイドン","dex":112,"lv":38,"mark":"★","set":"gym","tier":"B","q":"タケシのサイドン 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k209","n":"キョウのスピアー LV.34","sp":"スピアー","dex":15,"lv":34,"mark":"★","set":"gym","tier":"B","q":"キョウのスピアー 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k210","n":"キレイハナ LV.36","sp":"キレイハナ","dex":182,"lv":36,"mark":"★","set":"regular","tier":"B","q":"キレイハナ 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k211","n":"エアームド LV.30","sp":"エアームド","dex":227,"lv":30,"mark":"★","set":"regular","tier":"B","q":"エアームド 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k212","n":"ヤンヤンマ LV.32","sp":"ヤンヤンマ","dex":193,"lv":32,"mark":"★","set":"regular","tier":"B","q":"ヤンヤンマ 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k213","n":"アンノーンA LV.15","sp":"アンノーン","dex":201,"lv":15,"mark":"★","set":"regular","tier":"B","q":"アンノーンA 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k214","n":"ニョロボン LV.45","sp":"ニョロボン","dex":62,"lv":45,"mark":"★","set":"regular","tier":"B","q":"ニョロボン 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k215","n":"カポエラー LV.31","sp":"カポエラー","dex":237,"lv":31,"mark":"★","set":"regular","tier":"B","q":"カポエラー 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k216","n":"フォレトス LV.40","sp":"フォレトス","dex":205,"lv":40,"mark":"★","set":"regular","tier":"B","q":"フォレトス 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k217","n":"リングマ LV.42","sp":"リングマ","dex":217,"lv":42,"mark":"★","set":"regular","tier":"B","q":"リングマ 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k218","n":"クロバット LV.51","sp":"クロバット","dex":169,"lv":51,"mark":"★","set":"regular","tier":"B","q":"クロバット 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k219","n":"ワタッコ LV.37","sp":"ワタッコ","dex":189,"lv":37,"mark":"★","set":"regular","tier":"B","q":"ワタッコ 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k220","n":"レアコイル LV.37","sp":"レアコイル","dex":82,"lv":37,"mark":"★","set":"regular","tier":"B","q":"レアコイル 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k221","n":"スイクン LV.25","sp":"スイクン","dex":245,"lv":25,"mark":"-","set":"regular","tier":"B","q":"スイクン 旧裏","buy":18000,"raw":{"m":18000,"p":6500},"psa":{"10":74000,"9":32000,"8":21000,"7":15000,"6":11000,"5":9000,"4":7500,"3":6500,"2":5500,"1":5000}},{"id":"k222","n":"わるいラフレシア LV.29","sp":"ラフレシア","dex":45,"lv":29,"mark":"★","set":"dark","tier":"B","q":"わるいラフレシア 旧裏","buy":15000,"raw":{"m":15000,"p":5000},"psa":{"10":62000,"9":27000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"k223","n":"オーダイル LV.69","sp":"オーダイル","dex":160,"lv":69,"mark":"-","set":"regular","tier":"B","q":"オーダイル 旧裏","buy":15000,"raw":{"m":15000,"p":5000},"psa":{"10":62000,"9":27000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"k224","n":"メガニウム LV.54","sp":"メガニウム","dex":154,"lv":54,"mark":"-","set":"regular","tier":"B","q":"メガニウム 旧裏","buy":15000,"raw":{"m":15000,"p":5000},"psa":{"10":62000,"9":27000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"k225","n":"バクフーン LV.57","sp":"バクフーン","dex":157,"lv":57,"mark":"-","set":"regular","tier":"B","q":"バクフーン 旧裏","buy":15000,"raw":{"m":15000,"p":5000},"psa":{"10":62000,"9":27000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"k226","n":"ライコウ LV.26","sp":"ライコウ","dex":243,"lv":26,"mark":"-","set":"regular","tier":"B","q":"ライコウ 旧裏","buy":15000,"raw":{"m":15000,"p":5000},"psa":{"10":62000,"9":27000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}}]}</script>
 <script>
 'use strict';
 (function(){
@@ -319,8 +332,7 @@ var LS = {
   del:function(k){try{localStorage.removeItem(k);}catch(e){}}
 };
 /* PSA日本 グレーディング料金(税込・2026-05-15改定適用)
-   バリュー系は受付停止/利用しない(オーナー運用 2026-08-25)のため除外。最低プランはレギュラー。
-   [申告価格上限, 料金/枚, プラン名] */
+   バリュー系は受付停止/利用しない(オーナー運用 2026-08-25)のため除外。最低プランはレギュラー。 */
 var PSA_FEES=[
   [250000,11980,'レギュラー'],
   [400000,22980,'エクスプレス'],
@@ -336,7 +348,7 @@ var DEF_SET = {mode:'auto', base:9, minp:0, grade:11980, gship:500, fee:10, sshi
 var S = Object.assign({}, DEF_SET, LS.get('p004.settings', {}));
 var rawOv = LS.get('p004.rawOv', {});
 var priceOv = LS.get('p004.priceOv', {});
-var ui = {set:'all', text:'', sort:'p10', f9:false, f8:false, flow:false, open:{}};
+var ui = {set:'all', text:'', sort:'buy', f9:false, f8:false, flow:false, open:{}};
 
 /* ---- 計算 ---- */
 function price(c,g){var o=priceOv[c.id]; return (o && o[g]!=null) ? o[g] : c.psa[String(g)];}
@@ -369,19 +381,25 @@ function yen(v){return Math.round(v).toLocaleString('ja-JP');}
 function man(v){
   if(v==null) return '-';
   var a=Math.abs(v), s;
-  if(a>=1000000) s=Math.round(a/10000)+'万';
+  if(a>=1000000) s=Math.round(a/10000).toLocaleString('ja-JP')+'万';
   else if(a>=10000){ s=(a/10000).toFixed(1); if(s.slice(-2)==='.0') s=s.slice(0,-2); s+='万'; }
   else s=yen(a)+'円';
   return (v<0?'-':'')+s;
 }
 function pm(v){return (v>=0?'+':'-')+man(Math.abs(v));}
+function dex3(d){return 'No.'+('00'+d).slice(-3);}
+function sprite(d){return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'+d+'.png';}
 function mercari(q,sold){return 'https://jp.mercari.com/search?keyword='+encodeURIComponent(q)+(sold?'&status=sold_out':'&status=on_sale');}
 function yahooClosed(q){return 'https://auctions.yahoo.co.jp/closedsearch/closedsearch?p='+encodeURIComponent(q)+'&va='+encodeURIComponent(q)+'&b=1&n=50';}
-function cardrush(c){return 'https://cardrush.media/pokemon/buying_prices?name='+encodeURIComponent(c.n.split('(')[0])+'&display_category=%E6%97%A7%E8%A3%8F';}
+function snkr(q){return 'https://snkrdunk.com/search?keyword='+encodeURIComponent(q);}
+function cardrush(c){
+  var nm=c.n.split('(')[0].split(' LV.')[0].replace('＿の','');
+  return 'https://cardrush.media/pokemon/buying_prices?name='+encodeURIComponent(nm)+'&display_category=%E6%97%A7%E8%A3%8F';
+}
 
 function badgeMint(c){
   var l=lineOf(c,'m');
-  if(l==null) return {t:'赤字圏', s:'美品仕入NG', cls:'bad'};
+  if(l==null) return {t:'赤字圏', s:'買取値仕入NG', cls:'bad'};
   if(l===10)  return {t:'PSA10', s:'のみ黒字', cls:'warn'};
   if(l===9)   return {t:'PSA9〜', s:'美品で黒字', cls:'ok9'};
   return {t:'PSA'+l+'〜', s:'美品で黒字', cls:'ok'};
@@ -389,7 +407,7 @@ function badgeMint(c){
 function badgePlayed(c){
   var l=lineOf(c,'p');
   if(l==null || l>6) return null;
-  return {t:'傷PSA'+l+'〜黒字', cls:(l<=3?'lb2 hot':'lb2')};
+  return {t:'傷PSA'+l+'〜黒字'};
 }
 
 /* ---- サマリー ---- */
@@ -416,7 +434,7 @@ function renderSummary(){
   document.getElementById('costEdit').onclick=function(e){e.preventDefault();toggleSettings(true);};
 }
 
-/* ---- セットチップ ---- */
+/* ---- カテゴリチップ ---- */
 function renderSetChips(){
   var el=document.getElementById('setchips');
   var html='<button class="schipbtn'+(ui.set==='all'?' on':'')+'" data-set="all" type="button">すべて</button>';
@@ -433,7 +451,10 @@ function renderSetChips(){
 function visibleCards(){
   var list=SEED.cards.filter(function(c){
     if(ui.set!=='all' && c.set!==ui.set) return false;
-    if(ui.text && c.n.indexOf(ui.text)<0 && c.q.indexOf(ui.text)<0) return false;
+    if(ui.text){
+      var hay=c.n+' '+c.q+' '+(c.sp||'');
+      if(hay.indexOf(ui.text)<0) return false;
+    }
     var lm=lineOf(c,'m'), lp=lineOf(c,'p');
     if(ui.f9 && !(lm!=null&&lm<=9)) return false;
     if(ui.f8 && !(lm!=null&&lm<=8)) return false;
@@ -443,12 +464,13 @@ function visibleCards(){
   var sort=ui.sort;
   list.sort(function(a,b){
     if(sort==='name') return a.n.localeCompare(b.n,'ja');
+    if(sort==='p10') return price(b,10)-price(a,10);
     if(sort==='net9') return net(b,9,'m')-net(a,9,'m');
     if(sort==='roi9'){
       var ca=raw(a).m+gradeFee(a,9,'m').amt+(+S.gship||0), cb=raw(b).m+gradeFee(b,9,'m').amt+(+S.gship||0);
       return (net(b,9,'m')/cb)-(net(a,9,'m')/ca);
     }
-    return price(b,10)-price(a,10);
+    return b.buy-a.buy;
   });
   return list;
 }
@@ -457,6 +479,12 @@ function priceCell(label,val,profit){
   var cls=profit>0?'pos':(profit<0?'neg':'neu');
   return '<div class="pc '+cls+'"><span class="pl">'+label+'</span><span class="pv num">'+man(val)+'</span>'+
          '<span class="ps num">'+pm(profit)+'</span></div>';
+}
+
+function sprHTML(c){
+  var fb=c.sp?esc(c.sp.slice(0,1)):'TR';
+  var img=c.dex?'<img class="spr" loading="lazy" alt="" src="'+sprite(c.dex)+'" onerror="this.style.display=\'none\'">':'';
+  return '<div class="sprwrap"><span class="fb">'+fb+'</span>'+img+'</div>';
 }
 
 function cardHTML(c){
@@ -469,18 +497,27 @@ function cardHTML(c){
   }else{
     planTxt='鑑定固定 '+man(+S.grade);
   }
+  var chips='';
+  if(c.dex) chips+='<span class="chip no num">'+dex3(c.dex)+'</span>';
+  chips+='<span class="chip mk">'+esc(c.mark)+'</span>';
+  chips+='<span class="chip t'+c.tier+'">'+c.tier+'</span>';
+  chips+='<span class="chip cat">'+esc(SEED.sets[c.set])+'</span>';
   var h='<div class="card" data-id="'+c.id+'">';
   h+='<div class="crow" data-act="toggle">';
-  h+='<div class="cline"><div class="lb '+bm.cls+'">'+bm.t+'<small>'+bm.s+'</small></div>';
-  if(bp) h+='<span class="'+bp.cls+'">'+bp.t+'</span>';
-  h+='</div>';
-  h+='<div class="cmain"><div class="cname">'+esc(c.n)+'<span class="cver">'+esc(SEED.sets[c.set])+'</span><span class="tier t'+c.tier+'">'+c.tier+'</span></div>';
+  h+='<div class="m1">';
+  h+=sprHTML(c);
+  h+='<div class="cmain"><div class="cname">'+esc(c.n)+'</div>';
+  h+='<div class="chips">'+chips+'</div>';
   h+='<div class="csub num">'+planTxt+'</div></div>';
+  h+='<div class="cline"><div class="lb '+bm.cls+'">'+bm.t+'<small>'+bm.s+'</small></div>';
+  if(bp) h+='<span class="lb2">'+bp.t+'</span>';
+  h+='</div>';
+  h+='</div>';
   h+='<div class="pcs">';
-  h+='<div class="pc raw"><span class="pl">素体 美品'+(c.buy?'(買取基準)':'(参考)')+'</span><span class="pv num">'+man(r.m)+'</span><span class="ps num">傷あり '+man(r.p)+'</span></div>';
-  h+=priceCell('PSA8', price(c,8), net(c,8,'m'));
-  h+=priceCell('PSA9', price(c,9), net(c,9,'m'));
-  h+=priceCell('PSA10', price(c,10), net(c,10,'m'));
+  h+='<div class="pc raw"><span class="pl">買取=美品仕入(参考)</span><span class="pv num">'+man(r.m)+'</span><span class="ps num">傷あり '+man(r.p)+'</span></div>';
+  h+=priceCell('PSA8推定', price(c,8), net(c,8,'m'));
+  h+=priceCell('PSA9推定', price(c,9), net(c,9,'m'));
+  h+=priceCell('PSA10推定', price(c,10), net(c,10,'m'));
   h+='</div></div>';
   if(open) h+=detailHTML(c);
   h+='</div>';
@@ -490,15 +527,18 @@ function cardHTML(c){
 function detailHTML(c){
   var r=raw(c);
   var h='<div class="cdetail">';
+  h+='<div class="idline">'+(c.dex?('<b class="num">'+dex3(c.dex)+'</b> '+esc(c.sp)+' / '):'トレーナーカード / ')+
+     (c.lv?('LV.'+c.lv+' / '):'')+'レアマーク <b>'+esc(c.mark)+'</b> / '+esc(SEED.sets[c.set])+
+     ' / カードラッシュ買取(美品) <b class="num">'+man(c.buy)+'</b>('+esc(SEED.updated)+')</div>';
   h+='<div class="linkrow">'+
     '<a href="'+mercari(c.q,false)+'" target="_blank" rel="noopener">素体を探す(メルカリ)</a>'+
     '<a href="'+mercari(c.q,true)+'" target="_blank" rel="noopener">素体の売切相場</a>'+
     '<a href="'+mercari(c.q+' PSA',true)+'" target="_blank" rel="noopener">PSA品の売切相場</a>'+
     '<a href="'+yahooClosed(c.q)+'" target="_blank" rel="noopener">ヤフオク落札相場</a>'+
+    '<a href="'+snkr(c.q.replace(' 旧裏',''))+'" target="_blank" rel="noopener">スニダンで探す</a>'+
     '<a href="'+cardrush(c)+'" target="_blank" rel="noopener">買取価格(カードラッシュ)</a></div>';
-  h+='<div class="cnote">'+esc(c.note)+'</div>';
   h+='<div class="tblwrap"><table><thead><tr>'+
-     '<th>グレード</th><th>相場(円・編集可)</th><th>鑑定料</th><th>仕入上限(美)</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
+     '<th>グレード</th><th>相場(円・推定/編集可)</th><th>鑑定料</th><th>仕入上限(美)</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
      '</tr></thead><tbody>';
   GRADES.forEach(function(g){
     var fm=gradeFee(c,g,'m'), cb=ceilBuy(c,g,'m'), nm=net(c,g,'m'), np=net(c,g,'p');
@@ -521,11 +561,7 @@ function detailHTML(c){
     '<div class="setitem"><label>素体 美品の仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.m+'" data-edit="rawm" data-id="'+c.id+'"></div>'+
     '<div class="setitem"><label>素体 傷ありの仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.p+'" data-edit="rawp" data-id="'+c.id+'"></div>'+
     '<button class="sbtn" type="button" data-edit="reset" data-id="'+c.id+'">このカードを参考値に戻す</button></div>';
-  if(c.buy){
-    h+='<div class="rawnote">素体美品の参考値はカードラッシュ買取価格(美品 '+man(c.buy)+')基準。買取価格以下で仕入れられれば、鑑定に出さず店売りしても大きな損になりにくい=実質の下限保証。最新値は上の「買取価格(カードラッシュ)」リンクで確認。</div>';
-  }else{
-    h+='<div class="rawnote">素体美品の上限目安はカードラッシュの買取価格が使えます(上の「買取価格(カードラッシュ)」リンクで確認)。買取価格以下で仕入れられれば、店売りで逃げられる=実質の下限保証。</div>';
-  }
+  h+='<div class="rawnote">素体美品の参考値はカードラッシュ買取価格('+esc(SEED.updated)+'取得)そのもの。買取以下で仕入れられれば店売りで逃げられる=実質の下限保証。傷ありは買取の35%の機械推定。最新の買取は上のリンクで確認。</div>';
   h+='<div class="rawnote">仕入上限 = 相場 ×(1−手数料)− 販売送料 − 鑑定料 − 按分。メルカリで見つけた素体がこの金額以下なら、そのグレードで終わっても赤字になりません。数字の変更はこの端末にのみ保存されます。</div>';
   h+='</div>';
   return h;
@@ -639,7 +675,6 @@ document.getElementById('btnExport').onclick=function(){
 };
 
 /* ---- 初期化 ---- */
-/* 旧設定の移行: minpが無い保存値・バリュー時代のflat既定を補正 */
 if(S.minp==null)S.minp=0;
 if(S.mode==null)S.mode='auto';
 document.getElementById('updDate').textContent=SEED.updated;
