@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>旧裏PSAターミナル</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#30363d;
+  --tx:#e6edf3; --tx2:#9aa7b3; --tx3:#6e7c8a;
+  --gold:#e3b341; --green:#3fb950; --red:#f85149; --amber:#d29922;
+  --purple:#bc8cff; --blue:#58a6ff; --teal:#39c5cf;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;font-size:14px;line-height:1.55;padding-bottom:48px}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit;font-size:14px;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+input:focus,select:focus{outline:1px solid var(--blue);border-color:var(--blue)}
+
+header{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.96);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 14px 8px}
+.hrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;letter-spacing:.5px;color:var(--gold)}
+.vbadge{font-size:12px;color:var(--tx3);font-weight:normal}
+.hsub{font-size:11.5px;color:var(--tx2);margin-top:2px}
+.hsub b{color:var(--gold);font-weight:600}
+.gearbtn{margin-left:auto;background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:4px 10px;font-size:12px}
+.gearbtn:hover{color:var(--tx);border-color:var(--tx3)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 14px}
+
+/* 設定パネル */
+#settings{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:12px 0;padding:12px 14px}
+#settings h2{font-size:13px;color:var(--gold);margin-bottom:8px}
+.setgrid{display:flex;gap:14px;flex-wrap:wrap}
+.setitem{display:flex;flex-direction:column;gap:3px}
+.setitem label{font-size:11px;color:var(--tx2)}
+.setitem input{width:110px}
+.setnote{font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.6}
+.setbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.sbtn{background:var(--bg);border:1px solid var(--line);color:var(--tx2);border-radius:6px;padding:5px 10px;font-size:12px}
+.sbtn:hover{color:var(--tx)}
+.sbtn.warn{color:var(--amber)}
+
+/* サマリー */
+#summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}
+.sumchip{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none}
+.sumchip b{color:var(--tx);font-size:13px}
+.sumchip.on{border-color:var(--gold);color:var(--gold);background:rgba(227,179,65,.08)}
+.sumchip.on b{color:var(--gold)}
+.sumchip.static{cursor:default}
+.costline{font-size:11px;color:var(--tx3);margin:2px 0 10px}
+.costline a{color:var(--tx3);text-decoration:underline}
+
+/* コントロール */
+#controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+#searchbox{flex:1;min-width:160px}
+.setchips{display:flex;gap:6px;flex-wrap:wrap}
+.schipbtn{background:var(--panel);border:1px solid var(--line);color:var(--tx2);border-radius:16px;padding:4px 10px;font-size:12px}
+.schipbtn.on{border-color:var(--teal);color:var(--teal);background:rgba(57,197,207,.08)}
+
+/* カード */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.chead{padding:10px 12px 4px;cursor:pointer}
+.crow1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cname{font-weight:600;font-size:14.5px}
+.schip{font-size:10.5px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;padding:1px 5px;white-space:nowrap}
+.tier{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.tS{background:rgba(227,179,65,.15);color:var(--gold);border:1px solid rgba(227,179,65,.5)}
+.tA{background:rgba(154,167,179,.12);color:#c9d4de;border:1px solid rgba(154,167,179,.45)}
+.tB{background:rgba(161,133,106,.12);color:#c4a687;border:1px solid rgba(161,133,106,.45)}
+.cbadges{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.bdg{font-size:11px;border-radius:4px;padding:1.5px 7px;white-space:nowrap;font-weight:600}
+.bdg.ok{background:rgba(63,185,80,.14);color:var(--green);border:1px solid rgba(63,185,80,.45)}
+.bdg.ok9{background:rgba(57,197,207,.12);color:var(--teal);border:1px solid rgba(57,197,207,.4)}
+.bdg.warn{background:rgba(210,153,34,.12);color:var(--amber);border:1px solid rgba(210,153,34,.4)}
+.bdg.bad{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.4)}
+.bdg.low{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.4)}
+.bdg.low1{background:rgba(188,140,255,.22);color:#d9c2ff;border:1px solid var(--purple)}
+.cprices{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 12px 10px;cursor:pointer}
+.pc{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.pl{font-size:10.5px;color:var(--tx3);white-space:nowrap}
+.pv{font-size:15.5px;font-weight:700;white-space:nowrap}
+.ps{font-size:11px;color:var(--tx3);white-space:nowrap}
+.pos{color:var(--green)}
+.neg{color:var(--red)}
+.zero{color:var(--amber)}
+
+/* 詳細 */
+.cdetail{border-top:1px solid var(--line);background:var(--panel2);padding:10px 12px 14px}
+.linkrow{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-bottom:8px}
+.cnote{font-size:12px;color:var(--tx2);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--gold)}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:12.5px}
+th{font-size:11px;color:var(--tx3);font-weight:600;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:5px 8px;text-align:right;border-bottom:1px solid rgba(48,54,61,.5);white-space:nowrap}
+td:first-child{text-align:left;font-weight:600;color:var(--tx2)}
+tr:last-child td{border-bottom:none}
+tr.hi td{background:rgba(227,179,65,.05)}
+td input{width:92px;text-align:right;padding:3px 6px;font-size:12.5px}
+td a{font-size:11px}
+.rawedit{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin:12px 0 4px}
+.rawedit .setitem input{width:100px}
+.rawnote{font-size:11px;color:var(--tx3);margin-top:6px}
+
+/* ガイド */
+#guide{margin:26px 0 10px}
+#guide h2{font-size:15px;color:var(--gold);margin-bottom:10px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;padding:0}
+summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:13.5px;color:var(--tx)}
+.dbody{padding:0 16px 14px;font-size:13px;color:var(--tx2);line-height:1.75}
+.dbody ul{padding-left:18px}
+.dbody li{margin:3px 0}
+.dbody b{color:var(--tx)}
+.dbody .fm{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12px;margin:6px 0;color:var(--tx)}
+
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--tx3);line-height:1.7}
+
+#empty{color:var(--tx3);text-align:center;padding:30px 0;font-size:13px}
+
+@media (max-width:560px){
+  body{font-size:13.5px}
+  .cprices{grid-template-columns:repeat(2,1fr)}
+  h1{font-size:17px}
+  .setitem input{width:96px}
+}
+@media (min-width:860px){
+  .cprices{grid-template-columns:1.1fr repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hrow">
+      <h1>旧裏PSAターミナル <span class="vbadge">· V1</span></h1>
+      <button class="gearbtn" id="gearBtn" type="button">コスト設定</button>
+    </div>
+    <div class="hsub">ポケカ旧裏 PSA鑑定品(1〜10)相場 × 素体仕入判断ボード / データ更新: <b id="updDate"></b> / 価格は参考値 — 各行のリンクで実勢(売切相場)を確認</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="settings" hidden>
+  <h2>コスト設定(損益計算に反映・端末に保存)</h2>
+  <div class="setgrid">
+    <div class="setitem"><label>PSA鑑定料 / 枚(円)</label><input id="setGrade" type="number" inputmode="numeric" min="0" step="100"></div>
+    <div class="setitem"><label>鑑定送料ほか按分 / 枚(円)</label><input id="setGship" type="number" inputmode="numeric" min="0" step="50"></div>
+    <div class="setitem"><label>販売手数料(%)</label><input id="setFee" type="number" inputmode="decimal" min="0" max="50" step="0.5"></div>
+    <div class="setitem"><label>販売時送料(円)</label><input id="setSship" type="number" inputmode="numeric" min="0" step="5"></div>
+  </div>
+  <div class="setnote">鑑定料は出すプラン・枚数・申告価値で変わります。最新はPSA公式(psacard.co.jp)で確認して入力してください。既定値はバルク提出の概算です。販売手数料の既定はメルカリ10%。</div>
+  <div class="setbtns">
+    <button class="sbtn" id="btnDefSet" type="button">コストを既定に戻す</button>
+    <button class="sbtn warn" id="btnResetAll" type="button">価格・素体の変更を全リセット</button>
+    <button class="sbtn" id="btnExport" type="button">自分の変更をコピー(更新依頼用)</button>
+  </div>
+</section>
+
+<section id="summary"></section>
+<div class="costline" id="costline"></div>
+
+<section id="controls">
+  <input id="searchbox" type="search" placeholder="カード名で検索(例: リザードン)">
+  <select id="sortsel">
+    <option value="p10">PSA10相場が高い順</option>
+    <option value="net9">PSA9利益が大きい順(美品仕入)</option>
+    <option value="roi9">資金効率順(PSA9利益÷投下資金)</option>
+    <option value="name">名前順</option>
+  </select>
+  <div class="setchips" id="setchips"></div>
+</section>
+
+<main id="list"></main>
+
+<section id="guide">
+  <h2>仕入れ・鑑定ガイド(まとめ)</h2>
+
+  <details open>
+    <summary>このボードの見方(損益の式)</summary>
+    <div class="dbody">
+      <div class="fm">損益 = グレード相場 ×(1 − 販売手数料)− 販売送料 − 鑑定コスト − 素体仕入値</div>
+      <ul>
+        <li><b>黒字ラインのバッジ</b>が結論です。「美品仕入→PSA8〜黒字」なら、美品素体を参考価格で仕入れてPSA8止まりでも利益が残る、という意味。</li>
+        <li>各カードを開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が出ます。メルカリで素体を見つけたら仕入上限と見比べるだけでOK。</li>
+        <li><b>傷仕入</b>の行は「安い傷あり素体を拾って低グレードでも利益を取る」戦略用。高額カードほどPSA1でも値が付くため成立しやすい。</li>
+        <li>相場の数字は<b>参考値</b>です。各行の「売切相場」リンク(メルカリの売り切れ検索)で直近の実勢を確認し、ズレていたらその場で数字を書き換えてください(この端末に保存されます)。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>メルカリ素体仕入れチェックリスト(旧裏)</summary>
+    <div class="dbody">
+      <ul>
+        <li><b>白かけ</b>: 裏面のフチが最重要。旧裏は裏面縁の青が欠けやすく、写真を拡大して四隅+上下辺を確認。</li>
+        <li><b>センタリング</b>: 裏面のズレが出やすい。PSA10狙いなら裏面センタリングまで確認。</li>
+        <li><b>横線・縦線</b>: パックの折りジワ由来の初期線。ひかる系・ホロ面は斜め光の写真がないと分からない — 出品者に追加写真を依頼。</li>
+        <li><b>凹み・反り</b>: ローダー・スリーブ越し写真は凹みが見えない。気になる個体は素の状態の写真をもらう。</li>
+        <li><b>「美品」表記を信用しない</b>: 旧裏の「美品」は20年前基準のことが多い。状態記載よりも写真で判断。</li>
+        <li><b>版・種類の確認</b>: マークなし/あり、同名の技違い(neo御三家)、プロモの版違いで相場が大きく変わる。</li>
+        <li><b>高額カードの真贋</b>: ひかる系・マークなし初版は精巧なコピーの報告あり。極端に安い出品・新規アカウント・画像使い回しは避ける。</li>
+        <li><b>店頭仕入れ</b>: 状態を直接検品できるのが最大の利点。ライトを持参して斜めから面の線傷を見る。ショーケース内は店員に出してもらい裏面四隅まで確認。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>PSA提出の基礎知識</summary>
+    <div class="dbody">
+      <ul>
+        <li><b>料金・納期は変動</b>: プラン(バルク等)・提出枚数・申告価値で単価が変わる。提出前に必ずPSA公式サイトで最新料金を確認し、上の「コスト設定」に反映。</li>
+        <li><b>申告価値</b>: 高額カード(マークなしリザードン等)は上位プランが必要になり鑑定単価が大きく上がる。高額カードは鑑定料を個別に上乗せして考える。</li>
+        <li><b>代行業者</b>: 自分でPSA会員にならず代行に出す選択肢もある。単価は上がるが手間と英語手続きが不要。</li>
+        <li><b>グレード読み</b>: 旧裏は経年で完美品が少なく、10は簡単に出ない。「10前提」の仕入れはせず、9〜8で利益が残るカード(このボードの緑バッジ)を軸にすると事故らない。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>注意・免責</summary>
+    <div class="dbody">
+      <ul>
+        <li>掲載価格は手動更新の<b>参考値</b>であり、正確性・最新性は保証されません。売買判断の前に必ず実勢を確認してください。</li>
+        <li>相場データの一括更新は、チャットでClaudeに「相場更新して」と依頼 → データ差し替え → 再デプロイの運用です。</li>
+        <li>本サイトは個人用の非公式ツールです。PSA、株式会社ポケモン、任天堂、メルカリ、ヤフー各社とは一切関係ありません。</li>
+        <li>カード売買・鑑定提出の結果について、本サイトは責任を負いません。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<footer>
+  旧裏PSAターミナル · V1 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
+  データ更新はチャットからClaudeに依頼(例:「ひかるリザードンのPSA10を◯円に」「全体の相場を見直して」)。
+</footer>
+
+</div><!-- /wrap -->
+
+<script type="application/json" id="seed">{"updated":"2026-08-25","sets":{"dai1":"第1弾","jungle":"ジャングル","fossil":"化石","rocket":"ロケット団","gym":"ジム","neo":"金銀neo","promo":"プロモ"},"cards":[{"id":"zard-nomark","n":"リザードン(マークなし・初版)","set":"dai1","tier":"S","q":"リザードン 旧裏 マークなし","note":"旧裏最高峰。レアリティマーク無しの初版。低グレードでも値が付く代表格。真贋・状態は特に慎重に","raw":{"m":300000,"p":100000},"psa":{"10":6000000,"9":1500000,"8":900000,"7":650000,"6":505000,"5":425000,"4":370000,"3":335000,"2":305000,"1":290000}},{"id":"zard-mark","n":"リザードン(マークあり)","set":"dai1","tier":"A","q":"リザードン 旧裏 第1弾","note":"旧裏の看板。流通が多く相場が読みやすい定番","raw":{"m":45000,"p":18000},"psa":{"10":450000,"9":140000,"8":85000,"7":59000,"6":44000,"5":36000,"4":31000,"3":26000,"2":23000,"1":20000}},{"id":"kamex","n":"カメックス(第1弾)","set":"dai1","tier":"A","q":"カメックス 旧裏 第1弾","note":"御三家人気。マークなし版は別相場(さらに高い)","raw":{"m":25000,"p":9000},"psa":{"10":250000,"9":70000,"8":42000,"7":29000,"6":22000,"5":18000,"4":15000,"3":13000,"2":11000,"1":10000}},{"id":"fushigibana","n":"フシギバナ(第1弾)","set":"dai1","tier":"A","q":"フシギバナ 旧裏 第1弾","note":"御三家人気。マークなし版は別相場(さらに高い)","raw":{"m":20000,"p":8000},"psa":{"10":200000,"9":60000,"8":36000,"7":25000,"6":19000,"5":15000,"4":13000,"3":11000,"2":9500,"1":8500}},{"id":"mewtwo1","n":"ミュウツー(第1弾)","set":"dai1","tier":"A","q":"ミュウツー 旧裏 第1弾","note":"初代映画世代の需要が厚い","raw":{"m":12000,"p":4500},"psa":{"10":120000,"9":35000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"pika1","n":"ピカチュウ(第1弾)","set":"dai1","tier":"A","q":"ピカチュウ 旧裏 第1弾","note":"マークなし/あり・印刷差で相場が分かれる。出品画像で要確認","raw":{"m":15000,"p":5000},"psa":{"10":150000,"9":45000,"8":26000,"7":18000,"6":14000,"5":11000,"4":9500,"3":8000,"2":7000,"1":6000}},{"id":"alakazam1","n":"フーディン(第1弾)","set":"dai1","tier":"B","q":"フーディン 旧裏","note":"第1弾ホロの定番","raw":{"m":11000,"p":4500},"psa":{"10":90000,"9":27000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"gyarados1","n":"ギャラドス(第1弾)","set":"dai1","tier":"B","q":"ギャラドス 旧裏 第1弾","note":"第1弾ホロの定番","raw":{"m":11000,"p":4000},"psa":{"10":90000,"9":26000,"8":15500,"7":11000,"6":8000,"5":6500,"4":5500,"3":5000,"2":4000,"1":3500}},{"id":"booster-j","n":"ブースター(ジャングル)","set":"jungle","tier":"B","q":"ブースター 旧裏","note":"ブイズ人気で堅調","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"thunders-j","n":"サンダース(ジャングル)","set":"jungle","tier":"B","q":"サンダース 旧裏","note":"ブイズ人気で堅調","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"showers-j","n":"シャワーズ(ジャングル)","set":"jungle","tier":"B","q":"シャワーズ 旧裏","note":"ブイズ人気で堅調","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"kairyu-f","n":"カイリュー(化石)","set":"fossil","tier":"A","q":"カイリュー 旧裏","note":"初代600族。海外人気も強い","raw":{"m":18000,"p":7000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"thunder-f","n":"サンダー(化石)","set":"fossil","tier":"B","q":"サンダー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":12000,"p":4500},"psa":{"10":90000,"9":28000,"8":17000,"7":12000,"6":9000,"5":7000,"4":6000,"3":5500,"2":4500,"1":4000}},{"id":"freezer-f","n":"フリーザー(化石)","set":"fossil","tier":"B","q":"フリーザー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":12000,"p":4500},"psa":{"10":90000,"9":28000,"8":17000,"7":12000,"6":9000,"5":7000,"4":6000,"3":5500,"2":4500,"1":4000}},{"id":"fire-f","n":"ファイヤー(化石)","set":"fossil","tier":"B","q":"ファイヤー 旧裏 化石","note":"伝説三鳥・化石版","raw":{"m":11000,"p":4000},"psa":{"10":85000,"9":26000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"laplace-f","n":"ラプラス(化石)","set":"fossil","tier":"B","q":"ラプラス 旧裏","note":"化石ホロの人気どころ","raw":{"m":7500,"p":3000},"psa":{"10":60000,"9":18000,"8":11000,"7":7500,"6":5500,"5":4500,"4":4000,"3":3500,"2":3000,"1":2500}},{"id":"dark-zard","n":"わるいリザードン","set":"rocket","tier":"S","q":"わるいリザードン","note":"わる系筆頭。状態の良い素体が少なく仕入れ競争が激しい","raw":{"m":50000,"p":20000},"psa":{"10":500000,"9":150000,"8":90000,"7":65000,"6":50000,"5":42000,"4":37000,"3":33000,"2":31000,"1":29000}},{"id":"dark-kamex","n":"わるいカメックス","set":"rocket","tier":"A","q":"わるいカメックス","note":"わる系御三家","raw":{"m":18000,"p":7000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"dark-fushigibana","n":"わるいフシギバナ","set":"rocket","tier":"A","q":"わるいフシギバナ","note":"わる系御三家","raw":{"m":20000,"p":7500},"psa":{"10":160000,"9":48000,"8":29000,"7":20000,"6":15000,"5":12000,"4":10000,"3":9000,"2":8000,"1":7000}},{"id":"dark-gyarados","n":"わるいギャラドス","set":"rocket","tier":"B","q":"わるいギャラドス","note":"海外(Dark Gyarados)でも定番","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"katsura-zard","n":"カツラのリザードン","set":"gym","tier":"A","q":"カツラのリザードン","note":"ジム弾の看板。海外Blaine's Charizard需要","raw":{"m":25000,"p":10000},"psa":{"10":250000,"9":75000,"8":45000,"7":31000,"6":23000,"5":19000,"4":16000,"3":14000,"2":12000,"1":11000}},{"id":"erika-fushigibana","n":"エリカのフシギバナ","set":"gym","tier":"B","q":"エリカのフシギバナ","note":"ジム弾の人気どころ","raw":{"m":10000,"p":4000},"psa":{"10":80000,"9":24000,"8":14500,"7":10000,"6":7500,"5":6000,"4":5000,"3":4500,"2":4000,"1":3500}},{"id":"lugia-n1","n":"ルギア(neo第1弾)","set":"neo","tier":"A","q":"ルギア 旧裏","note":"金銀の看板。海外需要強・状態難が出やすい(裏面スレ)","raw":{"m":30000,"p":11000},"psa":{"10":280000,"9":85000,"8":50000,"7":35000,"6":26000,"5":21000,"4":18000,"3":16000,"2":14000,"1":12000}},{"id":"bakphoon-n1","n":"バクフーン(neo第1弾)","set":"neo","tier":"A","q":"バクフーン 旧裏","note":"同名2種あり(技違い)。出品画像で要確認","raw":{"m":20000,"p":7500},"psa":{"10":160000,"9":48000,"8":29000,"7":20000,"6":15000,"5":12000,"4":10000,"3":9000,"2":8000,"1":7000}},{"id":"ordile-n1","n":"オーダイル(neo第1弾)","set":"neo","tier":"B","q":"オーダイル 旧裏","note":"同名2種あり(技違い)","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"meganium-n1","n":"メガニウム(neo第1弾)","set":"neo","tier":"B","q":"メガニウム 旧裏","note":"同名2種あり(技違い)","raw":{"m":10000,"p":4000},"psa":{"10":80000,"9":24000,"8":14500,"7":10000,"6":7500,"5":6000,"4":5000,"3":4500,"2":4000,"1":3500}},{"id":"denryu-n1","n":"デンリュウ(neo第1弾)","set":"neo","tier":"B","q":"デンリュウ 旧裏","note":"金銀人気ポケモン","raw":{"m":11000,"p":4500},"psa":{"10":90000,"9":27000,"8":16000,"7":11000,"6":8500,"5":6500,"4":6000,"3":5000,"2":4500,"1":4000}},{"id":"blacky-n2","n":"ブラッキー(neo第2弾)","set":"neo","tier":"S","q":"ブラッキー 旧裏","note":"ブイズ人気筆頭。世界的に需要が厚い","raw":{"m":40000,"p":15000},"psa":{"10":350000,"9":110000,"8":65000,"7":47000,"6":36000,"5":31000,"4":27000,"3":24000,"2":22000,"1":21000}},{"id":"eifie-n2","n":"エーフィ(neo第2弾)","set":"neo","tier":"A","q":"エーフィ 旧裏","note":"ブラッキーと並ぶブイズ人気","raw":{"m":27000,"p":10000},"psa":{"10":250000,"9":80000,"8":48000,"7":34000,"6":25000,"5":20000,"4":17000,"3":15000,"2":13000,"1":12000}},{"id":"bangiras-n2","n":"バンギラス(neo第2弾)","set":"neo","tier":"B","q":"バンギラス 旧裏","note":"600族人気","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"s-koiking","n":"ひかるコイキング(neo第3弾)","set":"neo","tier":"S","q":"ひかるコイキング","note":"ネタ×希少で世界的人気。偽物・状態詐称に注意","raw":{"m":70000,"p":28000},"psa":{"10":500000,"9":160000,"8":95000,"7":68000,"6":53000,"5":45000,"4":39000,"3":35000,"2":32000,"1":30000}},{"id":"s-gyarados","n":"ひかるギャラドス(neo第3弾)","set":"neo","tier":"A","q":"ひかるギャラドス","note":"色違い(赤)ギャラドス","raw":{"m":26000,"p":10000},"psa":{"10":200000,"9":62000,"8":37000,"7":26000,"6":19000,"5":16000,"4":13000,"3":11000,"2":10000,"1":9000}},{"id":"s-zard","n":"ひかるリザードン(neo第4弾)","set":"neo","tier":"S","q":"ひかるリザードン","note":"ひかる系最高峰。PSA低グレードでも需要あり","raw":{"m":180000,"p":70000},"psa":{"10":1200000,"9":400000,"8":230000,"7":165000,"6":130000,"5":110000,"4":94000,"3":85000,"2":78000,"1":74000}},{"id":"s-mewtwo","n":"ひかるミュウツー(neo第4弾)","set":"neo","tier":"A","q":"ひかるミュウツー","note":"ひかる系上位","raw":{"m":45000,"p":17000},"psa":{"10":350000,"9":110000,"8":65000,"7":46000,"6":34000,"5":27000,"4":23000,"3":20000,"2":18000,"1":16000}},{"id":"s-raichu","n":"ひかるライチュウ(neo第4弾)","set":"neo","tier":"A","q":"ひかるライチュウ","note":"ひかる系上位","raw":{"m":37000,"p":14000},"psa":{"10":280000,"9":90000,"8":54000,"7":38000,"6":28000,"5":23000,"4":19000,"3":17000,"2":15000,"1":13000}},{"id":"s-bangiras","n":"ひかるバンギラス(neo第4弾)","set":"neo","tier":"A","q":"ひかるバンギラス","note":"ひかる系","raw":{"m":23000,"p":9000},"psa":{"10":180000,"9":55000,"8":33000,"7":23000,"6":17000,"5":14000,"4":12000,"3":10000,"2":9000,"1":8000}},{"id":"s-haganeil","n":"ひかるハガネール(neo第4弾)","set":"neo","tier":"B","q":"ひかるハガネール","note":"ひかる系","raw":{"m":15000,"p":6000},"psa":{"10":120000,"9":36000,"8":22000,"7":15000,"6":11000,"5":9000,"4":8000,"3":7000,"2":6000,"1":5500}},{"id":"s-kabutops","n":"ひかるカブトプス(neo第4弾)","set":"neo","tier":"B","q":"ひかるカブトプス","note":"ひかる系","raw":{"m":14000,"p":5500},"psa":{"10":110000,"9":33000,"8":20000,"7":14000,"6":10000,"5":8500,"4":7000,"3":6000,"2":5500,"1":5000}},{"id":"s-yorunozuku","n":"ひかるヨルノズク(neo第4弾)","set":"neo","tier":"B","q":"ひかるヨルノズク","note":"ひかる系","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"birthday-pika","n":"おたんじょうびピカチュウ(プロモ)","set":"promo","tier":"S","q":"おたんじょうびピカチュウ","note":"プロモ人気筆頭。英語版とは別相場・要区別","raw":{"m":45000,"p":17000},"psa":{"10":400000,"9":120000,"8":70000,"7":50000,"6":39000,"5":33000,"4":29000,"3":26000,"2":24000,"1":22000}},{"id":"mew-coro","n":"ミュウ(コロコロプロモ・キラ)","set":"promo","tier":"A","q":"ミュウ 旧裏 プロモ","note":"旧裏ミュウの定番プロモ","raw":{"m":19000,"p":7000},"psa":{"10":150000,"9":45000,"8":27000,"7":19000,"6":14000,"5":11000,"4":9500,"3":8500,"2":7500,"1":6500}},{"id":"surf-pika","n":"なみのりピカチュウ(プロモ)","set":"promo","tier":"A","q":"なみのりピカチュウ 旧裏","note":"複数版あり。版で相場差","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}},{"id":"fly-pika","n":"そらをとぶピカチュウ(プロモ)","set":"promo","tier":"B","q":"そらをとぶピカチュウ 旧裏","note":"複数版あり。版で相場差","raw":{"m":13000,"p":5000},"psa":{"10":100000,"9":30000,"8":18000,"7":13000,"6":9500,"5":7500,"4":6500,"3":5500,"2":5000,"1":4500}},{"id":"s-celebi","n":"ひかるセレビィ(プロモ)","set":"promo","tier":"B","q":"ひかるセレビィ","note":"プロモのひかる系","raw":{"m":17000,"p":6500},"psa":{"10":130000,"9":40000,"8":24000,"7":17000,"6":12000,"5":10000,"4":8500,"3":7500,"2":6500,"1":6000}}]}</script>
+<script>
+'use strict';
+(function(){
+var SEED = JSON.parse(document.getElementById('seed').textContent);
+var GRADES = [10,9,8,7,6,5,4,3,2,1];
+var LS = {
+  get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del:function(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+var DEF_SET = {grade:3500, gship:500, fee:10, sship:215};
+var S = Object.assign({}, DEF_SET, LS.get('p004.settings', {}));
+var rawOv = LS.get('p004.rawOv', {});
+var priceOv = LS.get('p004.priceOv', {});
+var ui = {set:'all', text:'', sort:'p10', f9:false, f8:false, flow:false, open:{}};
+
+/* ---- 計算 ---- */
+function price(c,g){var o=priceOv[c.id]; return (o && o[g]!=null) ? o[g] : c.psa[String(g)];}
+function raw(c){var o=rawOv[c.id]||{}; return {m:(o.m!=null?o.m:c.raw.m), p:(o.p!=null?o.p:c.raw.p)};}
+function gradeCost(){return (+S.grade||0)+(+S.gship||0);}
+function ceilBuy(c,g){return Math.floor(price(c,g)*(1-(+S.fee||0)/100) - (+S.sship||0) - gradeCost());}
+function net(c,g,base){return ceilBuy(c,g) - raw(c)[base];}
+function lineOf(c,base){
+  var line=null;
+  for(var i=0;i<GRADES.length;i++){var g=GRADES[i];
+    if(net(c,g,base)>=0){line=g;} else {break;}
+  }
+  return line;
+}
+
+/* ---- 表示 ---- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function yen(v){return Math.round(v).toLocaleString('ja-JP');}
+function man(v){
+  if(v==null) return '-';
+  var a=Math.abs(v), s;
+  if(a>=1000000) s=Math.round(a/10000)+'万';
+  else if(a>=10000){ s=(a/10000).toFixed(1); if(s.slice(-2)==='.0') s=s.slice(0,-2); s+='万'; }
+  else s=yen(a)+'円';
+  return (v<0?'-':'')+s;
+}
+function pm(v){return (v>=0?'+':'-')+man(Math.abs(v));}
+function pmCls(v){return v>0?'pos':(v<0?'neg':'zero');}
+
+function mercari(q,sold){return 'https://jp.mercari.com/search?keyword='+encodeURIComponent(q)+(sold?'&status=sold_out':'&status=on_sale');}
+function yahooClosed(q){return 'https://auctions.yahoo.co.jp/closedsearch/closedsearch?p='+encodeURIComponent(q)+'&va='+encodeURIComponent(q)+'&b=1&n=50';}
+
+function badgeMint(c){
+  var l=lineOf(c,'m');
+  if(l==null) return {t:'美品仕入でも赤字', cls:'bad'};
+  if(l===10)  return {t:'PSA10のみ黒字', cls:'warn'};
+  if(l===9)   return {t:'美品仕入→PSA9〜黒字', cls:'ok9'};
+  return {t:'美品仕入→PSA'+l+'〜黒字', cls:'ok'};
+}
+function badgePlayed(c){
+  var l=lineOf(c,'p');
+  if(l==null || l>6) return null;
+  return {t:'傷仕入→PSA'+l+'〜黒字', cls:(l<=3?'low1':'low')};
+}
+
+/* ---- サマリー ---- */
+function renderSummary(){
+  var n9=0,n8=0,nl=0;
+  SEED.cards.forEach(function(c){
+    var lm=lineOf(c,'m'); if(lm!=null&&lm<=9)n9++; if(lm!=null&&lm<=8)n8++;
+    var lp=lineOf(c,'p'); if(lp!=null&&lp<=3)nl++;
+  });
+  var el=document.getElementById('summary');
+  el.innerHTML =
+    '<span class="sumchip static">掲載 <b>'+SEED.cards.length+'</b> 枚</span>'+
+    '<span class="sumchip'+(ui.f9?' on':'')+'" id="chip9">PSA9でも黒字 <b>'+n9+'</b></span>'+
+    '<span class="sumchip'+(ui.f8?' on':'')+'" id="chip8">PSA8以下でも黒字 <b>'+n8+'</b></span>'+
+    '<span class="sumchip'+(ui.flow?' on':'')+'" id="chiplow">傷素体で低グレ黒字 <b>'+nl+'</b></span>';
+  document.getElementById('chip9').onclick=function(){ui.f9=!ui.f9;render();};
+  document.getElementById('chip8').onclick=function(){ui.f8=!ui.f8;render();};
+  document.getElementById('chiplow').onclick=function(){ui.flow=!ui.flow;render();};
+  document.getElementById('costline').innerHTML =
+    '計算条件: 鑑定 '+yen(gradeCost())+'円/枚 ・ 販売手数料 '+(+S.fee)+'% ・ 販売送料 '+yen(+S.sship)+'円 (<a href="#" id="costEdit">変更</a>)';
+  document.getElementById('costEdit').onclick=function(e){e.preventDefault();toggleSettings(true);};
+}
+
+/* ---- セットチップ ---- */
+function renderSetChips(){
+  var el=document.getElementById('setchips');
+  var html='<button class="schipbtn'+(ui.set==='all'?' on':'')+'" data-set="all" type="button">すべて</button>';
+  Object.keys(SEED.sets).forEach(function(k){
+    html+='<button class="schipbtn'+(ui.set===k?' on':'')+'" data-set="'+k+'" type="button">'+esc(SEED.sets[k])+'</button>';
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){ui.set=b.getAttribute('data-set');render();};
+  });
+}
+
+/* ---- 一覧 ---- */
+function visibleCards(){
+  var list=SEED.cards.filter(function(c){
+    if(ui.set!=='all' && c.set!==ui.set) return false;
+    if(ui.text && c.n.indexOf(ui.text)<0 && c.q.indexOf(ui.text)<0) return false;
+    var lm=lineOf(c,'m'), lp=lineOf(c,'p');
+    if(ui.f9 && !(lm!=null&&lm<=9)) return false;
+    if(ui.f8 && !(lm!=null&&lm<=8)) return false;
+    if(ui.flow && !(lp!=null&&lp<=3)) return false;
+    return true;
+  });
+  var sort=ui.sort;
+  list.sort(function(a,b){
+    if(sort==='name') return a.n.localeCompare(b.n,'ja');
+    if(sort==='net9') return net(b,9,'m')-net(a,9,'m');
+    if(sort==='roi9'){
+      var ca=raw(a).m+gradeCost(), cb=raw(b).m+gradeCost();
+      return (net(b,9,'m')/cb)-(net(a,9,'m')/ca);
+    }
+    return price(b,10)-price(a,10);
+  });
+  return list;
+}
+
+function priceCell(label,val,profit){
+  return '<div class="pc"><div class="pl">'+label+'</div><div class="pv num">'+man(val)+'</div>'+
+         '<div class="ps num '+pmCls(profit)+'">'+pm(profit)+'</div></div>';
+}
+
+function cardHTML(c){
+  var r=raw(c), bm=badgeMint(c), bp=badgePlayed(c);
+  var open=!!ui.open[c.id];
+  var h='<div class="card" data-id="'+c.id+'">';
+  h+='<div class="chead" data-act="toggle">';
+  h+='<div class="crow1"><span class="cname">'+esc(c.n)+'</span>'+
+     '<span class="schip">'+esc(SEED.sets[c.set])+'</span>'+
+     '<span class="tier t'+c.tier+'">'+c.tier+'</span></div>';
+  h+='<div class="cbadges"><span class="bdg '+bm.cls+'">'+bm.t+'</span>';
+  if(bp) h+='<span class="bdg '+bp.cls+'">'+bp.t+'</span>';
+  h+='</div></div>';
+  h+='<div class="cprices" data-act="toggle">';
+  h+='<div class="pc"><div class="pl">素体 美品(参考)</div><div class="pv num">'+man(r.m)+'</div><div class="ps num">傷あり '+man(r.p)+'</div></div>';
+  h+=priceCell('PSA8', price(c,8), net(c,8,'m'));
+  h+=priceCell('PSA9', price(c,9), net(c,9,'m'));
+  h+=priceCell('PSA10', price(c,10), net(c,10,'m'));
+  h+='</div>';
+  if(open) h+=detailHTML(c);
+  h+='</div>';
+  return h;
+}
+
+function detailHTML(c){
+  var r=raw(c);
+  var h='<div class="cdetail">';
+  h+='<div class="linkrow">'+
+    '<a href="'+mercari(c.q,false)+'" target="_blank" rel="noopener">素体を探す(メルカリ)</a>'+
+    '<a href="'+mercari(c.q,true)+'" target="_blank" rel="noopener">素体の売切相場</a>'+
+    '<a href="'+mercari(c.q+' PSA',true)+'" target="_blank" rel="noopener">PSA品の売切相場</a>'+
+    '<a href="'+yahooClosed(c.q)+'" target="_blank" rel="noopener">ヤフオク落札相場</a></div>';
+  h+='<div class="cnote">'+esc(c.note)+'</div>';
+  h+='<div class="tblwrap"><table><thead><tr>'+
+     '<th>グレード</th><th>相場(円・編集可)</th><th>仕入上限</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
+     '</tr></thead><tbody>';
+  GRADES.forEach(function(g){
+    var cb=ceilBuy(c,g), nm=net(c,g,'m'), np=net(c,g,'p');
+    var hi=(g>=8)?' class="hi"':'';
+    h+='<tr'+hi+'><td>PSA'+g+'</td>'+
+      '<td><input type="number" inputmode="numeric" min="0" step="100" value="'+price(c,g)+'" data-edit="price" data-id="'+c.id+'" data-g="'+g+'"></td>'+
+      '<td class="num">'+man(cb)+'</td>'+
+      '<td class="num '+pmCls(nm)+'">'+pm(nm)+'</td>'+
+      '<td class="num '+pmCls(np)+'">'+pm(np)+'</td>'+
+      '<td><a href="'+mercari(c.q+' PSA'+g,true)+'" target="_blank" rel="noopener">売切相場</a></td></tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div class="rawedit">'+
+    '<div class="setitem"><label>素体 美品の仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.m+'" data-edit="rawm" data-id="'+c.id+'"></div>'+
+    '<div class="setitem"><label>素体 傷ありの仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.p+'" data-edit="rawp" data-id="'+c.id+'"></div>'+
+    '<button class="sbtn" type="button" data-edit="reset" data-id="'+c.id+'">このカードを参考値に戻す</button></div>';
+  h+='<div class="rawnote">仕入上限 = 相場 ×(1−手数料)− 販売送料 − 鑑定コスト。メルカリで見つけた素体がこの金額以下なら、そのグレードで終わっても赤字になりません。数字の変更はこの端末にのみ保存されます。</div>';
+  h+='</div>';
+  return h;
+}
+
+function render(){
+  renderSummary();
+  renderSetChips();
+  var list=visibleCards();
+  var el=document.getElementById('list');
+  if(!list.length){el.innerHTML='<div id="empty">条件に合うカードがありません</div>';return;}
+  el.innerHTML=list.map(cardHTML).join('');
+}
+
+/* ---- イベント ---- */
+document.getElementById('list').addEventListener('click',function(e){
+  var t=e.target;
+  if(t.closest('a')||t.closest('input')||t.closest('button')) {
+    var btn=t.closest('button[data-edit="reset"]');
+    if(btn){var id=btn.getAttribute('data-id');delete rawOv[id];delete priceOv[id];
+      LS.set('p004.rawOv',rawOv);LS.set('p004.priceOv',priceOv);render();}
+    return;
+  }
+  var act=t.closest('[data-act="toggle"]');
+  if(!act)return;
+  var card=t.closest('.card'); if(!card)return;
+  var id=card.getAttribute('data-id');
+  ui.open[id]=!ui.open[id];
+  render();
+});
+document.getElementById('list').addEventListener('change',function(e){
+  var t=e.target;
+  var kind=t.getAttribute('data-edit'); if(!kind)return;
+  var id=t.getAttribute('data-id');
+  var v=parseInt(t.value,10);
+  if(kind==='price'){
+    var g=t.getAttribute('data-g');
+    if(!priceOv[id])priceOv[id]={};
+    if(isNaN(v)||v<=0){delete priceOv[id][g];}else{priceOv[id][g]=v;}
+    if(!Object.keys(priceOv[id]).length)delete priceOv[id];
+    LS.set('p004.priceOv',priceOv);
+  }else if(kind==='rawm'||kind==='rawp'){
+    if(!rawOv[id])rawOv[id]={};
+    var key=(kind==='rawm')?'m':'p';
+    if(isNaN(v)||v<=0){delete rawOv[id][key];}else{rawOv[id][key]=v;}
+    if(!Object.keys(rawOv[id]).length)delete rawOv[id];
+    LS.set('p004.rawOv',rawOv);
+  }
+  render();
+});
+document.getElementById('searchbox').addEventListener('input',function(){
+  ui.text=this.value.trim(); render();
+});
+document.getElementById('sortsel').addEventListener('change',function(){
+  ui.sort=this.value; render();
+});
+
+/* ---- 設定 ---- */
+function toggleSettings(show){
+  var el=document.getElementById('settings');
+  var vis=(show!=null)?show:el.hidden;
+  el.hidden=!vis;
+  if(vis){
+    document.getElementById('setGrade').value=S.grade;
+    document.getElementById('setGship').value=S.gship;
+    document.getElementById('setFee').value=S.fee;
+    document.getElementById('setSship').value=S.sship;
+  }
+}
+document.getElementById('gearBtn').onclick=function(){toggleSettings();};
+[['setGrade','grade'],['setGship','gship'],['setFee','fee'],['setSship','sship']].forEach(function(p){
+  document.getElementById(p[0]).addEventListener('change',function(){
+    var v=parseFloat(this.value);
+    if(!isNaN(v)&&v>=0){S[p[1]]=v;LS.set('p004.settings',S);render();}
+  });
+});
+document.getElementById('btnDefSet').onclick=function(){
+  S=Object.assign({},DEF_SET);LS.set('p004.settings',S);toggleSettings(true);render();
+};
+document.getElementById('btnResetAll').onclick=function(){
+  if(!confirm('価格・素体のあなたの変更をすべて破棄し、参考値に戻します。よろしいですか?'))return;
+  rawOv={};priceOv={};LS.del('p004.rawOv');LS.del('p004.priceOv');render();
+};
+document.getElementById('btnExport').onclick=function(){
+  var payload=JSON.stringify({settings:S,rawOv:rawOv,priceOv:priceOv},null,1);
+  var done=function(ok){alert(ok?'コピーしました。チャットに貼り付けてClaudeに更新依頼できます。':'コピーできませんでした。');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(payload).then(function(){done(true);},function(){window.prompt('以下をコピーしてください',payload);});
+  }else{window.prompt('以下をコピーしてください',payload);}
+};
+
+/* ---- 初期化 ---- */
+document.getElementById('updDate').textContent=SEED.updated;
+render();
+})();
+</script>
+</body>
+</html>
