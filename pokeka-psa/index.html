@@ -139,7 +139,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <header>
   <div class="wrap">
     <div class="hrow">
-      <h1>旧裏PSAターミナル <span class="vbadge">· V1</span></h1>
+      <h1>旧裏PSAターミナル <span class="vbadge">· V1.1</span></h1>
       <button class="gearbtn" id="gearBtn" type="button">コスト設定</button>
     </div>
     <div class="hsub">ポケカ旧裏 PSA鑑定品(1〜10)相場 × 素体仕入判断ボード / データ更新: <b id="updDate"></b> / 価格は参考値 — 各行のリンクで実勢(売切相場)を確認</div>
@@ -192,6 +192,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
         <li>各カードを開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が出ます。メルカリで素体を見つけたら仕入上限と見比べるだけでOK。</li>
         <li><b>傷仕入</b>の行は「安い傷あり素体を拾って低グレードでも利益を取る」戦略用。高額カードほどPSA1でも値が付くため成立しやすい。</li>
         <li>相場の数字は<b>参考値</b>です。各行の「売切相場」リンク(メルカリの売り切れ検索)で直近の実勢を確認し、ズレていたらその場で数字を書き換えてください(この端末に保存されます)。</li>
+        <li><b>素体の上限目安はカードラッシュ買取価格(美品)</b>: 買取価格以下で仕入れられれば、鑑定が振るわなくても店売りで逃げられる=実質の下限保証(2026-08-25 運用決定)。各カードの「買取価格(カードラッシュ)」リンクで現在値を確認。</li>
       </ul>
     </div>
   </details>
@@ -230,7 +231,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
       <ul>
         <li>掲載価格は手動更新の<b>参考値</b>であり、正確性・最新性は保証されません。売買判断の前に必ず実勢を確認してください。</li>
         <li>相場データの一括更新は、チャットでClaudeに「相場更新して」と依頼 → データ差し替え → 再デプロイの運用です。</li>
-        <li>本サイトは個人用の非公式ツールです。PSA、株式会社ポケモン、任天堂、メルカリ、ヤフー各社とは一切関係ありません。</li>
+        <li>本サイトは個人用の非公式ツールです。PSA、株式会社ポケモン、任天堂、メルカリ、ヤフー、カードラッシュ各社とは一切関係ありません。買取価格の参照はリンク先(公開ページ)の目視確認が正です。</li>
         <li>カード売買・鑑定提出の結果について、本サイトは責任を負いません。</li>
       </ul>
     </div>
@@ -238,7 +239,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 </section>
 
 <footer>
-  旧裏PSAターミナル · V1 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
+  旧裏PSAターミナル · V1.1 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
   データ更新はチャットからClaudeに依頼(例:「ひかるリザードンのPSA10を◯円に」「全体の相場を見直して」)。
 </footer>
 
@@ -291,6 +292,7 @@ function pmCls(v){return v>0?'pos':(v<0?'neg':'zero');}
 
 function mercari(q,sold){return 'https://jp.mercari.com/search?keyword='+encodeURIComponent(q)+(sold?'&status=sold_out':'&status=on_sale');}
 function yahooClosed(q){return 'https://auctions.yahoo.co.jp/closedsearch/closedsearch?p='+encodeURIComponent(q)+'&va='+encodeURIComponent(q)+'&b=1&n=50';}
+function cardrush(c){return 'https://cardrush.media/pokemon/buying_prices?name='+encodeURIComponent(c.n.split('(')[0])+'&display_category=%E6%97%A7%E8%A3%8F';}
 
 function badgeMint(c){
   var l=lineOf(c,'m');
@@ -380,7 +382,7 @@ function cardHTML(c){
   if(bp) h+='<span class="bdg '+bp.cls+'">'+bp.t+'</span>';
   h+='</div></div>';
   h+='<div class="cprices" data-act="toggle">';
-  h+='<div class="pc"><div class="pl">素体 美品(参考)</div><div class="pv num">'+man(r.m)+'</div><div class="ps num">傷あり '+man(r.p)+'</div></div>';
+  h+='<div class="pc"><div class="pl">素体 美品('+(c.buy?'買取基準':'参考')+')</div><div class="pv num">'+man(r.m)+'</div><div class="ps num">傷あり '+man(r.p)+'</div></div>';
   h+=priceCell('PSA8', price(c,8), net(c,8,'m'));
   h+=priceCell('PSA9', price(c,9), net(c,9,'m'));
   h+=priceCell('PSA10', price(c,10), net(c,10,'m'));
@@ -397,7 +399,8 @@ function detailHTML(c){
     '<a href="'+mercari(c.q,false)+'" target="_blank" rel="noopener">素体を探す(メルカリ)</a>'+
     '<a href="'+mercari(c.q,true)+'" target="_blank" rel="noopener">素体の売切相場</a>'+
     '<a href="'+mercari(c.q+' PSA',true)+'" target="_blank" rel="noopener">PSA品の売切相場</a>'+
-    '<a href="'+yahooClosed(c.q)+'" target="_blank" rel="noopener">ヤフオク落札相場</a></div>';
+    '<a href="'+yahooClosed(c.q)+'" target="_blank" rel="noopener">ヤフオク落札相場</a>'+
+    '<a href="'+cardrush(c)+'" target="_blank" rel="noopener">買取価格(カードラッシュ)</a></div>';
   h+='<div class="cnote">'+esc(c.note)+'</div>';
   h+='<div class="tblwrap"><table><thead><tr>'+
      '<th>グレード</th><th>相場(円・編集可)</th><th>仕入上限</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
@@ -417,6 +420,11 @@ function detailHTML(c){
     '<div class="setitem"><label>素体 美品の仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.m+'" data-edit="rawm" data-id="'+c.id+'"></div>'+
     '<div class="setitem"><label>素体 傷ありの仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.p+'" data-edit="rawp" data-id="'+c.id+'"></div>'+
     '<button class="sbtn" type="button" data-edit="reset" data-id="'+c.id+'">このカードを参考値に戻す</button></div>';
+  if(c.buy){
+    h+='<div class="rawnote">素体美品の参考値はカードラッシュ買取価格(美品 '+man(c.buy)+')基準。買取価格以下で仕入れられれば、鑑定に出さず店売りしても大きな損になりにくい=実質の下限保証。最新値は上の「買取価格(カードラッシュ)」リンクで確認。</div>';
+  }else{
+    h+='<div class="rawnote">素体美品の上限目安はカードラッシュの買取価格が使えます(上の「買取価格(カードラッシュ)」リンクで確認)。買取価格以下で仕入れられれば、店売りで逃げられる=実質の下限保証。</div>';
+  }
   h+='<div class="rawnote">仕入上限 = 相場 ×(1−手数料)− 販売送料 − 鑑定コスト。メルカリで見つけた素体がこの金額以下なら、そのグレードで終わっても赤字になりません。数字の変更はこの端末にのみ保存されます。</div>';
   h+='</div>';
   return h;
