@@ -95,7 +95,8 @@ h1{font-size:19px;letter-spacing:.5px;color:var(--gold)}
 .linkrow{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-bottom:8px}
 .cnote{font-size:12px;color:var(--tx2);margin-bottom:10px;padding-left:8px;border-left:3px solid var(--gold)}
 .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;min-width:620px;font-size:12.5px}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:12.5px}
+#guide table{min-width:460px}
 th{font-size:11px;color:var(--tx3);font-weight:600;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--panel);white-space:nowrap}
 th:first-child{text-align:left}
 td{padding:5px 8px;text-align:right;border-bottom:1px solid rgba(48,54,61,.5);white-space:nowrap}
@@ -139,7 +140,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <header>
   <div class="wrap">
     <div class="hrow">
-      <h1>旧裏PSAターミナル <span class="vbadge">· V1.1</span></h1>
+      <h1>旧裏PSAターミナル <span class="vbadge">· V1.2</span></h1>
       <button class="gearbtn" id="gearBtn" type="button">コスト設定</button>
     </div>
     <div class="hsub">ポケカ旧裏 PSA鑑定品(1〜10)相場 × 素体仕入判断ボード / データ更新: <b id="updDate"></b> / 価格は参考値 — 各行のリンクで実勢(売切相場)を確認</div>
@@ -151,12 +152,23 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <section id="settings" hidden>
   <h2>コスト設定(損益計算に反映・端末に保存)</h2>
   <div class="setgrid">
-    <div class="setitem"><label>PSA鑑定料 / 枚(円)</label><input id="setGrade" type="number" inputmode="numeric" min="0" step="100"></div>
+    <div class="setitem"><label>鑑定料の計算方法</label>
+      <select id="setMode">
+        <option value="auto">PSA料金表から自動(2026-05改定)</option>
+        <option value="flat">手動固定(代行利用など)</option>
+      </select></div>
+    <div class="setitem" id="wrapBase"><label>申告価値の基準(狙いグレード)</label>
+      <select id="setBase">
+        <option value="10">PSA10</option>
+        <option value="9">PSA9(推奨)</option>
+        <option value="8">PSA8</option>
+      </select></div>
+    <div class="setitem" id="wrapGrade" hidden><label>PSA鑑定料 / 枚(円)</label><input id="setGrade" type="number" inputmode="numeric" min="0" step="100"></div>
     <div class="setitem"><label>鑑定送料ほか按分 / 枚(円)</label><input id="setGship" type="number" inputmode="numeric" min="0" step="50"></div>
     <div class="setitem"><label>販売手数料(%)</label><input id="setFee" type="number" inputmode="decimal" min="0" max="50" step="0.5"></div>
     <div class="setitem"><label>販売時送料(円)</label><input id="setSship" type="number" inputmode="numeric" min="0" step="5"></div>
   </div>
-  <div class="setnote">鑑定料は出すプラン・枚数・申告価値で変わります。最新はPSA公式(psacard.co.jp)で確認して入力してください。既定値はバルク提出の概算です。販売手数料の既定はメルカリ10%。</div>
+  <div class="setnote">自動モードは、狙いグレードの相場を申告価値としてPSAのプラン(バリュー4,980円〜)を選び、結果グレードの相場が申告上限を超える行は上位プラン料金で計算します(税込・2026-05-15改定/バリュー・バルク等は受付停止のため除外)。傷あり素体の計算は申告PSA4想定。料金・納期は変動するため提出前にPSA公式(psacard.co.jp)で確認してください。販売手数料の既定はメルカリ10%。</div>
   <div class="setbtns">
     <button class="sbtn" id="btnDefSet" type="button">コストを既定に戻す</button>
     <button class="sbtn warn" id="btnResetAll" type="button">価格・素体の変更を全リセット</button>
@@ -186,7 +198,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
   <details open>
     <summary>このボードの見方(損益の式)</summary>
     <div class="dbody">
-      <div class="fm">損益 = グレード相場 ×(1 − 販売手数料)− 販売送料 − 鑑定コスト − 素体仕入値</div>
+      <div class="fm">損益 = グレード相場 ×(1 − 販売手数料)− 販売送料 − 鑑定料(PSAプラン自動選択)− 鑑定送料按分 − 素体仕入値</div>
       <ul>
         <li><b>黒字ラインのバッジ</b>が結論です。「美品仕入→PSA8〜黒字」なら、美品素体を参考価格で仕入れてPSA8止まりでも利益が残る、という意味。</li>
         <li>各カードを開くと<b>グレード1〜10の全段</b>と「<b>仕入上限</b>」(そのグレードで終わっても損しない仕入価格の上限)が出ます。メルカリで素体を見つけたら仕入上限と見比べるだけでOK。</li>
@@ -214,13 +226,27 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
   </details>
 
   <details>
-    <summary>PSA提出の基礎知識</summary>
+    <summary>PSA提出の基礎知識(料金表: 2026-05-15改定)</summary>
     <div class="dbody">
+      <div class="tblwrap" style="margin:6px 0"><table style="min-width:460px">
+        <thead><tr><th>プラン</th><th>申告価格</th><th>料金(税込)</th><th>予定納期</th></tr></thead>
+        <tbody>
+          <tr><td>バリュー</td><td class="num">8万円以下</td><td class="num">4,980円</td><td class="num">160営業日</td></tr>
+          <tr><td>レギュラー</td><td class="num">25万円以下</td><td class="num">11,980円</td><td class="num">60営業日</td></tr>
+          <tr><td>エクスプレス</td><td class="num">40万円以下</td><td class="num">22,980円</td><td class="num">25営業日</td></tr>
+          <tr><td>スーパー・エクスプレス</td><td class="num">75万円以下</td><td class="num">44,980円</td><td class="num">25営業日</td></tr>
+          <tr><td>ウォーク・スルー</td><td class="num">150万円以下</td><td class="num">89,980円</td><td class="num">25営業日</td></tr>
+          <tr><td>プレミアム1</td><td class="num">400万円以下</td><td class="num">149,980円</td><td class="num">25営業日</td></tr>
+        </tbody>
+      </table></div>
       <ul>
-        <li><b>料金・納期は変動</b>: プラン(バルク等)・提出枚数・申告価値で単価が変わる。提出前に必ずPSA公式サイトで最新料金を確認し、上の「コスト設定」に反映。</li>
-        <li><b>申告価値</b>: 高額カード(マークなしリザードン等)は上位プランが必要になり鑑定単価が大きく上がる。高額カードは鑑定料を個別に上乗せして考える。</li>
-        <li><b>代行業者</b>: 自分でPSA会員にならず代行に出す選択肢もある。単価は上がるが手間と英語手続きが不要。</li>
-        <li><b>グレード読み</b>: 旧裏は経年で完美品が少なく、10は簡単に出ない。「10前提」の仕入れはせず、9〜8で利益が残るカード(このボードの緑バッジ)を軸にすると事故らない。</li>
+        <li>プレミアム2〜10(申告800万円超〜)は省略。<b>バリュー・バルク/バリュー・プラス/バリュー・マックスは受付停止</b>(2026-05-15改定時点)。このボードの自動計算も同じ表・同じ除外で動いています。</li>
+        <li><b>鑑定費はグレード次第で跳ねる</b>: 例)ひかるリザードンがPSA10(相場120万円)ならウォーク・スルー89,980円。「PSA10が出た場合の上位プラン課金」まで含めて各行の損益に織り込み済み。</li>
+        <li><b>納期=資金拘束</b>: バリューは160営業日(約8ヶ月)。回転重視ならレギュラー(60営業日)以上をコスト増と天秤にかける。</li>
+        <li><b>申告価値</b>: 実際の提出では狙いグレードの相場で申告する。低く申告してもPSA側で実勢に合わせた上位料金になり得る(だからこのボードは高い方のプランで計算)。</li>
+        <li><b>代行業者</b>: 会員登録や英語手続きなしで出せるが単価は上がる。代行の見積り額は「コスト設定→手動固定」に入れると全行に反映される。</li>
+        <li><b>グレード読み</b>: 旧裏は経年で完美品が少なく10は簡単に出ない。「10前提」の仕入れはせず、9〜8で利益が残るカード(緑バッジ)を軸にすると事故らない。</li>
+        <li>料金・納期は今後も変わり得るため、提出前にPSA公式(psacard.co.jp)で最新を確認。</li>
       </ul>
     </div>
   </details>
@@ -239,7 +265,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 </section>
 
 <footer>
-  旧裏PSAターミナル · V1.1 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
+  旧裏PSAターミナル · V1.2 — 個人用の相場・仕入判断ボード。価格は参考値(端末内で編集可・実勢はメルカリ/ヤフオクのリンクで確認)。<br>
   データ更新はチャットからClaudeに依頼(例:「ひかるリザードンのPSA10を◯円に」「全体の相場を見直して」)。
 </footer>
 
@@ -256,7 +282,21 @@ var LS = {
   set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
   del:function(k){try{localStorage.removeItem(k);}catch(e){}}
 };
-var DEF_SET = {grade:3500, gship:500, fee:10, sship:215};
+/* PSA日本 グレーディング料金(税込・2026-05-15改定適用/受付停止プランは除外)
+   [申告価格上限, 料金/枚, プラン名] */
+var PSA_FEES=[
+  [80000,4980,'バリュー'],
+  [250000,11980,'レギュラー'],
+  [400000,22980,'エクスプレス'],
+  [750000,44980,'スーパー・エクスプレス'],
+  [1500000,89980,'ウォーク・スルー'],
+  [4000000,149980,'プレミアム1'],
+  [8000000,299980,'プレミアム2'],
+  [15000000,449980,'プレミアム3'],
+  [35000000,749980,'プレミアム5'],
+  [9e15,1499980,'プレミアム10']
+];
+var DEF_SET = {mode:'auto', base:9, grade:4980, gship:500, fee:10, sship:215};
 var S = Object.assign({}, DEF_SET, LS.get('p004.settings', {}));
 var rawOv = LS.get('p004.rawOv', {});
 var priceOv = LS.get('p004.priceOv', {});
@@ -265,9 +305,19 @@ var ui = {set:'all', text:'', sort:'p10', f9:false, f8:false, flow:false, open:{
 /* ---- 計算 ---- */
 function price(c,g){var o=priceOv[c.id]; return (o && o[g]!=null) ? o[g] : c.psa[String(g)];}
 function raw(c){var o=rawOv[c.id]||{}; return {m:(o.m!=null?o.m:c.raw.m), p:(o.p!=null?o.p:c.raw.p)};}
-function gradeCost(){return (+S.grade||0)+(+S.gship||0);}
-function ceilBuy(c,g){return Math.floor(price(c,g)*(1-(+S.fee||0)/100) - (+S.sship||0) - gradeCost());}
-function net(c,g,base){return ceilBuy(c,g) - raw(c)[base];}
+function feeFor(v){
+  for(var i=0;i<PSA_FEES.length;i++){if(v<=PSA_FEES[i][0])return {amt:PSA_FEES[i][1],name:PSA_FEES[i][2]};}
+  var last=PSA_FEES[PSA_FEES.length-1];return {amt:last[1],name:last[2]};
+}
+function declGrade(base){return base==='p'?4:(+S.base||9);} /* 傷素体は申告PSA4想定 */
+function gradeFee(c,g,base){ /* 申告時プランと結果グレード相場に必要なプランの高い方 */
+  if(S.mode==='flat')return {amt:(+S.grade||0),name:'手動固定'};
+  var d=feeFor(price(c,declGrade(base)));
+  var r=feeFor(price(c,g));
+  return r.amt>d.amt?r:d;
+}
+function ceilBuy(c,g,base){return Math.floor(price(c,g)*(1-(+S.fee||0)/100) - (+S.sship||0) - gradeFee(c,g,base).amt - (+S.gship||0));}
+function net(c,g,base){return ceilBuy(c,g,base) - raw(c)[base];}
 function lineOf(c,base){
   var line=null;
   for(var i=0;i<GRADES.length;i++){var g=GRADES[i];
@@ -323,8 +373,11 @@ function renderSummary(){
   document.getElementById('chip9').onclick=function(){ui.f9=!ui.f9;render();};
   document.getElementById('chip8').onclick=function(){ui.f8=!ui.f8;render();};
   document.getElementById('chiplow').onclick=function(){ui.flow=!ui.flow;render();};
+  var feetxt = (S.mode==='auto')
+    ? 'PSA料金表で自動(申告基準PSA'+(+S.base)+'・バリュー4,980円〜)+按分'+yen(+S.gship)+'円'
+    : '固定 '+yen((+S.grade)+(+S.gship))+'円/枚';
   document.getElementById('costline').innerHTML =
-    '計算条件: 鑑定 '+yen(gradeCost())+'円/枚 ・ 販売手数料 '+(+S.fee)+'% ・ 販売送料 '+yen(+S.sship)+'円 (<a href="#" id="costEdit">変更</a>)';
+    '計算条件: 鑑定 '+feetxt+' ・ 販売手数料 '+(+S.fee)+'% ・ 販売送料 '+yen(+S.sship)+'円 (<a href="#" id="costEdit">変更</a>)';
   document.getElementById('costEdit').onclick=function(e){e.preventDefault();toggleSettings(true);};
 }
 
@@ -357,7 +410,7 @@ function visibleCards(){
     if(sort==='name') return a.n.localeCompare(b.n,'ja');
     if(sort==='net9') return net(b,9,'m')-net(a,9,'m');
     if(sort==='roi9'){
-      var ca=raw(a).m+gradeCost(), cb=raw(b).m+gradeCost();
+      var ca=raw(a).m+gradeFee(a,9,'m').amt+(+S.gship||0), cb=raw(b).m+gradeFee(b,9,'m').amt+(+S.gship||0);
       return (net(b,9,'m')/cb)-(net(a,9,'m')/ca);
     }
     return price(b,10)-price(a,10);
@@ -403,19 +456,24 @@ function detailHTML(c){
     '<a href="'+cardrush(c)+'" target="_blank" rel="noopener">買取価格(カードラッシュ)</a></div>';
   h+='<div class="cnote">'+esc(c.note)+'</div>';
   h+='<div class="tblwrap"><table><thead><tr>'+
-     '<th>グレード</th><th>相場(円・編集可)</th><th>仕入上限</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
+     '<th>グレード</th><th>相場(円・編集可)</th><th>鑑定料</th><th>仕入上限(美)</th><th>損益(美品仕入 '+man(r.m)+')</th><th>損益(傷仕入 '+man(r.p)+')</th><th>実勢</th>'+
      '</tr></thead><tbody>';
   GRADES.forEach(function(g){
-    var cb=ceilBuy(c,g), nm=net(c,g,'m'), np=net(c,g,'p');
+    var fm=gradeFee(c,g,'m'), cb=ceilBuy(c,g,'m'), nm=net(c,g,'m'), np=net(c,g,'p');
     var hi=(g>=8)?' class="hi"':'';
     h+='<tr'+hi+'><td>PSA'+g+'</td>'+
       '<td><input type="number" inputmode="numeric" min="0" step="100" value="'+price(c,g)+'" data-edit="price" data-id="'+c.id+'" data-g="'+g+'"></td>'+
+      '<td class="num" title="'+fm.name+'">'+man(fm.amt)+'</td>'+
       '<td class="num">'+man(cb)+'</td>'+
       '<td class="num '+pmCls(nm)+'">'+pm(nm)+'</td>'+
       '<td class="num '+pmCls(np)+'">'+pm(np)+'</td>'+
       '<td><a href="'+mercari(c.q+' PSA'+g,true)+'" target="_blank" rel="noopener">売切相場</a></td></tr>';
   });
   h+='</tbody></table></div>';
+  if(S.mode==='auto'){
+    var dm=feeFor(price(c,declGrade('m'))), dp=feeFor(price(c,declGrade('p')));
+    h+='<div class="rawnote">鑑定プラン想定: 美品仕入=申告基準PSA'+declGrade('m')+' → <b>'+dm.name+'</b>('+man(dm.amt)+'/枚)。傷仕入=申告PSA4 → '+dp.name+'('+man(dp.amt)+')。結果グレードの相場が申告プランの上限を超える行は、その相場に必要な上位プラン料金で計算しています(PSA 2026-05-15改定・税込)。</div>';
+  }
   h+='<div class="rawedit">'+
     '<div class="setitem"><label>素体 美品の仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.m+'" data-edit="rawm" data-id="'+c.id+'"></div>'+
     '<div class="setitem"><label>素体 傷ありの仕入値(円)</label><input type="number" inputmode="numeric" min="0" step="500" value="'+r.p+'" data-edit="rawp" data-id="'+c.id+'"></div>'+
@@ -483,18 +541,32 @@ document.getElementById('sortsel').addEventListener('change',function(){
 });
 
 /* ---- 設定 ---- */
+function syncModeVis(){
+  document.getElementById('wrapBase').hidden=(S.mode!=='auto');
+  document.getElementById('wrapGrade').hidden=(S.mode!=='flat');
+}
 function toggleSettings(show){
   var el=document.getElementById('settings');
   var vis=(show!=null)?show:el.hidden;
   el.hidden=!vis;
   if(vis){
+    document.getElementById('setMode').value=S.mode;
+    document.getElementById('setBase').value=String(S.base);
     document.getElementById('setGrade').value=S.grade;
     document.getElementById('setGship').value=S.gship;
     document.getElementById('setFee').value=S.fee;
     document.getElementById('setSship').value=S.sship;
+    syncModeVis();
   }
 }
 document.getElementById('gearBtn').onclick=function(){toggleSettings();};
+document.getElementById('setMode').addEventListener('change',function(){
+  S.mode=(this.value==='flat')?'flat':'auto';LS.set('p004.settings',S);syncModeVis();render();
+});
+document.getElementById('setBase').addEventListener('change',function(){
+  var v=parseInt(this.value,10);
+  if(v===8||v===9||v===10){S.base=v;LS.set('p004.settings',S);render();}
+});
 [['setGrade','grade'],['setGship','gship'],['setFee','fee'],['setSship','sship']].forEach(function(p){
   document.getElementById(p[0]).addEventListener('change',function(){
     var v=parseFloat(this.value);
