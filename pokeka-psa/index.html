@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>旧裏PSAターミナル</title>
+<!-- V6.5: ホーム画面アプリ化(iPhone: 共有→ホーム画面に追加) -->
+<link rel="apple-touch-icon" href="imgs/appicon180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="imgs/appicon192.png">
+<meta name="apple-mobile-web-app-title" content="旧裏PSA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#d9453a">
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoi5pen6KOPUFNB44K/44O844Of44OK44OrIiwic2hvcnRfbmFtZSI6IuaXp+ijj1BTQSIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwic3RhcnRfdXJsIjoiaHR0cHM6Ly90YW1hZ28tcGxhbnRzLmdpdGh1Yi5pby9wb2tla2EtcHNhLyIsImJhY2tncm91bmRfY29sb3IiOiIjZjNmNGY2IiwidGhlbWVfY29sb3IiOiIjZDk0NTNhIiwiaWNvbnMiOlt7InNyYyI6Imh0dHBzOi8vdGFtYWdvLXBsYW50cy5naXRodWIuaW8vcG9rZWthLXBzYS9pbWdzL2FwcGljb241MTIucG5nIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3BuZyJ9LHsic3JjIjoiaHR0cHM6Ly90YW1hZ28tcGxhbnRzLmdpdGh1Yi5pby9wb2tla2EtcHNhL2ltZ3MvYXBwaWNvbjE5Mi5wbmciLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn1dfQ==">
 <style>
 :root{
   --bg:#f3f4f6; --panel:#ffffff; --panel2:#faf9f8; --line:#e3e6ea;
@@ -45,6 +53,32 @@ h1{font-size:18.5px;letter-spacing:.3px;color:var(--red);display:flex;align-item
 #clearq:hover,#clearq:active{color:var(--tx);background:rgba(31,36,44,.07)}
 #clearq[hidden]{display:none}
 #clearq .ic{position:static;transform:none;pointer-events:none;width:15px;height:15px;stroke-width:2.2;color:inherit}
+/* V6.5 お気に入り・最近見たチップ(ヘッダー内・内容がある時のみ表示) */
+#quickchips{display:flex;gap:6px;overflow-x:auto;padding-top:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#quickchips::-webkit-scrollbar{display:none}
+#quickchips[hidden]{display:none}
+.qchip{flex:none;font-size:11.5px;font-weight:600;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--tx2);display:flex;align-items:center;gap:5px;max-width:46vw;transition:border-color .15s,color .15s,background .15s}
+.qchip .qtxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qchip .ic{width:12px;height:12px}
+.qchip.on{border-color:var(--red);color:var(--red2);background:var(--redbg)}
+.qchip.on .ic{fill:currentColor}
+/* V6.5 お気に入り星(カード名の横・詳細ヘッダー) */
+.favbtn{background:none;border:0;padding:10px 11px;margin:-10px -7px -10px -3px;color:var(--tx3);display:inline-flex;align-items:center;vertical-align:-10px;transition:color .15s,transform .1s}
+.favbtn .ic{width:15px;height:15px;stroke-width:1.6}
+.favbtn.on{color:#e8a13a}
+.favbtn.on .ic{fill:currentColor}
+.favbtn:active{transform:scale(1.25)}
+/* V6.5 仕入判定モード: 予算入力と買い候補ハイライト */
+#buybar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#buybar label{font-size:12px;color:var(--tx2);font-weight:600;display:flex;align-items:center;gap:4px}
+#buybar label .ic{width:13px;height:13px;color:var(--tx3)}
+#budget{width:110px;font-size:16px;padding:6px 9px}
+#buyonly[hidden]{display:none}
+#buycount{font-size:11.5px;color:var(--green);font-weight:700}
+#buycount:empty{display:none}
+.pc.buy{background:var(--greenbg);box-shadow:inset 0 0 0 1.5px #7cc98e;border-radius:8px}
+.pc.buy .ps{color:var(--green);font-weight:700}
+.card{scroll-margin-top:142px}
 
 .wrap{max-width:1120px;margin:0 auto;padding:0 12px}
 
@@ -158,6 +192,7 @@ td{padding:6px 9px;text-align:right;border-bottom:1px solid #eef1f4;white-space:
 td:first-child{text-align:left;font-weight:700;color:var(--tx2)}
 tr:last-child td{border-bottom:none}
 tr.hi td{background:#fdf8f0}
+tr.buyrow td{background:var(--greenbg)}
 td input{width:100px;text-align:right;padding:3px 6px;font-size:13px}
 td a{font-size:11.5px}
 .rawnote{font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.6}
@@ -210,15 +245,17 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
 <symbol id="i-card" viewBox="0 0 24 24"><rect x="6" y="3.5" width="12" height="17" rx="1.6"/><rect x="8.2" y="6" width="7.6" height="6" rx=".8"/></symbol>
 <symbol id="i-graph" viewBox="0 0 24 24"><path d="M4.5 20V11M10.5 20V5.5M16.5 20v-7M21 20H3.5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.7l2.55 5.17 5.7.83-4.12 4.02.97 5.68L12 16.72 6.9 19.4l.97-5.68-4.12-4.02 5.7-.83z"/></symbol>
 </defs></svg>
 
 <header>
   <div class="wrap" style="padding:0">
     <div class="hrow">
-      <h1><svg class="blogo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6a9.4 9.4 0 0 1 9.35 8.4H15.2a3.4 3.4 0 0 0-6.4 0H2.65A9.4 9.4 0 0 1 12 2.6z" fill="#d9453a"/><path d="M12 21.4a9.4 9.4 0 0 1-9.35-8.4H8.8a3.4 3.4 0 0 0 6.4 0h6.15A9.4 9.4 0 0 1 12 21.4z" fill="#fff"/><circle cx="12" cy="12" r="9.4" fill="none" stroke="#30353d" stroke-width="1.5"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#30353d" stroke-width="1.5"/><circle cx="12" cy="12" r="1.15" fill="#30353d"/></svg>旧裏PSAターミナル <span class="vbadge">· V6.4</span></h1>
+      <h1><svg class="blogo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6a9.4 9.4 0 0 1 9.35 8.4H15.2a3.4 3.4 0 0 0-6.4 0H2.65A9.4 9.4 0 0 1 12 2.6z" fill="#d9453a"/><path d="M12 21.4a9.4 9.4 0 0 1-9.35-8.4H8.8a3.4 3.4 0 0 0 6.4 0h6.15A9.4 9.4 0 0 1 12 21.4z" fill="#fff"/><circle cx="12" cy="12" r="9.4" fill="none" stroke="#30353d" stroke-width="1.5"/><circle cx="12" cy="12" r="3.2" fill="#fff" stroke="#30353d" stroke-width="1.5"/><circle cx="12" cy="12" r="1.15" fill="#30353d"/></svg>旧裏PSAターミナル <span class="vbadge">· V6.5</span></h1>
       <button class="gearbtn" id="gearBtn" type="button"><svg class="ic"><use href="#i-gear"/></svg>コスト設定</button>
     </div>
     <div class="searchwrap"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="searchbox" type="search" placeholder="カード名で検索(例: リザードン / ひかる / マークなし)"><button id="clearq" type="button" aria-label="検索語を消去" hidden><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <div id="quickchips" hidden></div>
   </div>
 </header>
 
@@ -264,11 +301,18 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
 <section id="controls">
   <select id="sortsel">
     <option value="pop">人気順(カードラッシュ掲載順)</option>
+    <option value="fresh">最終取引が新しい順</option>
     <option value="p10">PSA10成立価格が高い順</option>
     <option value="p9">PSA9成立価格が高い順</option>
     <option value="data">成立データあり優先</option>
     <option value="name">名前順</option>
   </select>
+  <div id="buybar">
+    <label for="budget"><svg class="ic" aria-hidden="true"><use href="#i-graph"/></svg>仕入予算(素体)</label>
+    <input id="budget" type="number" inputmode="numeric" min="0" step="1000" placeholder="円">
+    <button id="buyonly" class="qchip" type="button" hidden>買い候補のみ</button>
+    <span id="buycount"></span>
+  </div>
   <div class="setchips" id="setchips"></div>
 </section>
 
@@ -349,10 +393,12 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-si
       </ul>
     </div>
   </details>
+
+  <p class="dim" style="font-size:11.5px;margin-top:8px">ホーム画面に追加した「旧裏PSA」アプリ(共有→ホーム画面に追加)は、Safari本体とは保存領域が別です。お気に入り・仕入予算・手動入力した価格は追加した側それぞれに保存されます(片方で入れたものがもう片方に出なくても故障ではありません)。</p>
 </section>
 
 <footer>
-  旧裏PSAターミナル · V6.4 — 個人用のPSA相場ボード(取引成立価格=Sold履歴の直近最大3件平均のみ・推定/買取価格なし)。<br>
+  旧裏PSAターミナル · V6.5 — 個人用のPSA相場ボード(取引成立価格=Sold履歴の直近最大3件平均のみ・推定/買取価格なし)。<br>
   カード画像は取引成立したPSA鑑定品の実物写真の切り抜き(タップで拡大・証明書番号+PSA公式照会リンクつき)。データ更新はチャットからClaudeに依頼(例:「ひかるリザードン PSA10 スニダンで4,200万 8/20」→台帳記帳→反映)。
 </footer>
 
@@ -395,7 +441,36 @@ var PSA_FEES=[
 var DEF_SET = {mode:'auto', base:9, minp:0, grade:11980, gship:500, fee:10, sship:215};
 var S = Object.assign({}, DEF_SET, LS.get('p004.settings', {}));
 var priceOv = LS.get('p004.priceOv', {});
-var ui = {set:'all', text:'', sort:'pop', open:{}};
+var ui = {set:'all', text:'', sort:'pop', open:{}, favOnly:false, buyOnly:false};
+var fav = LS.get('p004.fav', {});
+var recent = LS.get('p004.recent', []);
+var budget = +LS.get('p004.budget', 0) || 0;
+/* V6.5 検索の正規化: ひらがな→カタカナ・小文字化(「りざーどん」でもヒット) */
+function knorm(t){
+  return String(t).toLowerCase()
+    .replace(/[\uFF41-\uFF5A\uFF10-\uFF19]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)-0xFEE0);})
+    .replace(/[\u3041-\u3096]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)+0x60);});
+}
+/* V6.5 略称辞書(語 → 展開)。キー・値とも korm 正規化済みで引く */
+var ALIAS_RAW = {
+  'リザ':'リザードン','ひかリザ':'ひかるリザードン','わるリザ':'わるいリザードン','カツリザ':'カツラのリザードン',
+  'かえんリザ':'かえん','ひかコイ':'ひかるコイキング','ひかギャラ':'ひかるギャラドス','ひかミュウ':'ひかるミュウ',
+  'ミュツ':'ミュウツー','ミュウ2':'ミュウツー','ピカ':'ピカチュウ','とぶピカ':'そらをとぶピカチュウ','誕生日':'＿のピカチュウ',
+  'ロケット団':'R団','なつめ':'ナツメ','かつら':'カツラ','ゲンガ':'ゲンガー','カイリュ':'カイリュー',
+  'ブラッキ':'ブラッキー','エーフィー':'エーフィ','バンギ':'バンギラス','ギャラ':'ギャラドス','カビ':'カビゴン',
+  'フシギバナー':'フシギバナ'
+};
+var ALIAS = {}; Object.keys(ALIAS_RAW).forEach(function(k){ALIAS[korm(k)]=korm(ALIAS_RAW[k]);});
+function korm(t){return knorm(t);}
+function lastDate(c){ /* 最終取引日(全グレード+8以下枠の最大値) */
+  if(c._ld!==undefined) return c._ld;
+  var d='';
+  if(c.pm) Object.keys(c.pm).forEach(function(g){var m=c.pm[g]; if(m&&m.d&&m.d>d)d=m.d;});
+  if(c.u8&&c.u8.d&&c.u8.d>d)d=c.u8.d;
+  c._ld=d; return d;
+}
+function isBuyCell(c,g){ if(!(budget>0))return false; var cb=ceilBuy(c,g); return cb!=null && cb>=budget; }
+function isBuyCand(c){ for(var i=0;i<GRADES.length;i++){if(isBuyCell(c,GRADES[i]))return true;} return false; }
 
 /* ---- 計算(実売データが無いセルは null = 計算対象外) ---- */
 function price(c,g){var o=priceOv[c.id]; if(o && o[g]!=null) return o[g]; var v=c.psa[String(g)]; return (v==null)?null:v;}
@@ -493,19 +568,32 @@ function renderSetChips(){
 }
 
 /* ---- 一覧 ---- */
-function visibleCards(){
-  var list=SEED.cards.filter(function(c){
-    if(ui.set!=='all' && c.set!==ui.set) return false;
-    if(ui.text){
-      var hay=c.n+' '+c.q+' '+(c.sp||'');
-      if(hay.indexOf(ui.text)<0) return false;
+function buildToks(){ /* 検索トークン: 略称は「展開語 OR 元語」で判定(辞書が外れても素の検索は生きる) */
+  if(!ui.text) return [];
+  return korm(ui.text).split(/\s+/).filter(Boolean).map(function(t){return {raw:t,exp:ALIAS[t]||null};});
+}
+function passBase(c,toks){ /* buyOnly以外の絞り込み(買い候補数の分母にも使う) */
+  if(ui.set!=='all' && c.set!==ui.set) return false;
+  if(ui.favOnly && !fav[c.id]) return false;
+  if(toks.length){
+    if(c._hay===undefined) c._hay=korm(c.n+' '+c.q+' '+(c.sp||''));
+    for(var i=0;i<toks.length;i++){
+      var t=toks[i];
+      if(c._hay.indexOf(t.raw)<0 && !(t.exp&&c._hay.indexOf(t.exp)>=0)) return false;
     }
-    return true;
+  }
+  return true;
+}
+function visibleCards(){
+  var toks=buildToks();
+  var list=SEED.cards.filter(function(c){
+    return passBase(c,toks) && !(ui.buyOnly && budget>0 && !isBuyCand(c));
   });
   var sort=ui.sort;
   var nz=function(v){return v==null?-1:v;};
   list.sort(function(a,b){
     if(sort==='name') return a.n.localeCompare(b.n,'ja');
+    if(sort==='fresh'){var da=lastDate(a),db=lastDate(b); return (db>da?1:db<da?-1:0) || b.pop-a.pop;}
     if(sort==='p10') return nz(price(b,10))-nz(price(a,10)) || b.pop-a.pop;
     if(sort==='p9') return nz(price(b,9))-nz(price(a,9)) || b.pop-a.pop;
     if(sort==='data') return (hasData(b)?1:0)-(hasData(a)?1:0) || b.pop-a.pop;
@@ -531,8 +619,9 @@ function priceCell(c,g){
       '<span class="pm"><a class="mext" href="'+soldLink(c,g)+'" target="_blank" rel="noopener">取引履歴</a></span></div>';
   }
   var cb=ceilBuy(c,g);
+  var buy=(budget>0 && cb!=null && cb>=budget);
   var mline=mt?(mt.n+'件 '+esc(mt.d.slice(5).replace('-','/'))):'手動入力';
-  return '<div class="pc dat"><span class="pl">PSA'+g+' 取引成立価格</span><span class="pv num">'+man(pv)+'</span>'+
+  return '<div class="pc dat'+(buy?' buy':'')+'"><span class="pl">PSA'+g+' 取引成立価格</span><span class="pv num">'+man(pv)+'</span>'+
          '<span class="ps num">仕入値上限 '+(cb==null?'-':man(cb))+'</span>'+
          '<span class="pm num">'+mline+'</span></div>';
 }
@@ -549,7 +638,7 @@ function cardHTML(c){
   h+='<div class="cmain"><div class="cwrap">';
   if(c.img) h+='<img class="cimg" src="'+c.img+'" alt="" loading="lazy"'+(c.zm?(' data-zoom="'+c.id+'" title="タップで実物を拡大"'):'')+'>';
   h+='<div>';
-  h+='<div class="cname">'+esc(c.n)+'</div>';
+  h+='<div class="cname">'+esc(c.n)+'<button class="favbtn'+(fav[c.id]?' on':'')+'" data-fav="'+c.id+'" type="button" aria-label="お気に入りに追加/解除"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></button></div>';
   h+='<div class="chips">'+chips+'</div>';
   h+='</div></div></div>';
   h+='<div class="pcs">';
@@ -601,7 +690,8 @@ function detailHTML(c){
     }
     var pv=price(c,g), mt=meta(c,g);
     var fm=gradeFee(c,g), cb=ceilBuy(c,g);
-    var hi=(g>=8)?' class="hi"':'';
+    var buyc=isBuyCell(c,g);
+    var hi=' class="'+((g>=8)?'hi ':'')+(buyc?'buyrow':'')+'"';
     var mtxt = pv==null ? '<span class="dim">未登録</span>'
       : (mt ? (mt.n+'件平均 '+esc(mt.d)+'<br><span class="dim">'+esc(mt.s)+'</span>') : '<span class="dim">手動入力(この端末のみ)</span>');
     var ask=askOf(c,g);
@@ -630,9 +720,36 @@ function detailHTML(c){
   return h;
 }
 
+function renderQuickChips(){ /* V6.5 お気に入り/最近見た(内容がある時のみ表示) */
+  var el=document.getElementById('quickchips');
+  var nf=Object.keys(fav).length;
+  var h='';
+  if(nf||ui.favOnly){
+    h+='<button class="qchip'+(ui.favOnly?' on':'')+'" id="favchip" type="button">'+
+       '<svg class="ic" aria-hidden="true"><use href="#i-star"/></svg>お気に入り '+nf+'</button>';
+  }
+  recent.forEach(function(id){
+    var c=byId[id]; if(!c)return;
+    h+='<button class="qchip" data-jump="'+id+'" type="button"><span class="qtxt">'+esc(c.n)+'</span></button>';
+  });
+  el.innerHTML=h;
+  el.hidden=!h;
+  var fc=document.getElementById('favchip');
+  if(fc)fc.onclick=function(){ui.favOnly=!ui.favOnly;render();};
+}
+function renderBuyBar(){
+  var bo=document.getElementById('buyonly');
+  bo.hidden=!(budget>0);
+  bo.className='qchip'+(ui.buyOnly&&budget>0?' on':'');
+  var n=0;
+  if(budget>0){var tk=buildToks();SEED.cards.forEach(function(c){if(passBase(c,tk)&&isBuyCand(c))n++;});}
+  document.getElementById('buycount').textContent=(budget>0)?('買い候補 '+n+'枚'):'';
+}
 function render(){
   renderSummary();
   renderSetChips();
+  renderQuickChips();
+  renderBuyBar();
   var list=visibleCards();
   var el=document.getElementById('list');
   if(!list.length){el.innerHTML='<div id="empty"><svg class="ic" style="width:22px;height:22px;color:var(--tx3)"><use href="#i-ball"/></svg><br>条件に合うカードがありません</div>';return;}
@@ -697,6 +814,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeZoom();
 document.getElementById('list').addEventListener('click',function(e){
   var t=e.target;
   if(t.closest('a')||t.closest('input')||t.closest('button')) {
+    var fb=t.closest('button[data-fav]');
+    if(fb){var fid=fb.getAttribute('data-fav');
+      if(fav[fid])delete fav[fid];else fav[fid]=1;
+      LS.set('p004.fav',fav);render();return;}
     var btn=t.closest('button[data-edit="reset"]');
     if(btn){var id=btn.getAttribute('data-id');delete priceOv[id];
       LS.set('p004.priceOv',priceOv);render();}
@@ -707,7 +828,32 @@ document.getElementById('list').addEventListener('click',function(e){
   var card=t.closest('.card'); if(!card)return;
   var id=card.getAttribute('data-id');
   ui.open[id]=!ui.open[id];
+  if(ui.open[id]) addRecent(id);
   render();
+});
+function addRecent(id){ /* V6.5 最近見た: 先頭に重複なしで積む(最大6) */
+  recent=[id].concat(recent.filter(function(x){return x!==id;})).slice(0,6);
+  LS.set('p004.recent',recent);
+}
+document.getElementById('quickchips').addEventListener('click',function(e){
+  var j=e.target.closest('[data-jump]');
+  if(!j)return;
+  var id=j.getAttribute('data-jump');
+  ui.text='';_qbox.value='';syncClearBtn();
+  ui.set='all';ui.favOnly=false;ui.buyOnly=false;
+  ui.open[id]=true;addRecent(id);render();
+  var el=document.querySelector('.card[data-id="'+id+'"]');
+  if(el)el.scrollIntoView({block:'start',behavior:'smooth'});
+});
+document.getElementById('budget').addEventListener('input',function(){
+  var v=parseInt(this.value,10);
+  budget=(isNaN(v)||v<=0)?0:v;
+  if(!budget)ui.buyOnly=false;
+  LS.set('p004.budget',budget);
+  render();
+});
+document.getElementById('buyonly').addEventListener('click',function(){
+  ui.buyOnly=!ui.buyOnly;render();
 });
 document.getElementById('list').addEventListener('change',function(e){
   var t=e.target;
@@ -721,6 +867,7 @@ document.getElementById('list').addEventListener('change',function(e){
   LS.set('p004.priceOv',priceOv);
   render();
 });
+if(budget>0)document.getElementById('budget').value=budget;
 var _qbox=document.getElementById('searchbox'),_clearq=document.getElementById('clearq');
 function syncClearBtn(){_clearq.hidden=!_qbox.value;}
 _qbox.addEventListener('input',function(){
