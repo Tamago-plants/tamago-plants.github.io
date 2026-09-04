@@ -233,7 +233,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
         transform="rotate(-7 20 20)">鑑</text>
     </svg>
     <div>
-      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R19</span></div>
+      <div class="eyebrow">HYBRID STRATEGY <span style="color:var(--B)">· R20</span></div>
       <div class="title">銘柄鑑定ターミナル</div>
     </div>
   </div>
@@ -1647,7 +1647,7 @@ function renderSheet(){
       k.indexOf("頑丈")>=0||k.indexOf("自己資本")>=0?"自己資本比率を✎入力":"✎で数値を入れると判定が確定";
     const row=(r,col,ic)=>'<div style="padding:8px 0;border-bottom:1px solid rgba(31,42,68,.5)"><div style="display:flex;gap:8px;align-items:center"><span style="color:'+col+'">'+ic+'</span><span style="font-size:13px;font-weight:700;flex:1">'+esc(state.simple?(r.pk||r.k):r.k)+'</span><span class="mono" style="font-size:11px;color:var(--mut)">'+esc(state.simple?(r.pv!=null?r.pv:r.v):r.v)+'</span></div>'+(r.p===null?'<div style="font-size:11px;color:var(--dim);margin:3px 0 0 21px;line-height:1.6">→ '+hint(r.pk||r.k)+'</div>':'')+'</div>';
     h+='<h2>判定の内訳 ─ MODE '+state.whyMode+' <button onclick="closeSheet()" style="color:var(--mut);font-size:18px">'+I("close",15)+'</button></h2>'
-      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+esc(s.gl)+'・データ確認度'+t1Of(m,s,state.whyMode).pct+'%）<span style="font-size:10px;color:var(--dim);font-weight:400">（旧表示: '+s.g+'）</span></div>'
+      +'<div class="ey" style="color:'+(state.whyMode==="A"?"var(--A)":"var(--B)")+'">'+esc(dn(m))+'（'+esc(s.gl)+'・データ確認度'+t1Of(m,s,state.whyMode).pct+'%）</div>'
       +(grp(true).length?'<div class="f-lb" style="margin-top:12px;color:var(--ok)">確定クリア '+grp(true).length+'件</div>'+grp(true).map(r=>row(r,"var(--ok)",I("check",11))).join(""):"")
       +(grp(null).length?'<div class="f-lb" style="margin-top:14px;color:var(--na)">未確定 ─ ここを手で確認</div>'+grp(null).map(r=>row(r,"var(--na)",I("minus",11))).join(""):"")
       +(grp(false).length?'<div class="f-lb" style="margin-top:14px;color:var(--ng)">確定NG</div>'+grp(false).map(r=>row(r,"var(--ng)",I("cross",11))).join(""):"");
